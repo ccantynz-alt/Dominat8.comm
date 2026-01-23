@@ -9,6 +9,10 @@ export const metadata = {
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white text-black">
+      {/* Lightweight network hints (safe even if unused) */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
       <header className="sticky top-0 z-40 border-b border-black/10 bg-white/80 backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <Link href={marketingRoutes.home} className="flex items-center gap-2">
@@ -20,11 +24,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
 
           <nav className="hidden items-center gap-5 md:flex">
             {marketingNav.map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className="text-sm opacity-70 hover:opacity-100"
-              >
+              <Link key={n.href} href={n.href} className="text-sm opacity-70 hover:opacity-100">
                 {n.label}
               </Link>
             ))}

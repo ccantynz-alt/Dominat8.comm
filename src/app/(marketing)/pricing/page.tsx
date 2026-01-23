@@ -1,122 +1,71 @@
-﻿import type { Metadata } from "next";
+import Link from "next/link";
 import MarketingCTA from "@/src/components/marketing/MarketingCTA";
+import ComparisonTable from "@/src/components/marketing/blocks/ComparisonTable";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Pricing — Dominat8",
-  description:
-    "Simple pricing to ship websites fast. Start free, upgrade when you want more automation.",
+  description: "Simple pricing for Dominat8. Start free, upgrade when you need automation + custom domains.",
 };
-
-function PriceCard(props: {
-  name: string;
-  price: string;
-  desc: string;
-  bullets: string[];
-  highlight?: boolean;
-}) {
-  return (
-    <div
-      className={[
-        "rounded-3xl border p-6",
-        props.highlight ? "border-white/30 bg-white/10" : "border-white/10 bg-white/5",
-      ].join(" ")}
-    >
-      <div className="text-lg font-semibold">{props.name}</div>
-      <div className="mt-2 text-3xl font-semibold tracking-tight">{props.price}</div>
-      <div className="mt-2 text-sm opacity-80">{props.desc}</div>
-      <ul className="mt-5 space-y-2 text-sm opacity-85">
-        {props.bullets.map((b) => (
-          <li key={b} className="flex gap-2">
-            <span className="opacity-60">•</span>
-            <span>{b}</span>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-6">
-        <a
-          href="/sign-up"
-          className={[
-            "inline-flex rounded-2xl px-4 py-2 text-sm font-semibold transition",
-            props.highlight ? "bg-white text-black hover:opacity-90" : "border border-white/20 hover:bg-white/10",
-          ].join(" ")}
-        >
-          Start
-        </a>
-      </div>
-    </div>
-  );
-}
 
 export default function PricingPage() {
   return (
-    <div>
-      <section className="mx-auto max-w-6xl px-4 py-14">
-        <h1 className="text-4xl font-semibold tracking-tight">Pricing</h1>
-        <p className="mt-3 max-w-2xl text-sm opacity-80">
-          Start free. Upgrade when you want more automation, more runs, and faster shipping.
-        </p>
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
+      <div className="mb-6">
+        <Link href="/" className="text-sm opacity-70 hover:opacity-100">
+          ← Back home
+        </Link>
+      </div>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
-          <PriceCard
-            name="Free"
-            price="$0"
-            desc="Launch your first site and prove the idea."
-            bullets={[
-              "Marketing homepage",
-              "Basic project flow",
-              "Manual publish",
-              "Starter SEO",
-            ]}
-          />
-          <PriceCard
-            name="Pro"
-            price="$29/mo"
-            desc="Ship faster with automation and better SEO output."
-            highlight
-            bullets={[
-              "Automation agents",
-              "SEO plan + sitemap runs",
-              "More projects + runs",
-              "Priority publishing flow",
-            ]}
-          />
-          <PriceCard
-            name="Business"
-            price="Custom"
-            desc="For teams and multi-site operations."
-            bullets={[
-              "Higher limits",
-              "Team access",
-              "Custom domains at scale",
-              "Support + onboarding",
-            ]}
-          />
+      <h1 className="text-3xl font-semibold tracking-tight">Pricing</h1>
+      <p className="mt-3 text-base opacity-80">
+        Start free. Upgrade when you want full automation and custom domain publishing.
+      </p>
+
+      <section className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
+          <div className="text-sm font-semibold">Free</div>
+          <div className="mt-2 text-3xl font-semibold">$0</div>
+          <div className="mt-1 text-sm opacity-70">For trying it out</div>
+
+          <ul className="mt-5 space-y-2 text-sm opacity-80">
+            <li>• Generate a website draft</li>
+            <li>• Explore templates + use-cases</li>
+            <li>• Limited SEO outputs</li>
+          </ul>
+
+          <div className="mt-6">
+            <Link
+              href="/sign-up"
+              className="inline-flex w-full items-center justify-center rounded-md border border-black/20 px-5 py-3 text-sm hover:bg-black/[0.02]"
+            >
+              Start free
+            </Link>
+          </div>
         </div>
 
-        <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-6">
-          <h2 className="text-xl font-semibold">FAQ</h2>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <div>
-              <div className="font-semibold">Can I start free?</div>
-              <div className="mt-1 text-sm opacity-80">Yep. Build a real site and publish it.</div>
-            </div>
-            <div>
-              <div className="font-semibold">Do I need a domain?</div>
-              <div className="mt-1 text-sm opacity-80">No. Use a preview domain, connect yours later.</div>
-            </div>
-            <div>
-              <div className="font-semibold">Is this SEO safe?</div>
-              <div className="mt-1 text-sm opacity-80">We generate structured metadata + sitemap outputs.</div>
-            </div>
-            <div>
-              <div className="font-semibold">Can I cancel anytime?</div>
-              <div className="mt-1 text-sm opacity-80">Yes. No lock-in.</div>
-            </div>
+        <div className="rounded-2xl border border-black/10 bg-black text-white p-6 shadow-sm">
+          <div className="text-sm font-semibold">Pro</div>
+          <div className="mt-2 text-3xl font-semibold">$29</div>
+          <div className="mt-1 text-sm opacity-80">Per month (starter)</div>
+
+          <ul className="mt-5 space-y-2 text-sm opacity-90">
+            <li>• Full SEO outputs (metadata + sitemap)</li>
+            <li>• Conversion pass (pricing + FAQs + CTAs)</li>
+            <li>• Custom domain publishing</li>
+            <li>• Automation / pipeline runs</li>
+          </ul>
+
+          <div className="mt-6">
+            <MarketingCTA />
+          </div>
+
+          <div className="mt-3 text-xs opacity-70">
+            Replace price/features to match your Stripe plans.
           </div>
         </div>
       </section>
 
-      <MarketingCTA />
-    </div>
+      <ComparisonTable />
+    </main>
   );
 }

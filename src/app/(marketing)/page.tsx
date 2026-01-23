@@ -1,5 +1,8 @@
 import Link from "next/link";
 import MarketingCTA from "@/src/components/marketing/MarketingCTA";
+import SocialProofStrip from "@/src/components/marketing/blocks/SocialProofStrip";
+import FeatureGrid from "@/src/components/marketing/blocks/FeatureGrid";
+import TestimonialCards from "@/src/components/marketing/blocks/TestimonialCards";
 import { templates, useCases } from "@/src/lib/marketing/catalog";
 
 export const metadata = {
@@ -32,10 +35,10 @@ export default function MarketingHomePage() {
               Start free
             </Link>
             <Link
-              href="/templates"
+              href="/pricing"
               className="inline-flex items-center justify-center rounded-md border border-black/20 px-5 py-3 hover:bg-black/5"
             >
-              Explore templates
+              View pricing
             </Link>
           </div>
 
@@ -45,19 +48,23 @@ export default function MarketingHomePage() {
         </div>
 
         <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-6 shadow-sm">
-          <div className="text-sm font-medium opacity-70">What you get</div>
-          <ul className="mt-4 space-y-2 text-sm">
-            <li>• AI-generated multi-page site spec</li>
-            <li>• SEO plan + sitemap + metadata</li>
-            <li>• Conversion pass (pricing, FAQs, CTAs)</li>
-            <li>• Publish to Vercel + custom domains</li>
-          </ul>
+          <div className="text-sm font-medium opacity-70">How it works</div>
+          <ol className="mt-4 space-y-2 text-sm opacity-80">
+            <li>1) Choose a template or use-case</li>
+            <li>2) Generate your site structure + pages</li>
+            <li>3) Run SEO + conversion passes</li>
+            <li>4) Publish to your domain</li>
+          </ol>
 
           <div className="mt-6">
             <MarketingCTA />
           </div>
         </div>
       </section>
+
+      <SocialProofStrip />
+
+      <FeatureGrid />
 
       <section className="mt-14">
         <div className="flex items-end justify-between gap-4">
@@ -100,6 +107,8 @@ export default function MarketingHomePage() {
           ))}
         </div>
       </section>
+
+      <TestimonialCards />
 
       <section className="mt-16 rounded-2xl border border-black/10 bg-black/[0.02] p-8">
         <div className="grid gap-6 md:grid-cols-2 md:items-center">
