@@ -43,3 +43,6 @@ package.json.bak_*
 .env*.local
 ai-saas-starter.zip
 *.zip
+
+.env.local
+
