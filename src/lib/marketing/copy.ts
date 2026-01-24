@@ -13,38 +13,38 @@ export const CTA = {
 };
 
 export const PROOF = [
-  { k: "Minutes", v: "from brief to live site" },
-  { k: "Pages", v: "multi-page generation" },
-  { k: "SEO", v: "sitemap + metadata baked in" },
-  { k: "Deploy", v: "publish to production fast" },
+  { k: "Trust", v: "clear, professional output" },
+  { k: "Speed", v: "minutes from brief to draft" },
+  { k: "Pages", v: "homepage + pricing + FAQ + contact" },
+  { k: "SEO", v: "metadata + sitemap-ready structure" },
 ] as const;
 
 export const STEPS = [
   {
-    title: "Drop in a brief",
-    body: "Describe your offer, audience, and vibe. Dominat8 turns intent into structure.",
+    title: "Bring a real-world brief",
+    body: "Tell us what you do, where you operate, and what ‘professional’ looks like in your industry.",
   },
   {
-    title: "Agents build the site",
-    body: "Homepage, pricing, FAQ, contact — plus SEO plan and sitemap. Automatically.",
+    title: "Agents assemble the site",
+    body: "Structure, copy, pages, and SEO basics — built like a premium brochure, not a template dump.",
   },
   {
     title: "Publish with confidence",
-    body: "Review, tweak, then ship. Clean output. Clear routing. No weird surprises.",
+    body: "Review, adjust, then ship. Clean routing, consistent output, and no mystery behavior.",
   },
 ] as const;
 
 export const FAQ = [
   {
-    q: "Is this a website builder or a generator?",
-    a: "Both. You can start from a brief, then iterate like a builder — but the heavy lifting is done for you.",
+    q: "Will this work for trade & local service businesses?",
+    a: "Yes. The whole point is clean trust: clear services, proof, pricing clarity, and easy contact.",
   },
   {
-    q: "What do I get in the output?",
-    a: "A polished multi-page site spec and published pages (homepage, pricing, FAQ, contact) with SEO basics included.",
+    q: "Does it feel professional or ‘AI-ish’?",
+    a: "Professional first. Calm layouts, clean typography, and a premium tone — then AI under the hood.",
   },
   {
     q: "Can I use my own domain?",
-    a: "Yes — Dominat8 is built to map custom domains and verify them cleanly.",
+    a: "Yes — Dominat8 is designed to map and verify custom domains cleanly.",
   },
 ] as const;
