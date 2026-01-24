@@ -52,128 +52,76 @@ export default function MarketingHomePage() {
       <div className="sr-only">HOME_OK</div>
 
       {/* ===== HERO (flagship / premium / calm) ===== */}
-      <section className="relative overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-black" />
-          <div className="absolute -top-40 left-1/2 h-[520px] w-[980px] -translate-x-1/2 rounded-full bg-white/10 blur-3xl opacity-30" />
-          <div className="absolute -bottom-52 left-1/2 h-[540px] w-[980px] -translate-x-1/2 rounded-full bg-white/10 blur-3xl opacity-20" />
-          <div className="absolute inset-0 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px] opacity-40" />
+      <section className="relative flex min-h-screen w-screen items-center overflow-hidden">
+  {/* Background */}
+  <div className="absolute inset-0">
+    <div className="absolute inset-0 bg-black" />
+    <div className="absolute -top-48 left-1/2 h-[700px] w-[1200px] -translate-x-1/2 rounded-full bg-white/10 blur-3xl opacity-40" />
+    <div className="absolute -bottom-64 left-1/2 h-[800px] w-[1400px] -translate-x-1/2 rounded-full bg-white/10 blur-3xl opacity-25" />
+    <div className="absolute inset-0 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px] opacity-40" />
+  </div>
+
+  {/* Content */}
+  <div className="relative mx-auto w-full px-8 md:px-20">
+    <div className="grid items-center gap-12 md:grid-cols-12">
+      <div className="md:col-span-7">
+        <div className="flex flex-wrap gap-2">
+          <Pill>Flagship calm</Pill>
+          <Pill>Premium by default</Pill>
+          <Pill>Publishable instantly</Pill>
         </div>
 
-        <div className="relative mx-auto flex min-h-[92vh] w-full max-w-6xl flex-col justify-center px-6 py-20">
-          {/* Stamp (visible) */}
-          <div className="mb-6 text-center text-[11px] tracking-[0.22em] text-white/35">
-            BUILD_STAMP: {BUILD_STAMP}
-          </div>
+        <h1 className="mt-8 text-[clamp(3rem,6vw,5.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
+          Build a website that
+          <span className="block text-white/85">feels expensive</span>
+          from the first scroll.
+        </h1>
 
-          <div className="grid items-center gap-10 md:grid-cols-12">
-            <div className="md:col-span-7">
-              <div className="flex flex-wrap gap-2">
-                <Pill>Flagship calm</Pill>
-                <Pill>Publishable drafts</Pill>
-                <Pill>Built to convert</Pill>
-              </div>
+        <p className="mt-8 max-w-xl text-lg leading-relaxed text-white/70">
+          Dominat8 creates calm, flagship-quality homepages that earn trust instantly —
+          then helps you grow into pages, SEO, and real conversions.
+        </p>
 
-              <h1 className="mt-6 text-4xl font-semibold tracking-tight text-white md:text-6xl">
-                Build a premium website
-                <span className="block text-white/85">in minutes —</span>
-                <span className="block">not months.</span>
-              </h1>
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <a
+            href="/app"
+            className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-sm font-semibold text-black hover:bg-white/90"
+          >
+            Start building
+          </a>
 
-              <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">
-                Dominat8 generates a calm, flagship-quality homepage that looks like a real business —
-                then you iterate into pages, SEO, and launch-ready copy with confidence.
-              </p>
+          <a
+            href="/preview/marketing"
+            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/[0.06] px-8 py-4 text-sm font-semibold text-white hover:bg-white/[0.12]"
+          >
+            See a live example
+          </a>
+        </div>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link
-                  href="/app"
-                  className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black hover:bg-white/90"
-                >
-                  Start building now
-                </Link>
+        <div className="mt-10 text-sm text-white/45">
+          Calm. Confident. Built to convert.
+        </div>
+      </div>
 
-                <Link
-                  href="/preview/marketing"
-                  className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/[0.06] px-6 py-3 text-sm font-semibold text-white hover:bg-white/[0.10]"
-                >
-                  See a live preview
-                </Link>
-              </div>
-
-              <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 rounded-3xl border border-white/10 bg-white/[0.04] p-5">
-                <div>
-                  <div className="text-lg font-semibold">Fast</div>
-                  <div className="mt-1 text-xs text-white/60">Draft in minutes</div>
-                </div>
-                <div>
-                  <div className="text-lg font-semibold">Premium</div>
-                  <div className="mt-1 text-xs text-white/60">Calm & confident</div>
-                </div>
-                <div>
-                  <div className="text-lg font-semibold">Scalable</div>
-                  <div className="mt-1 text-xs text-white/60">Pages + SEO</div>
-                </div>
-              </div>
-
-              <div className="mt-6 text-xs text-white/45">
-                No gimmicks. Just premium pacing, strong copy, and a site you can actually ship.
-              </div>
+      {/* Minimal right-side frame */}
+      <div className="hidden md:col-span-5 md:block">
+        <div className="rounded-[36px] border border-white/10 bg-white/[0.04] p-6 shadow-sm">
+          <div className="rounded-[28px] border border-white/10 bg-black/40 p-6">
+            <div className="h-3 w-24 rounded-full bg-white/20" />
+            <div className="mt-4 h-8 w-3/4 rounded-lg bg-white/15" />
+            <div className="mt-4 h-4 w-full rounded-lg bg-white/10" />
+            <div className="mt-3 h-4 w-11/12 rounded-lg bg-white/10" />
+            <div className="mt-6 grid grid-cols-2 gap-4">
+              <div className="h-20 rounded-2xl bg-white/10" />
+              <div className="h-20 rounded-2xl bg-white/10" />
             </div>
-
-            {/* Right side: "device" preview frame */}
-            <div className="md:col-span-5">
-              <div className="rounded-[32px] border border-white/12 bg-gradient-to-b from-white/[0.08] to-white/[0.03] p-4 shadow-sm">
-                <div className="rounded-[26px] border border-white/10 bg-black/40 p-5">
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs uppercase tracking-[0.22em] text-white/55">Preview</div>
-                    <div className="text-xs text-white/45">Flagship layout</div>
-                  </div>
-
-                  <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-                    <div className="h-2 w-16 rounded-full bg-white/20" />
-                    <div className="mt-3 h-7 w-3/4 rounded-lg bg-white/15" />
-                    <div className="mt-3 h-3 w-full rounded-lg bg-white/10" />
-                    <div className="mt-2 h-3 w-11/12 rounded-lg bg-white/10" />
-                    <div className="mt-2 h-3 w-10/12 rounded-lg bg-white/10" />
-                    <div className="mt-5 grid grid-cols-2 gap-3">
-                      <div className="h-16 rounded-xl bg-white/10" />
-                      <div className="h-16 rounded-xl bg-white/10" />
-                    </div>
-                    <div className="mt-4 h-10 rounded-xl bg-white/15" />
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-3 gap-2 text-center text-[11px] text-white/55">
-                    <div className="rounded-xl border border-white/10 bg-white/[0.04] py-2">Hero</div>
-                    <div className="rounded-xl border border-white/10 bg-white/[0.04] py-2">Proof</div>
-                    <div className="rounded-xl border border-white/10 bg-white/[0.04] py-2">CTA</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 text-center text-xs text-white/45">
-                This is the “calm premium” look — strong contrast, soft borders, disciplined rhythm.
-              </div>
-            </div>
-          </div>
-
-          {/* Trust row */}
-          <div className="mt-14 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div className="text-sm text-white/70">
-                Built for founders, local pros, and agencies who want a flagship site fast.
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Pill>Custom domains</Pill>
-                <Pill>SEO-ready</Pill>
-                <Pill>Multi-page</Pill>
-                <Pill>Publish now</Pill>
-              </div>
-            </div>
+            <div className="mt-6 h-12 rounded-2xl bg-white/15" />
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* ===== BUILT FOR ===== */}
       <section className="mx-auto w-full max-w-6xl px-6 py-14">
@@ -381,3 +329,4 @@ export default function MarketingHomePage() {
     </main>
   );
 }
+
