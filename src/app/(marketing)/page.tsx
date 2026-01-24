@@ -1,5 +1,6 @@
 ﻿// src/app/(marketing)/page.tsx
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 import LuxuryShell from "@/src/components/marketing/LuxuryShell";
 import LuxuryNav from "@/src/components/marketing/LuxuryNav";
@@ -62,6 +63,9 @@ export default function MarketingHomePage() {
       <JsonLd />
       <LuxuryNav />
       <LuxuryHero />
+      <div className="px-6 pt-2 text-[11px] text-white/40">
+        BUILD_STAMP: BUILD_20260124_210046
+      </div>
       <AudienceQualificationStrip />
       <ValuePropositionCyclone />
       <HowItWorksCalm />
@@ -74,4 +78,5 @@ export default function MarketingHomePage() {
     </LuxuryShell>
   );
 }
+
 
