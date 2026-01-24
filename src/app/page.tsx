@@ -1,4 +1,4 @@
-﻿export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
 function getBuild() {
   const commit = process.env.VERCEL_GIT_COMMIT_SHA ?? "";
@@ -303,7 +303,7 @@ export default function Home() {
             </div>
 
             <div className="mt-10 flex items-center justify-center text-[11px] text-white/35">
-              Flagship v4 (Trust + Tour)  BUILD_STAMP: {build.stamp}  DEPLOY_ID: {build.deployId}
+              Flagship v5 (Cinematic Landscape Hero)  BUILD_STAMP: {build.stamp}  DEPLOY_ID: {build.deployId}
             </div>
           </div>
         </div>
@@ -349,3 +349,5 @@ export default function Home() {
     </main>
   );
 }
+
+/* V5_MARKER_20260125_122119 */
