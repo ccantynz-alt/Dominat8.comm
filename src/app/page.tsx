@@ -3,6 +3,7 @@
 
   return (
     <main className="d8-root">
+<div style={{position:'absolute',left:-9999,top:-9999}}>BUILD_ID_20260125_154005</div>
       <div className="d8-hidden">{marker}</div>
 
       <section className="d8-hero">
@@ -411,3 +412,5 @@
     </main>
   );
 }
+
+
