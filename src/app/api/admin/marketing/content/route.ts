@@ -1,17 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/marketingMachine/adminAuth";
-import { listContent } from "@/lib/marketingMachine/store";
+import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
+/**
+ * BUILD-SAFE STUB (TEMP)
+ * Marker: MM_CONTENT_ROUTE_STUB_V1
+ *
+ * marketingMachine admin endpoints are disabled while homepage ships.
+ */
+export async function GET() {
+  return NextResponse.json(
+    { ok: false, disabled: true, reason: "marketing content endpoint temporarily disabled" },
+    { status: 503 }
+  );
+}
 
-export async function GET(req: NextRequest) {
-  const auth = requireAdmin(req);
-  if (!auth.ok) return NextResponse.json({ ok: false, error: auth.reason }, { status: 401 });
-
-  const { searchParams } = new URL(req.url);
-  const campaignId = String(searchParams.get("campaignId") || "");
-  if (!campaignId) return NextResponse.json({ ok: false, error: "campaignId is required" }, { status: 400 });
-
-  const content = await listContent(campaignId);
-  return NextResponse.json({ ok: true, content });
+export async function POST() {
+  return NextResponse.json(
+    { ok: false, disabled: true, reason: "marketing content endpoint temporarily disabled" },
+    { status: 503 }
+  );
 }

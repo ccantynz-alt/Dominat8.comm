@@ -24,20 +24,3 @@ export async function getCampaign(..._args: any[]): Promise<any> { return null; 
 export async function updateCampaign(..._args: any[]): Promise<any> { return null; }
 export async function listCampaigns(..._args: any[]): Promise<any[]> { return []; }
 export async function upsertCampaign(..._args: any[]): Promise<any> { return null; }
-
-export async function approveContent(..._args: any[]): Promise<any> { return null; }
-export async function rejectContent(..._args: any[]): Promise<any> { return null; }
-
-export async function regenerateContent(..._args: any[]): Promise<any> { return null; }
-export async function generateContent(..._args: any[]): Promise<any> { return null; }
-export async function createContent(..._args: any[]): Promise<any> { return null; }
-export async function updateContent(..._args: any[]): Promise<any> { return null; }
-export async function deleteContent(..._args: any[]): Promise<any> { return null; }
-
-export async function scheduleContent(..._args: any[]): Promise<any> { return null; }
-export async function unscheduleContent(..._args: any[]): Promise<any> { return null; }
-export async function setSchedule(..._args: any[]): Promise<any> { return null; }
-export async function getSchedule(..._args: any[]): Promise<any> { return null; }
-export async function updateSchedule(..._args: any[]): Promise<any> { return null; }
-export async function deleteSchedule(..._args: any[]): Promise<any> { return null; }
-
