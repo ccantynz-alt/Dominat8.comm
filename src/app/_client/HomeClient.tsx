@@ -1,38 +1,55 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 export default function HomeClient() {
+  const [p, setP] = useState(0);
+
+  useEffect(() => {
+    let i = 0;
+    const steps = [6, 14, 26, 38, 52, 66, 78, 88, 96, 100];
+    const t = setInterval(() => {
+      setP(steps[i] ?? 100);
+      i++;
+      if (i >= steps.length) clearInterval(t);
+    }, 320);
+    return () => clearInterval(t);
+  }, []);
+
   return (
     <main style={{
       minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
       background:
-        "radial-gradient(1000px 600px at 15% 10%, rgba(255,255,255,0.10), transparent 60%)," +
-        "radial-gradient(900px 500px at 85% 30%, rgba(255,255,255,0.08), transparent 55%)," +
-        "linear-gradient(180deg, #050608 0%, #07080b 55%, #06070a 100%)",
+        "radial-gradient(1200px 700px at 10% 5%, rgba(120,160,255,0.12), transparent 60%)," +
+        "radial-gradient(1000px 600px at 90% 30%, rgba(180,120,255,0.10), transparent 55%)," +
+        "linear-gradient(180deg,#04050a 0%,#07080d 55%,#05060b 100%)",
       color: "white",
-      fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial"
+      fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial",
+      overflow: "hidden"
     }}>
       <div style={{
-        maxWidth: 1200,
+        maxWidth: 1240,
         margin: "0 auto",
-        padding: "0 32px",
+        padding: "0 36px",
+        minHeight: "100vh",
         display: "grid",
-        gridTemplateColumns: "1.1fr 0.9fr",
-        gap: 56,
+        gridTemplateColumns: "1.15fr 0.85fr",
+        gap: 64,
         alignItems: "center"
       }}>
 
-        {/* LEFT: Authority */}
+        {/* LEFT */}
         <div>
           <div style={{
-            display: "inline-block",
-            padding: "10px 16px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "10px 18px",
             borderRadius: 999,
-            border: "1px solid rgba(255,255,255,0.14)",
+            border: "1px solid rgba(255,255,255,0.16)",
             background: "rgba(255,255,255,0.06)",
             fontSize: 12,
-            letterSpacing: 2.2,
+            letterSpacing: 2.6,
             textTransform: "uppercase",
             color: "rgba(255,255,255,0.75)"
           }}>
@@ -40,68 +57,79 @@ export default function HomeClient() {
           </div>
 
           <h1 style={{
-            marginTop: 22,
-            fontSize: 56,
-            lineHeight: 1.05,
-            fontWeight: 900,
-            letterSpacing: -1.4
+            marginTop: 26,
+            fontSize: 64,
+            lineHeight: 1.02,
+            fontWeight: 950,
+            letterSpacing: -1.8
           }}>
-            This is how websites<br />are made now.
+            This is how websites
+            <br />are made now.
           </h1>
 
           <p style={{
-            marginTop: 20,
-            fontSize: 18,
-            lineHeight: 1.6,
+            marginTop: 22,
+            fontSize: 20,
+            lineHeight: 1.65,
             color: "rgba(255,255,255,0.72)",
-            maxWidth: 520
+            maxWidth: 560
           }}>
             Describe your business. Your website assembles itself. Publish.
           </p>
 
-          <div style={{
-            marginTop: 30,
-            display: "flex",
-            alignItems: "center",
-            gap: 16
-          }}>
+          <div style={{ marginTop: 36, display: "flex", alignItems: "center", gap: 18 }}>
             <a href="/builder" style={{
-              padding: "16px 24px",
-              borderRadius: 16,
-              background: "white",
+              padding: "18px 28px",
+              borderRadius: 18,
+              background: "linear-gradient(180deg,#ffffff,#eaeaf0)",
               color: "black",
-              fontWeight: 900,
+              fontWeight: 950,
               fontSize: 16,
               textDecoration: "none",
-              boxShadow: "0 22px 50px rgba(0,0,0,0.45)"
+              boxShadow: "0 28px 70px rgba(0,0,0,0.55)",
+              transform: "translateY(0)",
+              transition: "transform 160ms ease, box-shadow 160ms ease"
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 36px 90px rgba(0,0,0,0.7)";
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 28px 70px rgba(0,0,0,0.55)";
             }}>
               Build my site
             </a>
 
-            <span style={{
-              fontSize: 14,
-              color: "rgba(255,255,255,0.6)"
-            }}>
+            <span style={{ fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
               No templates. No setup.
             </span>
           </div>
 
           <div style={{
-            marginTop: 36,
-            fontSize: 11,
-            color: "rgba(255,255,255,0.45)"
+            marginTop: 34,
+            display: "flex",
+            gap: 22,
+            fontSize: 13,
+            color: "rgba(255,255,255,0.55)"
           }}>
-            LIVE_20260126_085401
+            <span>⚡ Fast launch</span>
+            <span>🔒 Production-ready</span>
+            <span>📈 Conversion-focused</span>
+          </div>
+
+          <div style={{ marginTop: 26, fontSize: 11, color: "rgba(255,255,255,0.45)" }}>
+            POLISH_20260126_085947
           </div>
         </div>
 
-        {/* RIGHT: Proof */}
+        {/* RIGHT */}
         <div style={{
-          borderRadius: 22,
-          border: "1px solid rgba(255,255,255,0.14)",
-          background: "rgba(0,0,0,0.38)",
-          backdropFilter: "blur(18px)",
-          boxShadow: "0 40px 120px rgba(0,0,0,0.65)",
+          borderRadius: 24,
+          border: "1px solid rgba(255,255,255,0.16)",
+          background: "rgba(0,0,0,0.40)",
+          backdropFilter: "blur(22px)",
+          boxShadow: "0 50px 140px rgba(0,0,0,0.75)",
           overflow: "hidden"
         }}>
           <div style={{
@@ -128,10 +156,10 @@ export default function HomeClient() {
             </div>
           </div>
 
-          <div style={{ padding: 20 }}>
+          <div style={{ padding: 22 }}>
             <div style={{
               fontSize: 11,
-              letterSpacing: 2.4,
+              letterSpacing: 2.6,
               textTransform: "uppercase",
               color: "rgba(255,255,255,0.6)"
             }}>
@@ -139,21 +167,22 @@ export default function HomeClient() {
             </div>
 
             <div style={{
-              marginTop: 10,
+              marginTop: 12,
               height: 8,
               borderRadius: 999,
               background: "rgba(255,255,255,0.12)",
               overflow: "hidden"
             }}>
               <div style={{
-                width: "78%",
+                width: p + "%",
                 height: "100%",
-                background: "linear-gradient(90deg, #22d3ee, #a855f7)"
+                background: "linear-gradient(90deg,#22d3ee,#a855f7)",
+                transition: "width 420ms cubic-bezier(.22,.61,.36,1)"
               }} />
             </div>
 
             <div style={{
-              marginTop: 18,
+              marginTop: 20,
               fontSize: 18,
               fontWeight: 800
             }}>
@@ -161,7 +190,7 @@ export default function HomeClient() {
             </div>
 
             <div style={{
-              marginTop: 16,
+              marginTop: 18,
               display: "flex",
               flexWrap: "wrap",
               gap: 10
@@ -171,7 +200,7 @@ export default function HomeClient() {
                   padding: "8px 14px",
                   borderRadius: 999,
                   fontSize: 13,
-                  border: "1px solid rgba(255,255,255,0.16)",
+                  border: "1px solid rgba(255,255,255,0.18)",
                   background: "rgba(255,255,255,0.06)"
                 }}>
                   ✓ {x}
