@@ -26,7 +26,6 @@ export function TopBar() {
           <a className="hover:text-slate-900" href="/__status">Status</a>
           <a className="hover:text-slate-900" href="/pricing">Pricing</a>
           <a className="hover:text-slate-900" href="/templates">Templates</a>
-          <a className="hover:text-slate-950" href="/gallery">Gallery</a>
         </div>
       </div>
     </div>
@@ -49,7 +48,6 @@ export function HeaderNav() {
 
         <nav className="hidden items-center gap-7 text-sm text-slate-700 md:flex">
           <a className="hover:text-slate-950" href="/templates">Templates</a>
-          <a className="hover:text-slate-950" href="/gallery">Gallery</a>
           <a className="hover:text-slate-950" href="/use-cases">Use cases</a>
           <a className="hover:text-slate-950" href="/pricing">Pricing</a>
           <a className="hover:text-slate-950" href="/faq">FAQ</a>
@@ -88,7 +86,6 @@ export function Footer() {
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-700">
             <a className="hover:text-slate-950" href="/templates">Templates</a>
-          <a className="hover:text-slate-950" href="/gallery">Gallery</a>
             <a className="hover:text-slate-950" href="/use-cases">Use cases</a>
             <a className="hover:text-slate-950" href="/pricing">Pricing</a>
             <a className="hover:text-slate-950" href="/faq">FAQ</a>
@@ -226,69 +223,6 @@ export function TemplateGalleryCard({ title, desc, tag, href }) {
         <div className="mt-2 text-sm leading-relaxed text-slate-700">{desc}</div>
         <div className="mt-5 text-sm font-semibold text-slate-900 group-hover:underline">
           Preview →
-        </div>
-      </div>
-    </a>
-  );
-}
-export function TagPill({ children }) {
-  return (
-    <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-[11px] text-slate-700 ring-1 ring-slate-200">
-      {children}
-    </span>
-  );
-}
-
-export function GalleryFilters() {
-  // UI-only (no JS state yet). Next upgrade can add URL query filtering.
-  const chips = ["All", "SaaS", "Local", "Portfolio", "Product", "Agency", "Launch"];
-  return (
-    <div className="flex flex-wrap gap-2">
-      {chips.map((c) => (
-        <span
-          key={c}
-          className="inline-flex items-center rounded-full bg-white px-4 py-2 text-xs text-slate-700 ring-1 ring-slate-200 shadow-sm"
-        >
-          {c}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-export function ShowcaseCard({ title, template, tags, outcome, accent, href }) {
-  const accentBg =
-    accent === "emerald"
-      ? "bg-[radial-gradient(700px_circle_at_20%_10%,rgba(16,185,129,0.18),transparent_55%),radial-gradient(650px_circle_at_80%_30%,rgba(59,130,246,0.10),transparent_60%)]"
-      : accent === "indigo"
-      ? "bg-[radial-gradient(700px_circle_at_20%_10%,rgba(99,102,241,0.18),transparent_55%),radial-gradient(650px_circle_at_80%_30%,rgba(16,185,129,0.10),transparent_60%)]"
-      : accent === "slate"
-      ? "bg-[radial-gradient(700px_circle_at_20%_10%,rgba(15,23,42,0.12),transparent_55%),radial-gradient(650px_circle_at_80%_30%,rgba(59,130,246,0.10),transparent_60%)]"
-      : "bg-[radial-gradient(700px_circle_at_20%_10%,rgba(59,130,246,0.18),transparent_55%),radial-gradient(650px_circle_at_80%_30%,rgba(16,185,129,0.10),transparent_60%)]";
-
-  return (
-    <a
-      href={href || "/p/new"}
-      className="group overflow-hidden rounded-3xl bg-white/85 ring-1 ring-slate-200 shadow-sm hover:bg-white transition"
-    >
-      {/* Thumbnail */}
-      <div className={"h-36 " + accentBg}>
-        <div className="h-full w-full bg-[linear-gradient(to_bottom,rgba(255,255,255,0.00),rgba(255,255,255,0.55))]" />
-      </div>
-
-      <div className="p-6">
-        <div className="text-xs text-slate-500">{template}</div>
-        <div className="mt-2 text-lg font-semibold text-slate-950">{title}</div>
-        <div className="mt-2 text-sm leading-relaxed text-slate-700">{outcome}</div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {(tags || []).slice(0, 4).map((t) => (
-            <TagPill key={t}>{t}</TagPill>
-          ))}
-        </div>
-
-        <div className="mt-5 text-sm font-semibold text-slate-900 group-hover:underline">
-          View showcase →
         </div>
       </div>
     </a>
