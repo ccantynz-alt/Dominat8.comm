@@ -68,7 +68,7 @@ export async function generateContentForCampaign(input: any, platform?: any): Pr
           .replace(/^-+|-+$/g, "")
       );
 
-  const items = slugs.map((slug) => {
+  const items = slugs.map((slug: string) => {
     const title = slug
       .replace(/-/g, " ")
       .replace(/\b\w/g, (m) => m.toUpperCase());
