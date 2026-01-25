@@ -1,27 +1,25 @@
 import type { MetadataRoute } from "next";
-import { templates, useCases } from "@/src/lib/marketing/catalog";
 
-const SITE = "https://www.dominat8.com";
+/**
+ * sitemap.xml (Next metadata route)
+ * Marker: SEO_BASELINE_V1
+ *
+ * Basic static sitemap (safe baseline).
+ * Later we can add dynamic template pages, project pages, etc.
+ */
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const siteUrl = "https://www.dominat8.com";
   const now = new Date();
 
-  const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${SITE}/`, lastModified: now },
-    { url: `${SITE}/pricing`, lastModified: now },
-    { url: `${SITE}/templates`, lastModified: now },
-    { url: `${SITE}/use-cases`, lastModified: now },
+  const urls: Array<{ url: string; lastModified: Date; changeFrequency?: any; priority?: number }> = [
+    { url: `${siteUrl}/`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
+    { url: `${siteUrl}/gallery`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    // Add more marketing pages here when they are stable:
+    // { url: `${siteUrl}/templates`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    // { url: `${siteUrl}/use-cases`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
   ];
 
-  const templateRoutes: MetadataRoute.Sitemap = templates.map((t) => ({
-    url: `${SITE}/templates/${t.slug}`,
-    lastModified: now,
-  }));
-
-  const useCaseRoutes: MetadataRoute.Sitemap = useCases.map((u) => ({
-    url: `${SITE}/use-cases/${u.slug}`,
-    lastModified: now,
-  }));
-
-  return [...staticRoutes, ...templateRoutes, ...useCaseRoutes];
+  return urls;
 }

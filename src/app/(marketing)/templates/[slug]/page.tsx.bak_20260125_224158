@@ -1,0 +1,116 @@
+import Link from "next/link";
+import MarketingCTA from "@/src/components/marketing/MarketingCTA";
+import { TEMPLATES } from "@/src/lib/marketing/catalog";
+
+type Props = {
+  params: { slug: string };
+};
+
+export default function TemplateDetailPage({ params }: Props) {
+  // We use `any` only for DISPLAY fields because TemplateCard shape varies.
+  const template = TEMPLATES.find((t: any) => t.slug === params.slug);
+
+  if (!template) {
+    return (
+      <main className="mx-auto w-full max-w-5xl px-4 py-12">
+        <h1 className="text-2xl font-semibold">Template not found</h1>
+        <p className="mt-2 text-sm text-white/70">
+          The template <span className="font-mono">{params.slug}</span> does not exist.
+        </p>
+        <div className="mt-6">
+          <Link className="underline" href="/templates">Back to templates</Link>
+        </div>
+      </main>
+    );
+  }
+
+  const t: any = template;
+
+  const displayTitle =
+    t.title ??
+    t.name ??
+    t.label ??
+    t.headline ??
+    t.displayName ??
+    t.slug ??
+    params.slug;
+
+  const displayDesc =
+    t.description ??
+    t.desc ??
+    t.summary ??
+    t.subheadline ??
+    t.blurb ??
+    "";
+
+  const tags: string[] =
+    (Array.isArray(t.tags) ? t.tags : null) ??
+    (Array.isArray(t.categories) ? t.categories : null) ??
+    [];
+
+  return (
+    <main className="mx-auto w-full max-w-5xl px-4 py-12">
+      <div className="flex items-start justify-between gap-6">
+        <div>
+          <div className="text-xs font-semibold tracking-wide text-white/60">TEMPLATE</div>
+
+          {/* IMPORTANT: No template.title usage (TemplateCard doesn't guarantee it) */}
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight">{String(displayTitle)}</h1>
+
+          {displayDesc ? (
+            <p className="mt-3 max-w-2xl text-sm text-white/70">{String(displayDesc)}</p>
+          ) : (
+            <p className="mt-3 max-w-2xl text-sm text-white/70">
+              Template details coming soon. (Build-safe placeholder)
+            </p>
+          )}
+
+          {tags.length ? (
+            <div className="mt-6 flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs text-white/70"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          ) : null}
+
+          <div className="mt-8 flex gap-3">
+            <Link
+              href="/app"
+              className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-black"
+            >
+              Use this template →
+            </Link>
+            <Link
+              href="/templates"
+              className="rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-semibold text-white/80"
+            >
+              Back to templates
+            </Link>
+          </div>
+        </div>
+
+        <div className="hidden w-[320px] shrink-0 rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-md md:block">
+          <div className="text-xs font-semibold tracking-wide text-white/60">DETAILS</div>
+          <div className="mt-3 space-y-2 text-sm text-white/70">
+            <div>
+              <span className="text-white/50">Slug:</span>{" "}
+              <span className="font-mono">{String(t.slug ?? params.slug)}</span>
+            </div>
+            {t.category ? (
+              <div><span className="text-white/50">Category:</span> {String(t.category)}</div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <MarketingCTA />
+      </div>
+    </main>
+  );
+}

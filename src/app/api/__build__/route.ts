@@ -2,11 +2,14 @@ import { NextResponse } from "next/server";
 import { getBuildInfo } from "@/lib/buildInfo";
 
 /**
- * GET /api/__probe__
+ * GET /api/__build__
  * Marker: BUILD_PROOF_V1
  *
- * Super-light health/proof endpoint.
- * Also disables caching to avoid stale results.
+ * Purpose:
+ * - Always returns a dynamic response with build proof
+ * - Sets headers so you can confirm the deployed route quickly
+ *
+ * Note: This route intentionally disables caching.
  */
 
 export const dynamic = "force-dynamic";
@@ -14,21 +17,17 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const info = getBuildInfo();
 
-  const res = NextResponse.json(
-    {
-      ok: true,
-      marker: "BUILD_PROOF_V1",
-      stamp: info.stamp,
-      nowIso: info.nowIso,
-    },
-    { status: 200 }
-  );
+  const res = NextResponse.json(info, { status: 200 });
 
+  // Explicit no-cache: eliminate any doubt.
   res.headers.set("cache-control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.headers.set("pragma", "no-cache");
   res.headers.set("expires", "0");
 
-  res.headers.set("x-dominat8-build-stamp", info.stamp);
+  // Helpful proof headers
   res.headers.set("x-dominat8-build-marker", info.marker);
+  res.headers.set("x-dominat8-build-stamp", info.stamp);
+  if (info.gitSha) res.headers.set("x-dominat8-git-sha", info.gitSha);
+
   return res;
 }

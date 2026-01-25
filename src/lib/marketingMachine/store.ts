@@ -47,3 +47,6 @@ export async function createPostLog(..._args: any[]): Promise<any> { return null
 export async function listSchedulesWithContent(..._args: any[]): Promise<any[]> { return []; }
 export async function listScheduleLogs(..._args: any[]): Promise<any[]> { return []; }
 
+export async function runScheduler(..._args: any[]): Promise<any> { return { ok: true, stub: true }; }
+export async function triggerScheduler(..._args: any[]): Promise<any> { return { ok: true, stub: true }; }
+
