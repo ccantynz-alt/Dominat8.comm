@@ -26,7 +26,7 @@ export default function LuxurySteps() {
                 <span>Step</span>
               </div>
               <div className="mt-4 text-lg font-semibold">{s.title}</div>
-              <div className="mt-2 text-sm leading-relaxed text-white/70">{s.desc}</div>
+              <div className="mt-2 text-sm leading-relaxed text-white/70">{s.desc ?? (s.body)}</div>
             </div>
           ))}
         </div>
@@ -34,5 +34,4 @@ export default function LuxurySteps() {
     </section>
   );
 }
-
 
