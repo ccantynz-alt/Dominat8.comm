@@ -1,3 +1,76 @@
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+
+function Fail([string]$m) { throw "ERROR: $m" }
+
+if (-not (Test-Path -LiteralPath ".\package.json")) {
+  Fail "Run this from your repo root (the folder that contains package.json)."
+}
+
+function WriteUtf8NoBom([string]$path, [string]$content) {
+  $dir = Split-Path -Parent $path
+  if (-not (Test-Path -LiteralPath $dir)) {
+    New-Item -ItemType Directory -Force -Path $dir | Out-Null
+  }
+  $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+  [System.IO.File]::WriteAllText($path, $content, $utf8NoBom)
+}
+
+# ============================================================
+# 1) FIX marketingMachine kv.ts (force correct startsWith)
+# ============================================================
+$kvPath = ".\src\lib\marketingMachine\kv.ts"
+WriteUtf8NoBom $kvPath @'
+/**
+ * marketingMachine/kv.ts
+ * In-memory KV fallback (build-safe).
+ */
+
+type KvValue = string;
+const mem = new Map<string, KvValue>();
+
+export async function kvGet(key: string): Promise<string | null> {
+  if (!key) return null;
+  return mem.has(key) ? (mem.get(key) as string) : null;
+}
+
+export async function kvSet(key: string, value: string): Promise<void> {
+  if (!key) return;
+  mem.set(key, value ?? "");
+}
+
+export async function kvDel(key: string): Promise<void> {
+  if (!key) return;
+  mem.delete(key);
+}
+
+export async function kvKeys(prefix: string): Promise<string[]> {
+  const p = prefix ?? "";
+  const out: string[] = [];
+  for (const k of mem.keys()) {
+    if (!p || k.startsWith(p)) out.push(k);
+  }
+  out.sort();
+  return out;
+}
+
+export async function kvMGet(keys: string[]): Promise<(string | null)[]> {
+  return Promise.all((keys ?? []).map((k) => kvGet(k)));
+}
+
+export async function kvMSet(pairs: Array<{ key: string; value: string }>): Promise<void> {
+  for (const p of pairs ?? []) {
+    await kvSet(p.key, p.value);
+  }
+}
+'@
+Write-Host "WROTE: $kvPath" -ForegroundColor Green
+
+# ============================================================
+# 2) RESTORE WOW hero (built by AI shipped fast) + cursor glow
+# ============================================================
+$pagePath = ".\src\app\page.tsx"
+WriteUtf8NoBom $pagePath @'
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -40,7 +113,7 @@ export default function HomePage() {
       const lx = last.current.x;
       const ly = last.current.y;
 
-      // Lerp factor tuned for â€œlit upâ€ feel without lag
+      // Lerp factor tuned for “lit up” feel without lag
       const nx = lx + (desiredX - lx) * 0.18;
       const ny = ly + (desiredY - ly) * 0.18;
 
@@ -93,7 +166,7 @@ export default function HomePage() {
         }}
       />
 
-      {/* HERO â€” WOW built by AI shipped fast */}
+      {/* HERO — WOW built by AI shipped fast */}
       <section className="relative min-h-[92vh] flex items-center justify-center px-6">
         <div className="relative z-10 max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs text-white/70">
@@ -104,7 +177,7 @@ export default function HomePage() {
           <h1 className="mt-8 text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.02]">
             The <span className="text-white">WOW</span> website builder{" "}
             <span className="text-white/85">built by AI</span>{" "}
-            <span className="text-white">â€” shipped fast.</span>
+            <span className="text-white">— shipped fast.</span>
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-white/70 max-w-3xl mx-auto">
@@ -154,3 +227,8 @@ export default function HomePage() {
     </main>
   );
 }
+'@
+Write-Host "WROTE: $pagePath" -ForegroundColor Green
+
+Write-Host ""
+Write-Host "DONE: WOW hero restored + cursor glow added + kv.ts forced-correct." -ForegroundColor Green

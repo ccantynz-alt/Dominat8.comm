@@ -1,3 +1,8 @@
+/**
+ * marketingMachine/kv.ts
+ * In-memory KV fallback (build-safe).
+ */
+
 type KvValue = string;
 const mem = new Map<string, KvValue>();
 
@@ -20,7 +25,7 @@ export async function kvKeys(prefix: string): Promise<string[]> {
   const p = prefix ?? "";
   const out: string[] = [];
   for (const k of mem.keys()) {
-    if (!p || k.StartsWith(p)) { out.push(k); }
+    if (!p || k.startsWith(p)) out.push(k);
   }
   out.sort();
   return out;
