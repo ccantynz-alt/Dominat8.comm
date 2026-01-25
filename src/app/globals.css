@@ -624,3 +624,310 @@ a { text-underline-offset: 3px; }
 .d8-below-head { font-weight: 800; }
 .d8-below-body { margin-top: 6px; color: var(--d8-fg3); }
 
+
+/* === D8 HERO V8 TRUE CURSOR FOLLOW (D8_HERO_CURSOR_GLOW_V8_TRUEFOLLOW_2026-01-25) === */
+
+/* ===== V8 TRUE CURSOR-FOLLOW GLOW =====
+   The client component sets:
+   --d8-mx, --d8-my  (percent)
+   We position gradients at that point for real follow.
+*/
+.d8-glow-true {
+  --d8-mx: 50%;
+  --d8-my: 40%;
+}
+
+/* Overwrite/extend the V7 aura to follow pointer */
+.d8-glow-true::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 30px;
+
+  /* The first two gradients follow the cursor */
+  background:
+    radial-gradient(520px 320px at var(--d8-mx) var(--d8-my), rgba(130,90,255,0.48), transparent 62%),
+    radial-gradient(520px 320px at calc(var(--d8-mx) + 10%) calc(var(--d8-my) + 6%), rgba(40,200,255,0.34), transparent 62%),
+    radial-gradient(760px 420px at 50% 105%, rgba(255,90,200,0.18), transparent 60%);
+
+  opacity: 0.35;              /* baseline */
+  filter: blur(14px);
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+/* When pointer moves inside, class d8-glow-active turns it up */
+.d8-glow-true.d8-glow-active::before {
+  opacity: 0.95;
+}
+
+/* Keep focus-within strong too */
+.d8-glow-true:focus-within::before {
+  opacity: 0.95;
+}
+
+/* Touch devices: always subtle */
+@media (hover: none) {
+  .d8-glow-true::before { opacity: 0.60; }
+}
+
+/* ===== Below-the-fold sections ===== */
+.d8-wrap {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+.d8-logos {
+  padding: 44px 0 20px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.06);
+}
+
+.d8-logos-title {
+  color: rgba(255,255,255,0.62);
+  font-size: 12px;
+  letter-spacing: 0.28px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.d8-logos-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.d8-logo-pill {
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.12);
+  color: rgba(255,255,255,0.72);
+  font-size: 13px;
+}
+
+.d8-how {
+  padding: 54px 0;
+}
+
+.d8-lead {
+  margin-top: 10px;
+  color: rgba(255,255,255,0.72);
+  max-width: 66ch;
+  line-height: 1.6;
+}
+
+.d8-how-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 980px) {
+  .d8-how-grid { grid-template-columns: 1fr; }
+}
+
+.d8-step {
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.12);
+  padding: 18px;
+}
+
+.d8-step-num {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.d8-step-title {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.d8-step-sub {
+  margin-top: 8px;
+  color: rgba(255,255,255,0.66);
+  line-height: 1.55;
+}
+
+.d8-proof {
+  padding: 0 0 62px 0;
+}
+
+.d8-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 980px) {
+  .d8-proof-grid { grid-template-columns: 1fr; }
+}
+
+.d8-proof-card {
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(700px 260px at 15% 0%, rgba(130,90,255,0.12), transparent 60%),
+    rgba(0,0,0,0.12);
+  padding: 18px;
+}
+
+.d8-proof-kicker {
+  font-size: 12px;
+  color: rgba(255,255,255,0.60);
+  text-transform: uppercase;
+  letter-spacing: 0.28px;
+}
+
+.d8-proof-title {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.d8-proof-sub {
+  margin-top: 8px;
+  color: rgba(255,255,255,0.68);
+  line-height: 1.6;
+}
+
+.d8-final-cta {
+  padding: 0 0 56px 0;
+}
+
+.d8-final-box {
+  margin-top: 8px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background:
+    radial-gradient(900px 420px at 10% 10%, rgba(40,200,255,0.12), transparent 62%),
+    radial-gradient(900px 420px at 90% 20%, rgba(130,90,255,0.18), transparent 62%),
+    rgba(0,0,0,0.16);
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.d8-final-title {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.d8-final-sub {
+  margin-top: 6px;
+  color: rgba(255,255,255,0.70);
+  line-height: 1.6;
+}
+
+.d8-final-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.d8-footer {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: rgba(255,255,255,0.58);
+  font-size: 13px;
+}
+
+.d8-footer-link {
+  color: rgba(255,255,255,0.70);
+  text-decoration: none;
+}
+
+.d8-footer-link:hover {
+  text-decoration: underline;
+}
+
+.d8-footer-dot { opacity: 0.45; }
+
+/* ===== Hero mock blocks (preview card) ===== */
+.d8-mock {
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.14);
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.d8-mock-hero {
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  padding: 12px;
+}
+
+.d8-mock-title {
+  height: 12px;
+  width: 70%;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  margin-bottom: 10px;
+}
+
+.d8-mock-sub {
+  height: 10px;
+  width: 88%;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  margin-bottom: 8px;
+}
+
+.d8-mock-sub2 { width: 76%; opacity: 0.85; }
+
+.d8-mock-btnrow {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.d8-mock-btn {
+  height: 28px;
+  width: 42%;
+  border-radius: 12px;
+  background: rgba(130,90,255,0.22);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.d8-mock-btn2 {
+  width: 34%;
+  background: rgba(255,255,255,0.06);
+}
+
+.d8-mock-grid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.d8-mock-tile {
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+

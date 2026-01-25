@@ -1,5 +1,13 @@
 ﻿import Link from "next/link";
 import { buildMarker } from "@/src/lib/buildMarker";
+import HeroGlow from "@/src/components/marketing/HeroGlow";
+
+/**
+ * Force dynamic rendering to avoid “stale/static/cached HTML” confusion on homepage.
+ * This makes updates show up reliably after deploy.
+ */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default function HomePage() {
   return (
@@ -21,8 +29,8 @@ export default function HomePage() {
           <div className="d8-vignette" />
         </div>
 
-        {/* V7: premium glow aura wrapper (CSS-only hover/focus/always-on-touch) */}
-        <div className="d8-glow-wrap">
+        {/* V8: TRUE cursor-follow glow (tiny JS sets CSS vars) */}
+        <HeroGlow>
           <div className="d8-hero-inner">
             <header className="d8-hero-copy">
               <div className="d8-pill">
@@ -31,12 +39,14 @@ export default function HomePage() {
               </div>
 
               <h1 className="d8-h1">
-                Build a <span className="d8-grad">premium website</span> in minutes.
+                The <span className="d8-grad">wow</span> website builder.
+                <br />
+                Built by AI. Shipped fast.
               </h1>
 
               <p className="d8-sub">
-                Describe your business. Dominat8 generates the homepage, pages, layout, and structure —
-                ready to publish.
+                Describe your business. Dominat8 generates a premium homepage, pages, and structure —
+                ready to publish on your domain.
               </p>
 
               <div className="d8-cta-row">
@@ -52,6 +62,7 @@ export default function HomePage() {
                 <div className="d8-trust-item">⚡ Fast publish</div>
                 <div className="d8-trust-item">🔎 SEO-ready</div>
                 <div className="d8-trust-item">🌐 Custom domains</div>
+                <div className="d8-trust-item">🧠 Agent pipeline</div>
               </div>
             </header>
 
@@ -62,38 +73,34 @@ export default function HomePage() {
                   <span />
                   <span />
                 </div>
-                <div className="d8-card-title">Preview</div>
+                <div className="d8-card-title">Live Preview</div>
               </div>
 
               <div className="d8-card-body">
-                <div className="d8-card-kicker">AI-generated site spec</div>
-                <div className="d8-card-line" />
-                <div className="d8-card-line d8-card-line2" />
-                <div className="d8-card-line d8-card-line3" />
+                <div className="d8-card-kicker">AI-generated site blueprint</div>
 
-                <div className="d8-mini-grid">
-                  <div className="d8-mini-tile">
-                    <div className="d8-mini-head">Hero</div>
-                    <div className="d8-mini-sub">Full-screen takeover</div>
+                <div className="d8-mock">
+                  <div className="d8-mock-hero">
+                    <div className="d8-mock-title" />
+                    <div className="d8-mock-sub" />
+                    <div className="d8-mock-sub d8-mock-sub2" />
+                    <div className="d8-mock-btnrow">
+                      <div className="d8-mock-btn" />
+                      <div className="d8-mock-btn d8-mock-btn2" />
+                    </div>
                   </div>
-                  <div className="d8-mini-tile">
-                    <div className="d8-mini-head">Pages</div>
-                    <div className="d8-mini-sub">Pricing • FAQ • Contact</div>
-                  </div>
-                  <div className="d8-mini-tile">
-                    <div className="d8-mini-head">SEO</div>
-                    <div className="d8-mini-sub">Meta • Sitemap • Robots</div>
-                  </div>
-                  <div className="d8-mini-tile">
-                    <div className="d8-mini-head">Publish</div>
-                    <div className="d8-mini-sub">Vercel-ready output</div>
+                  <div className="d8-mock-grid">
+                    <div className="d8-mock-tile" />
+                    <div className="d8-mock-tile" />
+                    <div className="d8-mock-tile" />
+                    <div className="d8-mock-tile" />
                   </div>
                 </div>
 
                 <div className="d8-card-foot">
-                  <span className="d8-tag">CSS-only WOW</span>
+                  <span className="d8-tag">V8 True Glow</span>
+                  <span className="d8-tag">Full-screen</span>
                   <span className="d8-tag">Build-gated</span>
-                  <span className="d8-tag">V7 Glow</span>
                 </div>
               </div>
             </aside>
@@ -104,31 +111,95 @@ export default function HomePage() {
             <span className="d8-scroll-dot" />
             <span className="d8-scroll-text">Scroll</span>
           </div>
+        </HeroGlow>
+      </section>
+
+      {/* SITEGROUND-STYLE STRUCTURE BELOW THE FOLD */}
+      <section className="d8-logos">
+        <div className="d8-wrap">
+          <div className="d8-logos-title">Trusted by builders who want a premium look</div>
+          <div className="d8-logos-row" aria-label="Logo strip">
+            <div className="d8-logo-pill">Agencies</div>
+            <div className="d8-logo-pill">Founders</div>
+            <div className="d8-logo-pill">Local business</div>
+            <div className="d8-logo-pill">Creators</div>
+            <div className="d8-logo-pill">E-commerce</div>
+          </div>
         </div>
       </section>
 
-      {/* Below the fold (safe placeholder) */}
-      <section className="d8-below">
-        <div className="d8-below-inner">
-          <h2 className="d8-h2">What happens after the hero?</h2>
-          <p className="d8-below-sub">
-            Next we add the conversion sections: logo strip, how-it-works, proof blocks, and a KV-backed gallery.
-          </p>
+      <section className="d8-how">
+        <div className="d8-wrap">
+          <h2 className="d8-h2">How it works</h2>
+          <p className="d8-lead">Three steps. Clean output. Fast publishing.</p>
 
-          <div className="d8-below-grid">
-            <div className="d8-below-card">
-              <div className="d8-below-head">Option B</div>
-              <div className="d8-below-body">3 real examples (KV-backed gallery)</div>
+          <div className="d8-how-grid">
+            <div className="d8-step">
+              <div className="d8-step-num">1</div>
+              <div className="d8-step-title">Describe</div>
+              <div className="d8-step-sub">Tell us what you do and the vibe you want.</div>
             </div>
-            <div className="d8-below-card">
-              <div className="d8-below-head">Option C</div>
-              <div className="d8-below-body">SiteGround-style structure</div>
+            <div className="d8-step">
+              <div className="d8-step-num">2</div>
+              <div className="d8-step-title">Generate</div>
+              <div className="d8-step-sub">Agents build pages, layout, and SEO structure.</div>
             </div>
-            <div className="d8-below-card">
-              <div className="d8-below-head">V7b</div>
-              <div className="d8-below-body">True cursor-follow glow (tiny JS)</div>
+            <div className="d8-step">
+              <div className="d8-step-num">3</div>
+              <div className="d8-step-title">Publish</div>
+              <div className="d8-step-sub">Push live on your domain. Iterate instantly.</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="d8-proof">
+        <div className="d8-wrap">
+          <div className="d8-proof-grid">
+            <div className="d8-proof-card">
+              <div className="d8-proof-kicker">Premium by default</div>
+              <div className="d8-proof-title">Design that looks expensive</div>
+              <div className="d8-proof-sub">Modern lighting, depth, and typography — without a designer.</div>
+            </div>
+
+            <div className="d8-proof-card">
+              <div className="d8-proof-kicker">Built to rank</div>
+              <div className="d8-proof-title">SEO-ready structure</div>
+              <div className="d8-proof-sub">Clean metadata, headings, and page structure from day one.</div>
+            </div>
+
+            <div className="d8-proof-card">
+              <div className="d8-proof-kicker">Fast execution</div>
+              <div className="d8-proof-title">Agents do the heavy lifting</div>
+              <div className="d8-proof-sub">From spec to publish — streamlined and repeatable.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="d8-final-cta">
+        <div className="d8-wrap">
+          <div className="d8-final-box">
+            <div>
+              <div className="d8-final-title">Ready to build your best site?</div>
+              <div className="d8-final-sub">Generate a premium homepage and publish it fast.</div>
+            </div>
+            <div className="d8-final-actions">
+              <Link className="d8-btn d8-btn-primary" href="/sign-in">Start building</Link>
+              <Link className="d8-btn d8-btn-ghost" href="/pricing">See pricing</Link>
+            </div>
+          </div>
+
+          <footer className="d8-footer">
+            <div className="d8-footer-left">© {new Date().getFullYear()} Dominat8</div>
+            <div className="d8-footer-right">
+              <Link className="d8-footer-link" href="/templates">Templates</Link>
+              <span className="d8-footer-dot">•</span>
+              <Link className="d8-footer-link" href="/use-cases">Use cases</Link>
+              <span className="d8-footer-dot">•</span>
+              <Link className="d8-footer-link" href="/pricing">Pricing</Link>
+            </div>
+          </footer>
         </div>
       </section>
     </main>
