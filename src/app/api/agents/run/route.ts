@@ -1,13 +1,11 @@
 ﻿import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import { kv } from "@vercel/kv";
+import OpenAI from "openai";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-type KVLike = {
-  set: (key: string, value: any) => Promise<any>;
-};
 
 function stamp(prefix: string) {
   const d = new Date();
@@ -16,12 +14,10 @@ function stamp(prefix: string) {
 }
 
 function runId() {
-  // not crypto-grade, but fine for correlation ids
   return `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
 function isSafeAgentId(agentId: string) {
-  // allow: letters/numbers/_/-
   return /^[a-zA-Z0-9_-]+$/.test(agentId);
 }
 
@@ -38,229 +34,350 @@ async function loadPromptMarkdown(agentId: string) {
     return { ok: true as const, promptMarkdown, mdPath };
   } catch (e: any) {
     const code = e?.code || "READ_FAIL";
-    if (code === "ENOENT") {
-      return { ok: false as const, status: 404, error: `Agent prompt not found: agents/${agentId}.md`, mdPath };
-    }
-    return { ok: false as const, status: 500, error: `Failed to read agent prompt (${code}).`, mdPath };
+    return { ok: false as const, status: 404, error: `Agent markdown not found: ${agentId}.md (${code})`, mdPath };
   }
 }
 
-async function getKV(): Promise<KVLike | null> {
+function envInt(name: string, fallback: number) {
+  const v = process.env[name];
+  const n = v ? Number(v) : NaN;
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+function envStr(name: string, fallback: string) {
+  const v = process.env[name];
+  return v && v.trim().length ? v.trim() : fallback;
+}
+
+/**
+ * Convert unknown SDK objects into plain JSON if possible.
+ */
+function toPlainJson(raw: any): any {
   try {
-    // Dynamic import so build can still succeed even if kv is temporarily not wired
-    const mod: any = await import("@vercel/kv");
-    if (mod?.kv?.set) return mod.kv as KVLike;
+    if (!raw) return raw;
+    if (typeof raw.toJSON === "function") return raw.toJSON();
+  } catch {}
+  try {
+    return JSON.parse(JSON.stringify(raw));
+  } catch {
+    return raw;
+  }
+}
+
+/**
+ * Extract text from many Responses API shapes.
+ */
+function extractOutputText(rawAny: any): string | null {
+  try {
+    const raw = rawAny;
+    if (!raw) return null;
+
+    // SDK convenience fields
+    if (typeof raw.output_text === "string" && raw.output_text.trim()) return raw.output_text.trim();
+    if (typeof raw.text === "string" && raw.text.trim()) return raw.text.trim();
+
+    const out = raw.output;
+    if (Array.isArray(out)) {
+      const chunks: string[] = [];
+
+      for (const item of out) {
+        if (!item) continue;
+
+        // { type:"output_text", text:"..." }
+        if (item.type === "output_text" && typeof item.text === "string" && item.text.trim()) {
+          chunks.push(item.text.trim());
+        }
+
+        // { type:"message", content:[...] }
+        const content = item.content;
+        if (Array.isArray(content)) {
+          for (const c of content) {
+            if (!c) continue;
+
+            // { type:"output_text"|"text", text:"..." }
+            if ((c.type === "output_text" || c.type === "text") && typeof c.text === "string" && c.text.trim()) {
+              chunks.push(c.text.trim());
+            }
+
+            // { type:"text", text:{ value:"..." } }
+            const v = (c as any)?.text?.value;
+            if (typeof v === "string" && v.trim()) chunks.push(v.trim());
+          }
+        }
+
+        // Some shapes: item.message?.content?
+        const msgContent = (item as any)?.message?.content;
+        if (Array.isArray(msgContent)) {
+          for (const c of msgContent) {
+            const v = (c as any)?.text?.value;
+            if (typeof v === "string" && v.trim()) chunks.push(v.trim());
+            if (typeof (c as any)?.text === "string" && (c as any).text.trim()) chunks.push((c as any).text.trim());
+          }
+        }
+      }
+
+      const joined = chunks.join("\n").trim();
+      return joined.length ? joined : null;
+    }
+
     return null;
   } catch {
     return null;
   }
 }
 
-async function persistRun(kv: KVLike | null, projectId: string, rid: string, payload: any) {
-  if (!kv) return { ok: false as const, reason: "kv_unavailable" };
-  if (!projectId) return { ok: false as const, reason: "missing_projectId" };
+/**
+ * Deep scan fallback: find any strings in keys commonly used for text.
+ * This is a last resort so we never get "no outputText" without seeing why.
+ */
+function deepScanForText(rawAny: any): string | null {
+  try {
+    const raw = rawAny;
+    if (!raw || typeof raw !== "object") return null;
 
-  const base = `agentRun:project:${projectId}`;
-  const keyLatest = `${base}:latest`;
-  const keyById = `${base}:${rid}`;
-  const keyGlobal = `agentRun:${rid}`;
+    const seen = new Set<any>();
+    const out: string[] = [];
+    const MAX_OUT = 12000; // keep response safe
+    const MAX_DEPTH = 8;
 
-  const toStore = {
-    ...payload,
-    persistedAt: new Date().toISOString(),
-    kvKeys: { keyLatest, keyById, keyGlobal },
-  };
+    const pick = (k: string, v: any) => {
+      if (typeof v === "string" && v.trim()) {
+        // Prefer likely fields
+        if (k === "output_text" || k === "value" || k === "text" || k === "content") {
+          out.push(v.trim());
+        }
+      }
+    };
 
-  await kv.set(keyById, toStore);
-  await kv.set(keyGlobal, toStore);
-  await kv.set(keyLatest, toStore);
+    const walk = (node: any, depth: number) => {
+      if (!node || typeof node !== "object") return;
+      if (seen.has(node)) return;
+      seen.add(node);
+      if (depth > MAX_DEPTH) return;
 
-  return { ok: true as const, kvKeys: { keyLatest, keyById, keyGlobal } };
+      if (Array.isArray(node)) {
+        for (const it of node) walk(it, depth + 1);
+        return;
+      }
+
+      for (const [k, v] of Object.entries(node)) {
+        pick(k, v);
+
+        // Special: text:{value:"..."}
+        if (k === "text" && v && typeof v === "object" && typeof (v as any).value === "string") {
+          const vv = String((v as any).value || "").trim();
+          if (vv) out.push(vv);
+        }
+
+        if (typeof v === "object" && v !== null) walk(v, depth + 1);
+      }
+    };
+
+    walk(raw, 0);
+
+    const joined = out.join("\n").trim();
+    if (!joined) return null;
+    return joined.slice(0, MAX_OUT);
+  } catch {
+    return null;
+  }
 }
 
-async function callOpenAIResponses(args: {
-  apiKey: string;
-  model: string;
-  reasoningEffort: "low" | "medium" | "high";
-  maxOutputTokens: number;
-  instructions: string;
-  input: any;
-}) {
-  const res = await fetch("https://api.openai.com/v1/responses", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${args.apiKey}`,
-    },
-    body: JSON.stringify({
-      model: args.model,
-      reasoning: { effort: args.reasoningEffort },
-      max_output_tokens: args.maxOutputTokens,
-      instructions: args.instructions,
-      input: args.input,
-    }),
-  });
+/**
+ * Extract a PowerShell patch script from agent output.
+ */
+function extractPowerShellPatch(text: string | null): { ok: boolean; script: string | null; reason?: string } {
+  if (!text || !text.trim()) return { ok: false, script: null, reason: "No output text" };
 
-  const text = await res.text();
-  let json: any = null;
-  try { json = JSON.parse(text); } catch { /* ignore */ }
+  const markerStart = "BEGIN_POWERSHELL_PATCH";
+  const markerEnd = "END_POWERSHELL_PATCH";
+  const si = text.indexOf(markerStart);
+  const ei = text.indexOf(markerEnd);
 
-  if (!res.ok) {
-    return {
-      ok: false as const,
-      status: res.status,
-      error: "OpenAI request failed",
-      raw: json ?? text,
-    };
+  if (si >= 0 && ei > si) {
+    const mid = text.slice(si + markerStart.length, ei).trim();
+    if (mid.length) return { ok: true, script: mid };
   }
 
-  // Docs show `output_text` as a convenience field in examples
-  const outputText = (json && typeof json.output_text === "string") ? json.output_text : null;
+  const fence = /```(powershell|ps1)\s*([\s\S]*?)```/im;
+  const m = text.match(fence);
+  if (m && m[2] && m[2].trim().length) {
+    return { ok: true, script: m[2].trim() };
+  }
 
-  return {
-    ok: true as const,
-    status: res.status,
-    outputText,
-    raw: json,
-  };
+  return { ok: false, script: null, reason: "No powershell fenced block or markers found" };
 }
 
 export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const agentId = url.searchParams.get("agentId") || undefined;
+  const { searchParams } = new URL(req.url);
+  const agentId = searchParams.get("agentId");
+  const projectId = searchParams.get("projectId") || "demo";
 
-  const base = {
+  const info: any = {
     ok: true,
-    mode: "real-run",
+    mode: process.env.OPENAI_API_KEY ? "real-run" : "dry-run",
     stamp: stamp("AGENT_RUNNER_OK"),
+    projectId,
     now: new Date().toISOString(),
     hasOpenAIKey: Boolean(process.env.OPENAI_API_KEY),
-    model: process.env.OPENAI_MODEL || "gpt-5",
-    hint: "POST with {agentId, projectId, input} to execute via OpenAI + persist to KV (if available).",
   };
 
-  if (!agentId) {
-    return NextResponse.json(base, { status: 200, headers: { "Cache-Control": "no-store" } });
+  if (agentId) {
+    const md = await loadPromptMarkdown(agentId);
+    info.agentId = agentId;
+    info.promptLoad = md.ok ? { ok: true, mdPath: md.mdPath } : md;
   }
 
-  const loaded = await loadPromptMarkdown(agentId);
-  if (!loaded.ok) {
-    return NextResponse.json(
-      { ok: false, mode: "real-run", stamp: stamp("AGENT_RUNNER_FAIL"), agentId, error: loaded.error, mdPath: loaded.mdPath },
-      { status: loaded.status, headers: { "Cache-Control": "no-store" } }
-    );
-  }
-
-  return NextResponse.json(
-    { ...base, agentId, mdPath: loaded.mdPath, promptPreview: loaded.promptMarkdown.slice(0, 4000) },
-    { status: 200, headers: { "Cache-Control": "no-store" } }
-  );
+  return NextResponse.json(info);
 }
 
 export async function POST(req: Request) {
+  const startedAt = new Date().toISOString();
+  const rid = runId();
+
   let body: any = null;
   try {
     body = await req.json();
   } catch {
+    return NextResponse.json({ ok: false, error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const agentId = String(body?.agentId || "").trim();
+  const projectId = String(body?.projectId || "demo").trim();
+  const input = body?.input ?? {};
+
+  if (!agentId) return NextResponse.json({ ok: false, error: "Missing agentId" }, { status: 400 });
+
+  const md = await loadPromptMarkdown(agentId);
+  if (!md.ok) {
     return NextResponse.json(
-      { ok: false, mode: "real-run", stamp: stamp("AGENT_RUNNER_FAIL"), error: "Invalid JSON body." },
-      { status: 400, headers: { "Cache-Control": "no-store" } }
+      { ok: false, agentId, projectId, status: md.status, error: md.error, mdPath: (md as any).mdPath },
+      { status: md.status }
     );
   }
 
-  const agentId = String(body?.agentId || "");
-  const projectId = String(body?.projectId || "");
-  const input = body?.input ?? null;
+  const apiKey = process.env.OPENAI_API_KEY;
+  const modelName = envStr("OPENAI_MODEL", "gpt-5");
+  const reasoningEffort = envStr("OPENAI_REASONING_EFFORT", "minimal");
+  const maxOutputTokens = envInt("OPENAI_MAX_OUTPUT_TOKENS", 2400);
 
-  if (!agentId) {
-    return NextResponse.json(
-      { ok: false, mode: "real-run", stamp: stamp("AGENT_RUNNER_FAIL"), error: "Missing agentId." },
-      { status: 400, headers: { "Cache-Control": "no-store" } }
-    );
-  }
-
-  const loaded = await loadPromptMarkdown(agentId);
-  if (!loaded.ok) {
-    return NextResponse.json(
-      { ok: false, mode: "real-run", stamp: stamp("AGENT_RUNNER_FAIL"), agentId, projectId, error: loaded.error, mdPath: loaded.mdPath },
-      { status: loaded.status, headers: { "Cache-Control": "no-store" } }
-    );
-  }
-
-  const apiKey = process.env.OPENAI_API_KEY || "";
-  if (!apiKey) {
-    return NextResponse.json(
-      {
-        ok: false,
-        mode: "real-run",
-        stamp: stamp("AGENT_RUNNER_FAIL"),
-        agentId,
-        projectId,
-        error: "OPENAI_API_KEY is not set on the server environment.",
-        fix: "Set OPENAI_API_KEY in Vercel project env (Production), then redeploy.",
-      },
-      { status: 500, headers: { "Cache-Control": "no-store" } }
-    );
-  }
-
-  const model = process.env.OPENAI_MODEL || "gpt-5";
-  const reasoningEffort = (process.env.OPENAI_REASONING_EFFORT as any) || "low";
-  const maxOutputTokensRaw = process.env.OPENAI_MAX_OUTPUT_TOKENS || "900";
-  const maxOutputTokens = Math.max(64, Math.min(4000, parseInt(maxOutputTokensRaw, 10) || 900));
-
-  const rid = runId();
-  const startedAt = new Date().toISOString();
-
-  // Input to model: we keep it simple and robust
-  const modelInput = [
-    {
-      role: "user",
-      content:
-        `projectId: ${projectId || "unknown"}\n` +
-        `agentId: ${agentId}\n` +
-        `input:\n` +
-        `${JSON.stringify(input, null, 2)}\n`,
-    },
-  ];
-
-  const ai = await callOpenAIResponses({
-    apiKey,
-    model,
-    reasoningEffort: (reasoningEffort === "high" || reasoningEffort === "medium") ? reasoningEffort : "low",
-    maxOutputTokens,
-    instructions: loaded.promptMarkdown,
-    input: modelInput,
-  });
-
-  const finishedAt = new Date().toISOString();
-
-  const responsePayload = {
-    ok: ai.ok,
-    mode: "real-run",
-    stamp: stamp(ai.ok ? "AGENT_RUNNER_OK" : "AGENT_RUNNER_FAIL"),
+  const base: any = {
+    ok: true,
+    mode: apiKey ? "real-run" : "dry-run",
+    stamp: stamp("AGENT_RUNNER_OK"),
     runId: rid,
     startedAt,
-    finishedAt,
+    finishedAt: null as string | null,
     agentId,
     projectId,
-    mdPath: loaded.mdPath,
-    model: { name: model, reasoningEffort, maxOutputTokens },
+    mdPath: md.mdPath,
+    model: { name: modelName, reasoningEffort, maxOutputTokens },
     input,
-    outputText: ai.ok ? ai.outputText : null,
-    openai: ai,
+    outputText: null as string | null,
+    patch: { ok: false as boolean, script: null as string | null, reason: "not_extracted" },
+    openai: { ok: false, status: null as any, outputText: null as string | null, rawPreview: null as string | null },
+    persistence: { ok: false, kvKeys: null as any },
+    debug: { extractor: "v2_bulletproof", rawKeys: null as any, rawPreview: null as string | null }
   };
 
-  // Persist (best-effort)
-  const kv = await getKV();
-  let persisted: any = null;
-  try {
-    persisted = await persistRun(kv, projectId, rid, responsePayload);
-  } catch (e: any) {
-    persisted = { ok: false, reason: "kv_set_failed", error: String(e?.message || e) };
+  if (!apiKey) {
+    base.finishedAt = new Date().toISOString();
+    return NextResponse.json({
+      ...base,
+      openai: { ok: false, status: 0, outputText: null, rawPreview: "No OPENAI_API_KEY set; dry-run only." }
+    });
   }
 
-  return NextResponse.json(
-    { ...responsePayload, persistence: persisted },
-    { status: ai.ok ? 200 : 502, headers: { "Cache-Control": "no-store" } }
-  );
+  const client = new OpenAI({ apiKey });
+
+  const instructions = [
+    md.promptMarkdown,
+    "",
+    "If the user requests implementation, output a SINGLE PowerShell patch script inside a fenced code block:",
+    "```powershell",
+    "# ...script...",
+    "```",
+    "",
+    "If you output a patch, it must be full overwrites (no partial diffs), PowerShell-only, copy/paste safe."
+  ].join("\n");
+
+  let raw: any = null;
+
+  try {
+    raw = await client.responses.create({
+      model: modelName,
+      instructions,
+      input: String(typeof input === "string" ? input : JSON.stringify(input ?? {})),
+      max_output_tokens: maxOutputTokens,
+      reasoning: { effort: reasoningEffort as any },
+      store: true,
+      temperature: 0.6
+    } as any);
+  } catch (e: any) {
+    base.finishedAt = new Date().toISOString();
+    return NextResponse.json({
+      ...base,
+      openai: { ok: false, status: 500, outputText: null, rawPreview: String(e?.message || e) }
+    }, { status: 500 });
+  }
+
+  const rawJson = toPlainJson(raw);
+  const rawKeys = rawJson && typeof rawJson === "object" ? Object.keys(rawJson).slice(0, 60) : null;
+
+  let preview: string | null = null;
+  try {
+    preview = JSON.stringify(rawJson, null, 2);
+    if (preview.length > 8000) preview = preview.slice(0, 8000) + "\n...<truncated>...";
+  } catch {
+    preview = "rawJson not serializable";
+  }
+
+  // Try multiple extraction strategies
+  const out1 = extractOutputText(raw);
+  const out2 = out1 || extractOutputText(rawJson);
+  const out3 = out2 || deepScanForText(rawJson);
+
+  base.outputText = out3;
+  base.openai = { ok: true, status: 200, outputText: out3, rawPreview: preview };
+  base.debug = { extractor: "v2_bulletproof", rawKeys, rawPreview: preview };
+
+  const patch = extractPowerShellPatch(out3);
+  base.patch = { ok: patch.ok, script: patch.script, reason: patch.reason || null };
+
+  base.finishedAt = new Date().toISOString();
+
+  const keyLatest = `agentRun:project:${projectId}:latest`;
+  const keyById = `agentRun:project:${projectId}:${rid}`;
+  const keyGlobal = `agentRun:${rid}`;
+  const keyIds = `agentRun:project:${projectId}:ids`;
+
+  const patchLatest = `agentPatch:project:${projectId}:latest`;
+  const patchById = `agentPatch:project:${projectId}:${rid}`;
+
+  try {
+    await kv.set(keyLatest, base);
+    await kv.set(keyById, base);
+    await kv.set(keyGlobal, base);
+
+    await kv.lpush(keyIds, rid);
+    await kv.ltrim(keyIds, 0, 24);
+
+    if (patch.ok && patch.script) {
+      await kv.set(patchLatest, { runId: rid, agentId, projectId, createdAt: base.finishedAt, script: patch.script });
+      await kv.set(patchById, { runId: rid, agentId, projectId, createdAt: base.finishedAt, script: patch.script });
+    }
+
+    base.persistence = {
+      ok: true,
+      kvKeys: { keyLatest, keyById, keyGlobal, keyIds, patchLatest, patchById }
+    };
+  } catch (e: any) {
+    base.persistence = {
+      ok: false,
+      kvKeys: { keyLatest, keyById, keyGlobal, keyIds, patchLatest, patchById },
+      error: String(e?.message || e)
+    };
+  }
+
+  return NextResponse.json(base);
 }
