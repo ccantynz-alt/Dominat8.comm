@@ -1,3 +1,4 @@
+import PolishShell from "@/app/_client/PolishShell";
 import AdminShellClient from "@/components/admin/AdminShellClient";
 
 export const metadata = {

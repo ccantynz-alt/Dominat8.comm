@@ -1,3 +1,4 @@
+import PolishShell from "@/app/_client/PolishShell";
 import type { Metadata } from "next";
 
 /**
@@ -11,8 +12,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.dominat8.com"),
   title: {
-    default: "Dominat8 — The WOW website builder",
-    template: "%s — Dominat8",
+    default: "Dominat8 â€” The WOW website builder",
+    template: "%s â€” Dominat8",
   },
   description: "The WOW website builder. Built by AI. Shipped fast. Generate premium sites and publish with confidence.",
   applicationName: "Dominat8",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://www.dominat8.com",
     siteName: "Dominat8",
-    title: "Dominat8 — The WOW website builder",
+    title: "Dominat8 â€” The WOW website builder",
     description: "Built by AI. Shipped fast. Generate premium sites and publish with confidence.",
     images: [
       // Add a real OG image later. Safe placeholder path.
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dominat8 — The WOW website builder",
+    title: "Dominat8 â€” The WOW website builder",
     description: "Built by AI. Shipped fast. Generate premium sites and publish with confidence.",
     images: ["/og.png"],
   },

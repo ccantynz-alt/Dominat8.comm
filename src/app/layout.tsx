@@ -1,3 +1,4 @@
+import PolishShell from "@/app/_client/PolishShell";
 import "./globals.css";
 import type { Metadata } from "next";
 
@@ -10,7 +11,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen bg-black text-white antialiased">
-        {children}
+        {/* D8_PHASE1_LOCK_DEPLOY_STYLING_v1_20260128 */}
+        <PolishShell />
+        <div
+          id="d8-proof"
+          data-stamp="D8_PHASE1_LOCK_DEPLOY_STYLING_v1_20260128"
+          data-git={process.env.VERCEL_GIT_COMMIT_SHA ?? ""}
+          data-deploy={process.env.VERCEL_DEPLOYMENT_ID ?? ""}
+          style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", opacity: 0 }}
+        />
+        <div className="d8-app-shell"><main className="d8-app-main"><div className="d8-page d8-surface">{children}</div></main></div>
       {/* INLINE_FALLBACK_STYLES_V1
    Goal: If Tailwind/classes fail, the app still looks intentional.
    Scope: Safe baseline for cockpit + marketing + general UI elements.
