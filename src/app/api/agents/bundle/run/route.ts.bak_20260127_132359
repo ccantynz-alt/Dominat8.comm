@@ -1,0 +1,252 @@
+﻿import { NextResponse } from "next/server";
+import { kv } from "@vercel/kv";
+
+/**
+ * NOTE:
+ * This route assumes you already have single-agent run endpoint at:
+ *   POST /api/agents/run
+ * and bundle status endpoints already exist.
+ *
+ * This upgrade makes bundle runs more reliable for REAL patches:
+ * - Forces "code-only" prompt prefix
+ * - Uses higher output tokens by default
+ * - Writes bundle patch under stable keys
+ */
+
+export const dynamic = "force-dynamic";
+
+function nowIso() { return new Date().toISOString(); }
+function rid(prefix: string) { return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`; }
+
+type StepResult = {
+  agentId: string;
+  startedAt: string;
+  finishedAt?: string;
+  runId?: string;
+  status?: string;
+  patchSaved?: boolean;
+  patchMode?: string;
+  patchChars?: number;
+  error?: string;
+};
+
+const DEFAULT_AGENTS = [
+  "01_product_planner",
+  "02_architect",
+  "03_creative_director",
+  "04_backend_engineer",
+  "05_frontend_engineer",
+  "06_seo_agent",
+  "07_security_agent",
+  "08_qa_agent",
+  "09_release_manager",
+];
+
+// Strict prefix: forces only a fenced PowerShell block
+function codeOnlyPrefix(goal: string, agentId: string) {
+  return [
+    "Return ONLY a single fenced PowerShell code block.",
+    "No commentary. No markdown except the fence.",
+    "The script MUST start with:",
+    "Set-StrictMode -Version Latest",
+    '$ErrorActionPreference = "Stop"',
+    "",
+    "Constraints:",
+    "- Keep it small. Prefer 1-2 file changes only.",
+    "- Use full overwrites (Set-Content / Out-File).",
+    "- Never delete user data.",
+    "- Must be build-safe for Next.js.",
+    "",
+    `BUNDLE GOAL: ${goal}`,
+    `YOU ARE AGENT: ${agentId}`,
+    "",
+    "TASK:",
+    "Produce a patch that advances the goal with a safe, visible improvement.",
+  ].join("\n");
+}
+
+export async function POST(req: Request) {
+  let body: any = {};
+  try { body = await req.json(); } catch {}
+
+  const projectId = String(body?.projectId || "demo");
+  const goal = String(body?.goal || "Improve the product with safe, visible polish.").trim();
+  const agents: string[] = Array.isArray(body?.agents) && body.agents.length ? body.agents.map(String) : DEFAULT_AGENTS;
+
+  // Defaults tuned to avoid "incomplete"
+  const stepMaxOutputTokens = Number(body?.stepMaxOutputTokens || 2200);
+  const stepTimeoutMs = Number(body?.stepTimeoutMs || 60000);
+  const continueOnError = Boolean(body?.continueOnError ?? true);
+
+  const bundleRunId = String(body?.bundleRunId || rid("bundle"));
+  const startedAt = nowIso();
+
+  const runObj: any = {
+    ok: false,
+    projectId,
+    bundleRunId,
+    startedAt,
+    finishedAt: null,
+    goal,
+    agents,
+    stepMaxOutputTokens,
+    stepTimeoutMs,
+    continueOnError,
+    steps: [] as StepResult[],
+    scriptsCount: 0,
+    state: "running",
+  };
+
+  // Pre-seed steps list (keeps UI stable)
+  runObj.steps = agents.map((a) => ({ agentId: a, startedAt: null as any }));
+
+  const runKeyLatest = `agentBundleRun:project:${projectId}:latest`;
+  const runKeyById = `agentBundleRun:project:${projectId}:${bundleRunId}`;
+  await kv.set(runKeyLatest, runObj);
+  await kv.set(runKeyById, runObj);
+
+  const scripts: { agentId: string; runId: string; script: string; chars: number }[] = [];
+
+  for (let i = 0; i < agents.length; i++) {
+    const agentId = agents[i];
+    const stepStartedAt = nowIso();
+    runObj.steps[i] = { agentId, startedAt: stepStartedAt };
+
+    // Persist progress
+    await kv.set(runKeyLatest, runObj);
+    await kv.set(runKeyById, runObj);
+
+    try {
+      const prompt = codeOnlyPrefix(goal, agentId);
+
+      const res = await fetch(`${new URL(req.url).origin}/api/agents/run`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          projectId,
+          agentId,
+          prompt,
+          maxOutputTokens: stepMaxOutputTokens,
+        }),
+        // @ts-ignore
+        signal: AbortSignal.timeout(stepTimeoutMs),
+      });
+
+      const j = await res.json();
+      if (!j?.ok) throw new Error(String(j?.error || "AGENT_RUN_FAILED"));
+
+      const runId = String(j.runId || "");
+      const status = String(j.status || "unknown");
+      const patchSaved = Boolean(j.patchSaved);
+      const patchMode = String(j.patchMode || "");
+      const patchChars = Number(j.patchChars || 0);
+
+      runObj.steps[i] = {
+        agentId,
+        startedAt: stepStartedAt,
+        finishedAt: nowIso(),
+        runId,
+        status,
+        patchSaved,
+        patchMode,
+        patchChars,
+        ...(patchSaved ? {} : { error: "RUN_PATCH_NOT_SAVED" }),
+      };
+
+      if (!patchSaved) {
+        if (!continueOnError) throw new Error("PATCH_NOT_SAVED");
+      } else {
+        // Pull the patch text via /api/agents/patch so we can aggregate
+        const patchRes = await fetch(`${new URL(req.url).origin}/api/agents/patch?projectId=${encodeURIComponent(projectId)}&runId=${encodeURIComponent(runId)}`);
+        const pj = await patchRes.json();
+        const script = String(pj?.patch?.script || "");
+        if (script) {
+          scripts.push({ agentId, runId, script, chars: script.length });
+          runObj.scriptsCount = scripts.length;
+        }
+      }
+    } catch (e: any) {
+      runObj.steps[i] = {
+        agentId,
+        startedAt: stepStartedAt,
+        finishedAt: nowIso(),
+        error: String(e?.message || e),
+        patchSaved: false,
+        patchMode: "",
+        patchChars: 0,
+        status: "error",
+      };
+      if (!continueOnError) break;
+    }
+
+    // Persist after each step
+    await kv.set(runKeyLatest, runObj);
+    await kv.set(runKeyById, runObj);
+  }
+
+  // Build a single runnable bundle patch script (only includes real scripts, no commentary)
+  const header = [
+    "Set-StrictMode -Version Latest",
+    '$ErrorActionPreference = "Stop"',
+    "",
+    'Write-Host "=== DOMINAT8 AGENT BUNDLE PATCH ==="',
+    `Write-Host "bundleRunId: ${bundleRunId}"`,
+    `Write-Host "projectId: ${projectId}"`,
+    `Write-Host "goal: ${goal.replace(/"/g, "'")}"`,
+    `Write-Host "createdAt: ${nowIso()}"`,
+    "",
+  ].join("\r\n");
+
+  const parts: string[] = [header];
+
+  for (const s of scripts) {
+    parts.push(
+      [
+        "",
+        'Write-Host "----------------------------------------"',
+        `Write-Host "AGENT: ${s.agentId}"`,
+        `Write-Host "RUN: ${s.runId}"`,
+        'Write-Host "----------------------------------------"',
+        "",
+        s.script.trim(),
+        "",
+      ].join("\r\n")
+    );
+  }
+
+  const bundleScript = parts.join("\r\n");
+
+  const patchObj = {
+    ok: true,
+    projectId,
+    bundleRunId,
+    createdAt: nowIso(),
+    goal,
+    scriptsMeta: scripts.map(({ agentId, runId, chars }) => ({ agentId, runId, chars })),
+    script: bundleScript,
+  };
+
+  const patchKeyLatest = `agentBundlePatch:project:${projectId}:latest`;
+  const patchKeyById = `agentBundlePatch:project:${projectId}:${bundleRunId}`;
+  await kv.set(patchKeyLatest, patchObj);
+  await kv.set(patchKeyById, patchObj);
+
+  runObj.ok = true;
+  runObj.finishedAt = nowIso();
+  runObj.state = "finished";
+
+  await kv.set(runKeyLatest, runObj);
+  await kv.set(runKeyById, runObj);
+
+  return NextResponse.json({
+    ok: true,
+    projectId,
+    bundleRunId,
+    startedAt,
+    finishedAt: runObj.finishedAt,
+    scriptsCount: scripts.length,
+    state: runObj.state,
+    keys: { runKeyLatest, runKeyById, patchKeyLatest, patchKeyById },
+    steps: runObj.steps,
+  });
+}

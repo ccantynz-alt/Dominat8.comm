@@ -1,303 +1,244 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
-type AgentItem = { id: string; file: string; hint?: string };
-type RunResult = any;
+type BundleStep = {
+  agentId: string;
+  runId?: string;
+  status?: string;
+  patchSaved?: boolean;
+  patchMode?: string;
+  patchChars?: number;
+  startedAt?: string;
+  finishedAt?: string;
+  error?: string;
+};
 
-function extractPatchFromResult(result: RunResult): string {
-  const s = result?.patch?.script;
-  if (typeof s === "string" && s.trim().length) return s;
+type BundleRun = {
+  ok: boolean;
+  projectId: string;
+  bundleRunId: string;
+  startedAt: string;
+  finishedAt: string | null;
+  goal: string;
+  stepMaxOutputTokens?: number;
+  stepTimeoutMs?: number;
+  continueOnError?: boolean;
+  steps: BundleStep[];
+  scriptsCount: number;
+  state: "running" | "finished" | string;
+};
 
-  // fallback: scan outputText
-  const t = result?.outputText;
-  if (typeof t !== "string") return "";
+export default function AdminAgentsPage() {
+  const [projectId, setProjectId] = useState("demo");
+  const [goal, setGoal] = useState(
+    "Make the homepage dramatically more premium: full-viewport hero, cinematic background (CSS only), refined typography, improved CTA polish. Frontend-only and build-safe."
+  );
 
-  const markerStart = "BEGIN_POWERSHELL_PATCH";
-  const markerEnd = "END_POWERSHELL_PATCH";
-  const si = t.indexOf(markerStart);
-  const ei = t.indexOf(markerEnd);
-  if (si >= 0 && ei > si) return t.slice(si + markerStart.length, ei).trim();
+  const [isRunning, setIsRunning] = useState(false);
+  const [bundleRun, setBundleRun] = useState<BundleRun | null>(null);
+  const [error, setError] = useState<string>("");
 
-  const m = t.match(/```(powershell|ps1)\s*([\s\S]*?)```/im);
-  if (m && m[2]) return m[2].trim();
+  const canDownload = useMemo(() => {
+    return Boolean(bundleRun?.bundleRunId && bundleRun?.scriptsCount >= 1 && bundleRun?.state === "finished");
+  }, [bundleRun]);
 
-  return "";
-}
-
-function downloadText(filename: string, text: string) {
-  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-export default function AgentsAdmin() {
-  const [agents, setAgents] = useState<AgentItem[]>([]);
-  const [agentId, setAgentId] = useState<string>("");
-  const [projectId, setProjectId] = useState<string>("demo");
-  const [message, setMessage] = useState<string>("");
-  const [result, setResult] = useState<RunResult | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [history, setHistory] = useState<any[]>([]);
-  const [historyLoading, setHistoryLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    fetch("/api/agents/list", { cache: "no-store" })
-      .then(r => r.json())
-      .then(d => {
-        const list: AgentItem[] = d?.agents || [];
-        setAgents(list);
-        if (!agentId && list.length) setAgentId(list[0].id);
-      })
-      .catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function refreshHistory() {
-    setHistoryLoading(true);
-    try {
-      const res = await fetch(`/api/agents/runs?projectId=${encodeURIComponent(projectId)}&limit=10`, { cache: "no-store" });
-      const json = await res.json();
-      setHistory(json?.runs || []);
-    } catch {
-      setHistory([]);
-    } finally {
-      setHistoryLoading(false);
-    }
+  async function refreshStatus() {
+    setError("");
+    const r = await fetch(`/api/agents/bundle/status?projectId=${encodeURIComponent(projectId)}`, { cache: "no-store" });
+    const j = await r.json();
+    if (!j?.ok) throw new Error(String(j?.error || "STATUS_FAILED"));
+    setBundleRun(j.run);
+    return j.run as BundleRun;
   }
 
-  useEffect(() => {
-    refreshHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId]);
-
-  const patchScript = useMemo(() => extractPatchFromResult(result), [result]);
-
-  const patchTemplate = useMemo(() => {
-    return [
-      "You are the Builder Engineer for Dominat8.",
-      "Goal: implement the requested change as ONE PowerShell patch script.",
-      "",
-      "Rules:",
-      "- Output ONLY a PowerShell script inside a fenced block: ```powershell ... ```",
-      "- The script must create/overwrite full files (no partial diffs).",
-      "- Must be copy/paste safe for Windows PowerShell.",
-      "- Must not use bash.",
-      "- Must include verification commands at the end.",
-      "",
-      "Task:",
-      "Generate a polished, SiteGround-level homepage upgrade (hero + benefits + how-it-works + CTA).",
-      "Keep existing markers (HOME_OK / LIVE_OK / BUILD_STAMP).",
-      "",
-      "Deliverable:",
-      "A single PowerShell patch script that I can run from repo root, then deploy to Vercel."
-    ].join("\n");
-  }, []);
-
-  async function runAgent() {
-    if (!agentId) return;
-
-    setLoading(true);
-    setResult(null);
-
+  async function runBundle() {
+    setIsRunning(true);
+    setError("");
+    setBundleRun(null);
     try {
-      const res = await fetch("/api/agents/run", {
+      const r = await fetch("/api/agents/bundle/run", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          agentId,
           projectId,
-          input: {
-            message,
-            requestedOutput: "powershell_patch_script"
-          }
-        })
+          goal,
+          // tuned defaults; user can later add UI controls
+          stepMaxOutputTokens: 2200,
+          stepTimeoutMs: 60000,
+          continueOnError: true,
+        }),
       });
-
-      const json = await res.json();
-      setResult(json);
-      await refreshHistory();
+      const j = await r.json();
+      if (!j?.ok) throw new Error(String(j?.error || "BUNDLE_RUN_FAILED"));
+      setBundleRun({
+        ok: true,
+        projectId: j.projectId,
+        bundleRunId: j.bundleRunId,
+        startedAt: j.startedAt,
+        finishedAt: j.finishedAt,
+        goal,
+        steps: j.steps || [],
+        scriptsCount: j.scriptsCount || 0,
+        state: j.state || "finished",
+      });
     } catch (e: any) {
-      setResult({ ok: false, error: String(e?.message || e) });
+      setError(String(e?.message || e));
     } finally {
-      setLoading(false);
+      setIsRunning(false);
     }
   }
 
-  const applyHelper = useMemo(() => {
-    const rid = result?.runId || "";
-    const base = "https://www.dominat8.com";
-    const fn = rid ? `AGENT_PATCH_${rid}.ps1` : "AGENT_PATCH.ps1";
+  async function downloadBundlePatch() {
+    if (!bundleRun?.bundleRunId) return;
+    setError("");
+    const r = await fetch(
+      `/api/agents/bundle/patch?projectId=${encodeURIComponent(projectId)}&bundleRunId=${encodeURIComponent(bundleRun.bundleRunId)}`,
+      { cache: "no-store" }
+    );
+    const j = await r.json();
+    if (!j?.ok) throw new Error(String(j?.error || "PATCH_NOT_FOUND"));
+    const script = String(j?.patch?.script || "");
+    if (!script) throw new Error("Patch returned but patch.script empty.");
 
-    return [
-      "### APPLY LOCALLY (PowerShell) — copy/paste",
-      "",
-      `$base = "${base}"`,
-      `$projectId = "${projectId}"`,
-      rid ? `$runId = "${rid}"` : "# $runId not available yet",
-      "",
-      "# Download latest patch (or specific runId) from your API (stored in KV)",
-      rid
-        ? `Invoke-RestMethod -Uri "$base/api/agents/patch?projectId=$projectId&runId=$runId" | ConvertTo-Json -Depth 50 | Out-File -LiteralPath ".\\upgrades\\_agent_patch_payload.json" -Encoding utf8`
-        : `Invoke-RestMethod -Uri "$base/api/agents/patch?projectId=$projectId" | ConvertTo-Json -Depth 50 | Out-File -LiteralPath ".\\upgrades\\_agent_patch_payload.json" -Encoding utf8`,
-      "",
-      "# Extract script into a .ps1 file",
-      `$payload = Get-Content -LiteralPath ".\\upgrades\\_agent_patch_payload.json" -Raw | ConvertFrom-Json`,
-      `$script = $payload.patch.script`,
-      `if (-not $script) { throw "No patch script found in payload." }`,
-      `$out = ".\\upgrades\\${fn}"`,
-      `$script | Out-File -LiteralPath $out -Encoding utf8`,
-      `Write-Host "WROTE: $out"`,
-      "",
-      "# Run it (review first if you want)",
-      `powershell -ExecutionPolicy Bypass -File $out`,
-      "",
-      "# Deploy",
-      "vercel --prod --force"
-    ].join("\n");
-  }, [projectId, result]);
+    const blob = new Blob([script], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `agent_bundle_patch_${bundleRun.bundleRunId}.ps1`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  useEffect(() => {
+    // auto-refresh status every 3s while running
+    let t: any = null;
+    if (bundleRun?.state === "running") {
+      t = setInterval(() => {
+        refreshStatus().catch(() => {});
+      }, 3000);
+    }
+    return () => t && clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bundleRun?.state, projectId]);
 
   return (
-    <div style={{ padding: 24, maxWidth: 1100 }}>
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-        <h1 style={{ margin: 0 }}>Agents Admin — Patch Console</h1>
-        <a href="/" style={{ opacity: 0.7 }}>Home</a>
-      </div>
-
-      <p style={{ opacity: 0.8, marginTop: 8 }}>
-        Run an agent, extract a PowerShell patch script, and apply locally.
-      </p>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
-        <div style={{ border: "1px solid rgba(128,128,128,0.35)", borderRadius: 12, padding: 16 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: 10, alignItems: "center" }}>
-            <label>ProjectId</label>
-            <input value={projectId} onChange={e => setProjectId(e.target.value)} style={{ padding: 10, borderRadius: 10, border: "1px solid rgba(128,128,128,0.35)" }} />
-
-            <label>Agent</label>
-            <select value={agentId} onChange={e => setAgentId(e.target.value)} style={{ padding: 10, borderRadius: 10, border: "1px solid rgba(128,128,128,0.35)" }}>
-              {agents.map(a => (
-                <option key={a.id} value={a.id}>{a.id}{a.hint ? ` — ${a.hint}` : ""}</option>
-              ))}
-            </select>
-          </div>
-
-          <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <button
-              onClick={() => setMessage(patchTemplate)}
-              style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(128,128,128,0.35)", cursor: "pointer" }}
-            >
-              Use Patch Template
-            </button>
-
-            <button
-              onClick={runAgent}
-              disabled={loading}
-              style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(128,128,128,0.35)", cursor: loading ? "not-allowed" : "pointer" }}
-            >
-              {loading ? "Running…" : "Run Agent"}
-            </button>
-
-            <button
-              onClick={refreshHistory}
-              disabled={historyLoading}
-              style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(128,128,128,0.35)", cursor: historyLoading ? "not-allowed" : "pointer" }}
-            >
-              {historyLoading ? "Refreshing…" : "Refresh History"}
-            </button>
-          </div>
-
-          <div style={{ marginTop: 12 }}>
-            <textarea
-              rows={10}
-              style={{ width: "100%", padding: 12, borderRadius: 10, border: "1px solid rgba(128,128,128,0.35)" }}
-              placeholder="Tell the agent what to do… (or click Use Patch Template)"
-              value={message}
-              onChange={e => setMessage(e.target.value)}
-            />
-          </div>
+    <div className="mx-auto max-w-5xl px-6 py-10">
+      <div className="flex items-start justify-between gap-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Agents Console</h1>
+          <p className="mt-1 text-sm text-neutral-500">
+            Run the 9-agent bundle, track progress, and download the combined PowerShell patch.
+          </p>
         </div>
-
-        <div style={{ border: "1px solid rgba(128,128,128,0.35)", borderRadius: 12, padding: 16 }}>
-          <h3 style={{ marginTop: 0 }}>Recent Runs (KV)</h3>
-          <div style={{ display: "grid", gap: 8 }}>
-            {history?.length ? history.map((r, idx) => (
-              <button
-                key={r?.runId || idx}
-                onClick={() => setResult(r)}
-                style={{ textAlign: "left", padding: 10, borderRadius: 10, border: "1px solid rgba(128,128,128,0.25)", cursor: "pointer" }}
-              >
-                <div style={{ fontWeight: 600 }}>{r?.agentId || "agent"} · {r?.runId || "run"}</div>
-                <div style={{ opacity: 0.7, fontSize: 12 }}>{r?.finishedAt || r?.startedAt || ""}</div>
-              </button>
-            )) : (
-              <div style={{ opacity: 0.7 }}>No recent runs yet.</div>
-            )}
-          </div>
+        <div className="rounded-lg border bg-white px-4 py-2 text-xs text-neutral-600 shadow-sm">
+          <div className="font-semibold">Install C</div>
+          <div>Bundle Runner + Patch Download</div>
         </div>
       </div>
 
-      <div style={{ marginTop: 16, border: "1px solid rgba(128,128,128,0.35)", borderRadius: 12, padding: 16 }}>
-        <h3 style={{ marginTop: 0 }}>Result</h3>
+      <div className="mt-8 grid gap-4 rounded-xl border bg-white p-5 shadow-sm">
+        <label className="text-xs font-semibold text-neutral-700">Project ID</label>
+        <input
+          className="w-full rounded-lg border px-3 py-2 text-sm"
+          value={projectId}
+          onChange={(e) => setProjectId(e.target.value)}
+          placeholder="demo"
+        />
 
-        {!result && <div style={{ opacity: 0.7 }}>Run an agent to see output.</div>}
+        <label className="mt-2 text-xs font-semibold text-neutral-700">Bundle Goal</label>
+        <textarea
+          className="min-h-[110px] w-full rounded-lg border px-3 py-2 text-sm"
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+        />
 
-        {result && (
-          <>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <div>
-                <h4>Agent Output (text)</h4>
-                <pre style={{ whiteSpace: "pre-wrap", padding: 12, borderRadius: 10, border: "1px solid rgba(128,128,128,0.25)", minHeight: 180 }}>
-{String(result?.outputText || "(no outputText)")}
-                </pre>
+        <div className="mt-2 flex flex-wrap gap-3">
+          <button
+            className="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+            onClick={runBundle}
+            disabled={isRunning}
+          >
+            {isRunning ? "Running bundle…" : "Run 9-agent bundle"}
+          </button>
+
+          <button
+            className="rounded-lg border px-4 py-2 text-sm font-semibold disabled:opacity-60"
+            onClick={() => refreshStatus().catch((e) => setError(String(e?.message || e)))}
+          >
+            Refresh status
+          </button>
+
+          <button
+            className="rounded-lg border px-4 py-2 text-sm font-semibold disabled:opacity-60"
+            onClick={() => downloadBundlePatch().catch((e) => setError(String(e?.message || e)))}
+            disabled={!canDownload}
+            title={!canDownload ? "Run must be finished and scriptsCount >= 1" : "Download combined PowerShell patch"}
+          >
+            Download bundle patch
+          </button>
+        </div>
+
+        {error ? (
+          <div className="mt-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            {error}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="mt-8 rounded-xl border bg-white p-5 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-semibold">Bundle Status</div>
+            <div className="text-xs text-neutral-500">Shows latest bundle run for the selected project.</div>
+          </div>
+          {bundleRun ? (
+            <div className="text-xs text-neutral-600">
+              <span className="font-semibold">state:</span> {bundleRun.state} ·{" "}
+              <span className="font-semibold">scriptsCount:</span> {bundleRun.scriptsCount}
+            </div>
+          ) : (
+            <div className="text-xs text-neutral-500">No status loaded.</div>
+          )}
+        </div>
+
+        {bundleRun ? (
+          <div className="mt-4">
+            <div className="rounded-lg border bg-neutral-50 px-4 py-3 text-xs text-neutral-700">
+              <div><span className="font-semibold">bundleRunId:</span> {bundleRun.bundleRunId}</div>
+              <div><span className="font-semibold">startedAt:</span> {bundleRun.startedAt}</div>
+              <div><span className="font-semibold">finishedAt:</span> {bundleRun.finishedAt || "—"}</div>
+            </div>
+
+            <div className="mt-4 overflow-hidden rounded-lg border">
+              <div className="grid grid-cols-6 gap-0 bg-neutral-100 px-3 py-2 text-xs font-semibold text-neutral-700">
+                <div className="col-span-2">Agent</div>
+                <div>Status</div>
+                <div>Patch</div>
+                <div>Chars</div>
+                <div>RunId</div>
               </div>
 
-              <div>
-                <h4>Extracted Patch Script</h4>
-
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
-                  <button
-                    onClick={() => navigator.clipboard.writeText(patchScript || "")}
-                    disabled={!patchScript}
-                    style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(128,128,128,0.35)", cursor: patchScript ? "pointer" : "not-allowed" }}
-                  >
-                    Copy Patch
-                  </button>
-
-                  <button
-                    onClick={() => downloadText(`AGENT_PATCH_${result?.runId || "latest"}.ps1`, patchScript || "")}
-                    disabled={!patchScript}
-                    style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(128,128,128,0.35)", cursor: patchScript ? "pointer" : "not-allowed" }}
-                  >
-                    Download .ps1
-                  </button>
+              {bundleRun.steps?.map((s, idx) => (
+                <div key={idx} className="grid grid-cols-6 gap-0 border-t px-3 py-2 text-xs">
+                  <div className="col-span-2 font-semibold">{s.agentId}</div>
+                  <div className="text-neutral-700">{s.status || "—"}</div>
+                  <div className={s.patchSaved ? "text-green-700" : "text-red-700"}>
+                    {s.patchSaved ? (s.patchMode || "saved") : "no"}
+                  </div>
+                  <div className="text-neutral-700">{typeof s.patchChars === "number" ? s.patchChars : "—"}</div>
+                  <div className="truncate text-neutral-600">{s.runId || "—"}</div>
                 </div>
-
-                <pre style={{ whiteSpace: "pre-wrap", padding: 12, borderRadius: 10, border: "1px solid rgba(128,128,128,0.25)", minHeight: 180 }}>
-{patchScript || "(no patch extracted — ask the agent to output ```powershell ... ```)"}
-                </pre>
-              </div>
+              ))}
             </div>
 
-            <div style={{ marginTop: 16 }}>
-              <h4>Apply Locally Helper</h4>
-              <pre style={{ whiteSpace: "pre-wrap", padding: 12, borderRadius: 10, border: "1px solid rgba(128,128,128,0.25)" }}>
-{applyHelper}
-              </pre>
+            <div className="mt-3 text-xs text-neutral-500">
+              Tip: If patches are mostly “fallback_*”, increase tokens or simplify the goal.
             </div>
-
-            <details style={{ marginTop: 16 }}>
-              <summary style={{ cursor: "pointer" }}>Raw JSON</summary>
-              <pre style={{ whiteSpace: "pre-wrap", padding: 12, borderRadius: 10, border: "1px solid rgba(128,128,128,0.25)" }}>
-{JSON.stringify(result, null, 2)}
-              </pre>
-            </details>
-          </>
-        )}
+          </div>
+        ) : null}
       </div>
     </div>
   );
