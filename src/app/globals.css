@@ -262,7 +262,7 @@ body{
   .d8-page{ padding: 26px 18px 56px; }
 }
 
-/* Surfaces – makes every page feel intentional without changing layout */
+/* Surfaces â€“ makes every page feel intentional without changing layout */
 .d8-surface{
   border-radius: var(--d8-radius-lg);
   border: 1px solid var(--d8-border);
@@ -333,3 +333,89 @@ code, pre{
   background: rgba(0,0,0,.35);
   color: rgba(237,234,247,.88);
 }
+
+/* D8_MONSTER_SAAS_VISUAL_SYSTEM_v1_20260128 */
+:root{
+  --d8-ac1: rgba(168,85,247,1);
+  --d8-ac2: rgba(59,130,246,1);
+  --d8-border: rgba(255,255,255,.12);
+  --d8-cardA: rgba(255,255,255,.08);
+  --d8-cardB: rgba(255,255,255,.04);
+  --d8-text: rgba(237,234,247,.92);
+  --d8-muted: rgba(237,234,247,.72);
+  --d8-r20: 20px;
+  --d8-r24: 24px;
+  --d8-shadow: 0 30px 90px rgba(0,0,0,.48);
+}
+
+/* ===== MONSTER: GLOBAL TOP GLOW LINE (you will 100% see this) ===== */
+.d8-top-glowline{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 9999;
+  background: linear-gradient(90deg, rgba(168,85,247,.0), rgba(168,85,247,.95), rgba(59,130,246,.90), rgba(59,130,246,.0));
+  box-shadow: 0 0 22px rgba(168,85,247,.35), 0 0 18px rgba(59,130,246,.20);
+  opacity: .90;
+}
+
+/* ===== MONSTER: GLASS HEADER BAND (subtle but visible) ===== */
+.d8-glass-band{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.12));
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+
+/* ===== MONSTER: PAGE FRAMING (structure, not redesign) ===== */
+.d8-page{
+  position: relative;
+  padding-top: 18px;
+}
+.d8-page:before{
+  content:"";
+  position:absolute;
+  inset: 10px 6px 10px 6px;
+  border-radius: var(--d8-r24);
+  background:
+    radial-gradient(900px 540px at 15% 0%, rgba(168,85,247,.14), rgba(0,0,0,0) 60%),
+    radial-gradient(880px 560px at 85% 10%, rgba(59,130,246,.12), rgba(0,0,0,0) 62%),
+    linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.085);
+  box-shadow: 0 18px 70px rgba(0,0,0,.42);
+  pointer-events:none;
+  z-index:0;
+}
+.d8-page > *{ position: relative; z-index: 1; }
+
+/* Make generic “stack” pages feel designed */
+.d8-page > * + *{ margin-top: 18px; }
+@media (min-width: 980px){
+  .d8-page > * + *{ margin-top: 22px; }
+}
+
+/* Surfaces feel premium everywhere */
+.d8-surface{
+  border-radius: var(--d8-r24);
+  border: 1px solid var(--d8-border);
+  background: linear-gradient(180deg, var(--d8-cardA), var(--d8-cardB));
+  box-shadow: var(--d8-shadow);
+}
+
+/* Dividers (premium section separators) */
+.d8-divider{
+  height:1px;
+  width:100%;
+  background: linear-gradient(90deg, rgba(168,85,247,.0), rgba(168,85,247,.32), rgba(59,130,246,.22), rgba(59,130,246,.0));
+  border:0;
+  margin: 18px 0;
+}
+
+/* Slightly upgraded typography (safe) */
+h1,h2,h3,h4{ color: rgba(246,242,255,.96); letter-spacing:-.01em }
+p,li{ color: var(--d8-muted); line-height:1.68 }
