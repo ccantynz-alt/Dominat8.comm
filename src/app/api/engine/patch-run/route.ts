@@ -1,196 +1,132 @@
-param(
-  [Parameter(Mandatory=$true)]
-  [string]$TargetRoot
-)
+//
+// ENGINE_INSTALL_009_PATCHRUN_TS_OK_20260129_064145
+//
+import { NextResponse } from "next/server";
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+export const runtime = "nodejs";
 
-function Assert-UnderAllowlist {
-  param([Parameter(Mandatory=$true)][string]$FullPath)
+const ENGINE_INSTALL = "009";
+const ENGINE_STAMP = "ENGINE_INSTALL_009_STAMP_2026-01-28_NZ";
+const KEY_LAST = "engine:lastPatchRun";
 
-  $root = (Resolve-Path -LiteralPath $TargetRoot).Path.TrimEnd('\')
-  $full = [System.IO.Path]::GetFullPath($FullPath)
+// In-memory fallback (dev)
+let memLast: any = null;
 
-  $rootPrefix = $root + "\"
-  if (-not $full.StartsWith($rootPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
-    throw "Path is outside TargetRoot: $full"
+function withEngineHeaders(res: NextResponse) {
+  res.headers.set("x-dominat8-engine-install", ENGINE_INSTALL);
+  res.headers.set("x-dominat8-engine-stamp", ENGINE_STAMP);
+  res.headers.set("x-dominat8-engine-proof", "ENGINE_INSTALL_009_PATCHRUN_TS_OK_20260129_064145");
+  return res;
+}
+
+function kvCfg() {
+  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REST_URL || "";
+  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REST_TOKEN || "";
+  return { ok: !!url && !!token, url, token };
+}
+
+async function kvGet(key: string) {
+  const kv = kvCfg();
+  if (!kv.ok) return { ok: false, reason: "KV not configured", value: null };
+  const res = await fetch(`${kv.url}/get/${encodeURIComponent(key)}`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${kv.token}` },
+    cache: "no-store",
+  });
+  const j = await res.json().catch(() => ({}));
+  return { ok: res.ok, status: res.status, value: j?.result ?? null };
+}
+
+async function kvSet(key: string, value: any) {
+  const kv = kvCfg();
+  if (!kv.ok) return { ok: false, reason: "KV not configured" };
+
+  // Store as JSON string
+  const payload = JSON.stringify(value);
+
+  const res = await fetch(`${kv.url}/set/${encodeURIComponent(key)}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${kv.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+  });
+
+  const j = await res.json().catch(() => ({}));
+  return { ok: res.ok, status: res.status, result: j?.result ?? null };
+}
+
+function requireAdmin(req: Request) {
+  const want = process.env.ENGINE_ADMIN_TOKEN || "";
+  if (!want) return { ok: true, mode: "open" as const };
+  const got = req.headers.get("x-engine-admin-token") || "";
+  if (got && got === want) return { ok: true, mode: "token" as const };
+  return { ok: false, mode: "token" as const };
+}
+
+export async function GET() {
+  const kv = kvCfg();
+  const fromKv = await kvGet(KEY_LAST);
+  const last = fromKv.ok ? fromKv.value : memLast;
+
+  return withEngineHeaders(
+    NextResponse.json(
+      {
+        ok: true,
+        engine: { install: ENGINE_INSTALL, stamp: ENGINE_STAMP, proof: "ENGINE_INSTALL_009_PATCHRUN_TS_OK_20260129_064145" },
+        kvConfigured: kv.ok,
+        key: KEY_LAST,
+        lastPatchRun: last ?? null,
+        source: fromKv.ok ? "kv" : (memLast ? "memory" : "none"),
+      },
+      { status: 200 }
+    )
+  );
+}
+
+export async function POST(req: Request) {
+  const auth = requireAdmin(req);
+  if (!auth.ok) {
+    return withEngineHeaders(
+      NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 })
+    );
   }
 
-  $rel = $full.Substring($rootPrefix.Length)
-
-  $ok =
-    $rel.StartsWith("public\engine_proofs\", [System.StringComparison]::OrdinalIgnoreCase) -or
-    $rel.StartsWith("src\lib\engine\", [System.StringComparison]::OrdinalIgnoreCase)
-
-  if (-not $ok) {
-    throw "BLOCKED by allowlist. Attempted write: $rel"
-  }
-}
-
-function Backup-File {
-  param([Parameter(Mandatory=$true)][string]$Path)
-  if (Test-Path -LiteralPath $Path) {
-    $ts = Get-Date -Format "yyyyMMdd_HHmmss"
-    $bak = "$Path.bak_$ts"
-    Copy-Item -LiteralPath $Path -Destination $bak -Force
-    return $bak
-  }
-  return $null
-}
-
-function Write-Utf8NoBom {
-  param(
-    [Parameter(Mandatory=$true)][string]$Path,
-    [Parameter(Mandatory=$true)][string]$Content
-  )
-
-  Assert-UnderAllowlist -FullPath $Path
-
-  $dir = Split-Path -Parent $Path
-  if (-not (Test-Path -LiteralPath $dir)) {
-    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+  let payload: any = null;
+  try {
+    payload = await req.json();
+  } catch {
+    payload = null;
   }
 
-  $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-  [System.IO.File]::WriteAllText($Path, $Content, $utf8NoBom)
-}
-
-function Append-IfMissing {
-  param(
-    [Parameter(Mandatory=$true)][string]$Path,
-    [Parameter(Mandatory=$true)][string]$Marker,
-    [Parameter(Mandatory=$true)][string]$AppendBlock
-  )
-
-  Assert-UnderAllowlist -FullPath $Path
-
-  $text = Get-Content -LiteralPath $Path -Raw
-  if ($text -match [Regex]::Escape($Marker)) {
-    Write-Host "Already applied (marker found) -> $Path"
-    return $false
-  }
-
-  Backup-File -Path $Path | Out-Null
-
-  $newText = $text.TrimEnd() + "`r`n`r`n" + $AppendBlock.Trim() + "`r`n"
-  $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-  [System.IO.File]::WriteAllText($Path, $newText, $utf8NoBom)
-
-  return $true
-}
-
-if (-not (Test-Path -LiteralPath $TargetRoot)) {
-  throw "TargetRoot does not exist: $TargetRoot"
-}
-$TargetRoot = (Resolve-Path -LiteralPath $TargetRoot).Path
-Write-Host "TARGET_ROOT = $TargetRoot"
-
-# --- Ensure allowlisted folders exist ---
-$engineDir = Join-Path $TargetRoot "src\lib\engine"
-$proofDir  = Join-Path $TargetRoot "public\engine_proofs"
-
-if (-not (Test-Path -LiteralPath $engineDir)) {
-  New-Item -ItemType Directory -Path $engineDir -Force | Out-Null
-  Write-Host "CREATED: $engineDir"
-}
-if (-not (Test-Path -LiteralPath $proofDir)) {
-  New-Item -ItemType Directory -Path $proofDir -Force | Out-Null
-  Write-Host "CREATED: $proofDir"
-}
-
-# --- Paths ---
-$proofTxt = Join-Path $TargetRoot "public\engine_proofs\engine_proof_006.txt"
-$installTs = Join-Path $TargetRoot "src\lib\engine\engineInstall006.ts"
-$proof005  = Join-Path $TargetRoot "src\lib\engine\engineProof005.ts"
-
-$stamp = "ENGINE_INSTALL_006_STAMP_" + (Get-Date -Format "yyyy-MM-dd") + "_NZ"
-
-# --- Ensure engineProof005.ts exists (so we can prove semantic edits) ---
-if (-not (Test-Path -LiteralPath $proof005)) {
-  $seed = @"
-//
-// DOMINAT8 ENGINE — PROOF 005 (seeded by INSTALL 006 if missing)
-// This file exists to host future append-only semantic edits.
-//
-export const ENGINE_PROOF_005_SEEDED = true;
-"@
-  Write-Utf8NoBom -Path $proof005 -Content $seed
-  Write-Host "CREATED (seed): $proof005"
-}
-
-# --- 1) Create semantic code artifact ---
-Backup-File -Path $installTs | Out-Null
-
-$engineInstall006 = @"
-//
-// DOMINAT8 ENGINE — INSTALL 006
-// Semantic (invisible) code intelligence change within allowlist.
-//
-// Stamp: $stamp
-//
-
-export const ENGINE_INSTALL_006 = "$stamp" as const;
-
-export type EngineInstall006Info = {
-  install: "006";
-  stamp: typeof ENGINE_INSTALL_006;
-  at: string;
-};
-
-export function getEngineInstall006Info(): EngineInstall006Info {
-  return {
-    install: "006",
-    stamp: ENGINE_INSTALL_006,
-    at: new Date().toISOString(),
-  };
-}
-"@
-Write-Utf8NoBom -Path $installTs -Content $engineInstall006
-Write-Host "WROTE: $installTs"
-
-# --- 2) Append semantic proof block to engineProof005.ts ---
-$marker = "ENGINE_INSTALL_006_APPENDED_BLOCK"
-$appendBlock = @"
-//
-// $marker
-// Appended by ENGINE_INSTALL_006_PATCH.ps1
-//
-export const ENGINE_INSTALL_006_APPENDED = "$stamp" as const;
-
-export function engineInstall006Proof() {
-  return {
+  const run = {
     ok: true,
-    install: "006",
-    stamp: ENGINE_INSTALL_006_APPENDED,
     at: new Date().toISOString(),
+    runId: payload?.runId ?? ("run_" + Math.random().toString(16).slice(2)),
+    who: payload?.who ?? "unknown",
+    summary: payload?.summary ?? "patch-run",
+    filesChanged: Array.isArray(payload?.filesChanged) ? payload.filesChanged : [],
+    meta: payload?.meta ?? {},
   };
+
+  memLast = run;
+
+  const kvWrite = await kvSet(KEY_LAST, run);
+
+  return withEngineHeaders(
+    NextResponse.json(
+      {
+        ok: true,
+        stored: { memory: true, kv: kvWrite.ok ? true : false },
+        kvWrite: kvWrite.ok
+          ? { ok: true, status: kvWrite.status }
+          : { ok: false, reason: (kvWrite as any).reason ?? "kv_write_failed" },
+        run,
+        authMode: auth.mode,
+      },
+      { status: 200 }
+    )
+  );
 }
-"@
-
-$didAppend = Append-IfMissing -Path $proof005 -Marker $marker -AppendBlock $appendBlock
-if ($didAppend) {
-  Write-Host "UPDATED (append): $proof005"
-} else {
-  Write-Host "SKIPPED (already present): $proof005"
-}
-
-# --- 3) Proof-of-execution file ---
-Backup-File -Path $proofTxt | Out-Null
-
-$proofBody = @"
-DOMINAT8 ENGINE — PROOF 006
-================================
-STAMP: $stamp
-WHEN:  $([DateTime]::UtcNow.ToString("o"))
-WHERE: public\engine_proofs\engine_proof_006.txt
-
-Expected companion code:
-- src\lib\engine\engineInstall006.ts
-- src\lib\engine\engineProof005.ts (marker: $marker)
-"@
-Write-Utf8NoBom -Path $proofTxt -Content $proofBody
-Write-Host "WROTE: $proofTxt"
-
-Write-Host ""
-Write-Host "✅ ENGINE_INSTALL_006 COMPLETE."
