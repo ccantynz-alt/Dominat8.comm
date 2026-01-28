@@ -262,7 +262,7 @@ body{
   .d8-page{ padding: 26px 18px 56px; }
 }
 
-/* Surfaces Ã¢â‚¬â€œ makes every page feel intentional without changing layout */
+/* Surfaces ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ makes every page feel intentional without changing layout */
 .d8-surface{
   border-radius: var(--d8-radius-lg);
   border: 1px solid var(--d8-border);
@@ -393,7 +393,7 @@ code, pre{
 }
 .d8-page > *{ position: relative; z-index: 1; }
 
-/* Make generic â€œstackâ€ pages feel designed */
+/* Make generic Ã¢â‚¬Å“stackÃ¢â‚¬Â pages feel designed */
 .d8-page > * + *{ margin-top: 18px; }
 @media (min-width: 980px){
   .d8-page > * + *{ margin-top: 22px; }
@@ -521,5 +521,110 @@ html[data-dxl="DXL01_20260128"] .dxl-atmo__vignette {
   html[data-dxl="DXL01_20260128"] .dxl-atmo__glowA,
   html[data-dxl="DXL01_20260128"] .dxl-atmo__glowB {
     animation: none !important;
+  }
+}
+
+/* =========================================================
+   DXL-02 Surface + Depth System (DXL02_20260128)
+   - CSS-first, additive
+   - Activated only when html[data-dxl="DXL01_20260128"]
+   - Makes the entire site feel unified + upmarket
+   ========================================================= */
+
+html[data-dxl="DXL01_20260128"] {
+  --dxl-ink: rgba(246,242,255,0.92);
+  --dxl-muted: rgba(237,234,247,0.72);
+
+  --dxl-border: rgba(255,255,255,0.10);
+  --dxl-border-strong: rgba(255,255,255,0.14);
+
+  --dxl-surface-0: rgba(0,0,0,0.00);
+  --dxl-surface-1: rgba(255,255,255,0.035);
+  --dxl-surface-2: rgba(255,255,255,0.055);
+
+  --dxl-shadow-1: 0 18px 55px rgba(0,0,0,0.38);
+  --dxl-shadow-2: 0 30px 90px rgba(0,0,0,0.52);
+
+  --dxl-radius-lg: 18px;
+  --dxl-radius-xl: 22px;
+
+  --dxl-glass-blur: 10px;
+  --dxl-glass-sat: 1.10;
+}
+
+/* Optional helper classes (use later if you want) */
+html[data-dxl="DXL01_20260128"] .dxl-surface-0 {
+  background: var(--dxl-surface-0);
+}
+html[data-dxl="DXL01_20260128"] .dxl-surface-1 {
+  background: var(--dxl-surface-1);
+  border: 1px solid var(--dxl-border);
+  box-shadow: var(--dxl-shadow-1);
+  border-radius: var(--dxl-radius-lg);
+  backdrop-filter: blur(var(--dxl-glass-blur)) saturate(var(--dxl-glass-sat));
+}
+html[data-dxl="DXL01_20260128"] .dxl-surface-2 {
+  background: var(--dxl-surface-2);
+  border: 1px solid var(--dxl-border-strong);
+  box-shadow: var(--dxl-shadow-2);
+  border-radius: var(--dxl-radius-xl);
+  backdrop-filter: blur(calc(var(--dxl-glass-blur) + 2px)) saturate(calc(var(--dxl-glass-sat) + 0.05));
+}
+
+/* -----------------------------------------------------------------
+   AUTO-APPLY to your existing structure (no page rewrites)
+   Targets common shells/cards you already ship:
+   - .d8-surface
+   - marketing/admin "card-like" panels
+   ----------------------------------------------------------------- */
+
+/* Make “surface” containers feel intentional */
+html[data-dxl="DXL01_20260128"] :where(.d8-surface) {
+  border-radius: var(--dxl-radius-xl);
+  border: 1px solid var(--dxl-border);
+  box-shadow: var(--dxl-shadow-1);
+  background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.025));
+  backdrop-filter: blur(var(--dxl-glass-blur)) saturate(var(--dxl-glass-sat));
+}
+
+/* Slightly elevate nested panels/cards */
+html[data-dxl="DXL01_20260128"] :where(.d8-surface .d8-surface) {
+  border-radius: var(--dxl-radius-lg);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.22);
+  box-shadow: 0 14px 45px rgba(0,0,0,0.40);
+}
+
+/* Make generic “card-ish” elements look premium without changing layout */
+html[data-dxl="DXL01_20260128"] :where(
+  .d8-card,
+  .card,
+  [data-card],
+  .panel,
+  .pane
+) {
+  border-radius: var(--dxl-radius-lg);
+  border: 1px solid var(--dxl-border);
+  background: rgba(255,255,255,0.035);
+  box-shadow: var(--dxl-shadow-1);
+}
+
+/* Inputs/buttons: subtle upmarket treatment (only when already present) */
+html[data-dxl="DXL01_20260128"] :where(input, textarea, select) {
+  border-color: rgba(255,255,255,0.14);
+}
+html[data-dxl="DXL01_20260128"] :where(button, a) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Reduce “double atmosphere” intensity slightly (DXL world stays primary) */
+html[data-dxl="DXL01_20260128"] :where(.d8-polish-bg) {
+  opacity: 0.72;
+}
+
+/* Respect reduced motion (DXL-01 already disables drift; keep it consistent) */
+@media (prefers-reduced-motion: reduce) {
+  html[data-dxl="DXL01_20260128"] :where(.dxl-surface-1, .dxl-surface-2, .d8-surface) {
+    backdrop-filter: none !important;
   }
 }
