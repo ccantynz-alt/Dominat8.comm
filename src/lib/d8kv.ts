@@ -1,17 +1,9 @@
 type Json = any;
 
-function mustEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing env ${name}`);
-  return v;
-}
-
 function kvBase() {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
   const tok = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !tok) {
-    throw new Error("Missing KV env. Need KV_REST_API_URL + KV_REST_API_TOKEN (or UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN).");
-  }
+  if (!url || !tok) throw new Error("Missing KV env (KV_REST_API_URL+KV_REST_API_TOKEN or UPSTASH_REDIS_REST_URL+UPSTASH_REDIS_REST_TOKEN).");
   return { url, tok };
 }
 
@@ -22,7 +14,6 @@ export async function kvGetJson<T = Json>(key: string): Promise<T | null> {
     cache: "no-store",
   });
   const j = await r.json().catch(() => ({}));
-  // Upstash returns { result: ... }
   const v = j?.result;
   if (v === null || typeof v === "undefined") return null;
   if (typeof v === "string") {
@@ -36,10 +27,7 @@ export async function kvSetJson(key: string, value: Json): Promise<void> {
   const payload = typeof value === "string" ? value : JSON.stringify(value);
   const r = await fetch(`${url}/set/${encodeURIComponent(key)}`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${tok}`,
-      "Content-Type": "application/json",
-    },
+    headers: { Authorization: `Bearer ${tok}`, "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   if (!r.ok) {
@@ -48,6 +36,18 @@ export async function kvSetJson(key: string, value: Json): Promise<void> {
   }
 }
 
-export function projectVideoKey(projectId: string) {
-  return `video:project:${projectId}:latest`;
+export function d8Key_agentLatest(projectId: string) {
+  return `agentRun:project:${projectId}:latest`;
+}
+export function d8Key_agentRun(projectId: string, runId: string) {
+  return `agentRun:project:${projectId}:${runId}`;
+}
+export function d8Key_bundleLatest(projectId: string) {
+  return `bundleRun:project:${projectId}:latest`;
+}
+export function d8Key_bundleRun(projectId: string, runId: string) {
+  return `bundleRun:project:${projectId}:${runId}`;
+}
+export function d8Key_patchLatest(projectId: string) {
+  return `agentPatch:project:${projectId}:latest`;
 }
