@@ -262,7 +262,7 @@ body{
   .d8-page{ padding: 26px 18px 56px; }
 }
 
-/* Surfaces ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ makes every page feel intentional without changing layout */
+/* Surfaces ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ makes every page feel intentional without changing layout */
 .d8-surface{
   border-radius: var(--d8-radius-lg);
   border: 1px solid var(--d8-border);
@@ -393,7 +393,7 @@ code, pre{
 }
 .d8-page > *{ position: relative; z-index: 1; }
 
-/* Make generic Ã¢â‚¬Å“stackÃ¢â‚¬Â pages feel designed */
+/* Make generic ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œstackÃƒÂ¢Ã¢â€šÂ¬Ã‚Â pages feel designed */
 .d8-page > * + *{ margin-top: 18px; }
 @media (min-width: 980px){
   .d8-page > * + *{ margin-top: 22px; }
@@ -578,7 +578,7 @@ html[data-dxl="DXL01_20260128"] .dxl-surface-2 {
    - marketing/admin "card-like" panels
    ----------------------------------------------------------------- */
 
-/* Make “surface” containers feel intentional */
+/* Make â€œsurfaceâ€ containers feel intentional */
 html[data-dxl="DXL01_20260128"] :where(.d8-surface) {
   border-radius: var(--dxl-radius-xl);
   border: 1px solid var(--dxl-border);
@@ -595,7 +595,7 @@ html[data-dxl="DXL01_20260128"] :where(.d8-surface .d8-surface) {
   box-shadow: 0 14px 45px rgba(0,0,0,0.40);
 }
 
-/* Make generic “card-ish” elements look premium without changing layout */
+/* Make generic â€œcard-ishâ€ elements look premium without changing layout */
 html[data-dxl="DXL01_20260128"] :where(
   .d8-card,
   .card,
@@ -617,7 +617,7 @@ html[data-dxl="DXL01_20260128"] :where(button, a) {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Reduce “double atmosphere” intensity slightly (DXL world stays primary) */
+/* Reduce â€œdouble atmosphereâ€ intensity slightly (DXL world stays primary) */
 html[data-dxl="DXL01_20260128"] :where(.d8-polish-bg) {
   opacity: 0.72;
 }
@@ -626,5 +626,96 @@ html[data-dxl="DXL01_20260128"] :where(.d8-polish-bg) {
 @media (prefers-reduced-motion: reduce) {
   html[data-dxl="DXL01_20260128"] :where(.dxl-surface-1, .dxl-surface-2, .d8-surface) {
     backdrop-filter: none !important;
+  }
+}
+
+/* =========================================================
+   DXL-03 Motion Language (DXL03_20260128)
+   - Subtle, premium, consistent
+   - CSS-only, additive
+   - Activated only when html[data-dxl="DXL01_20260128"]
+   ========================================================= */
+
+html[data-dxl="DXL01_20260128"] {
+  /* “Premium easing” + durations */
+  --dxl-ease-out: cubic-bezier(0.16, 1, 0.30, 1);
+  --dxl-ease-in: cubic-bezier(0.40, 0, 1, 1);
+  --dxl-dur-1: 120ms;
+  --dxl-dur-2: 180ms;
+  --dxl-dur-3: 260ms;
+
+  /* Focus ring */
+  --dxl-ring: 0 0 0 3px rgba(168,85,247,0.22), 0 0 0 1px rgba(255,255,255,0.14);
+}
+
+/* Base motion: only animate safe properties */
+html[data-dxl="DXL01_20260128"] :where(
+  a, button, input, textarea, select,
+  [role="button"], [role="link"],
+  .d8-surface, .d8-card, .card, .panel, .pane,
+  .dxl-surface-1, .dxl-surface-2
+) {
+  transition-property: transform, opacity, background-color, border-color, box-shadow, filter;
+  transition-duration: var(--dxl-dur-2);
+  transition-timing-function: var(--dxl-ease-out);
+}
+
+/* Links: understated “alive” */
+html[data-dxl="DXL01_20260128"] :where(a) {
+  text-underline-offset: 3px;
+}
+html[data-dxl="DXL01_20260128"] :where(a:hover) {
+  filter: brightness(1.05);
+}
+
+/* Buttons: micro-lift (only on devices that actually hover) */
+@media (hover: hover) and (pointer: fine) {
+  html[data-dxl="DXL01_20260128"] :where(button, [role="button"], a)
+  :where(:not(.dxl-nohover)) {
+    transform: translateZ(0);
+  }
+
+  html[data-dxl="DXL01_20260128"] :where(button:hover, [role="button"]:hover) {
+    transform: translate3d(0, -1px, 0);
+    filter: brightness(1.03);
+  }
+
+  html[data-dxl="DXL01_20260128"] :where(button:active, [role="button"]:active) {
+    transform: translate3d(0, 0px, 0) scale(0.99);
+    transition-duration: var(--dxl-dur-1);
+    transition-timing-function: var(--dxl-ease-in);
+  }
+}
+
+/* Surfaces: breathe slightly on hover (very subtle) */
+@media (hover: hover) and (pointer: fine) {
+  html[data-dxl="DXL01_20260128"] :where(.d8-surface, .dxl-surface-1, .dxl-surface-2):hover {
+    box-shadow: 0 22px 70px rgba(0,0,0,0.50);
+  }
+}
+
+/* Inputs: premium focus */
+html[data-dxl="DXL01_20260128"] :where(input, textarea, select):focus {
+  outline: none;
+  box-shadow: var(--dxl-ring);
+  border-color: rgba(255,255,255,0.22);
+}
+
+/* Accessible focus for keyboard nav */
+html[data-dxl="DXL01_20260128"] :where(a, button, [role="button"], input, textarea, select):focus-visible {
+  outline: none;
+  box-shadow: var(--dxl-ring);
+}
+
+/* Motion discipline: reduce animation if user prefers */
+@media (prefers-reduced-motion: reduce) {
+  html[data-dxl="DXL01_20260128"] :where(
+    a, button, input, textarea, select,
+    [role="button"], [role="link"],
+    .d8-surface, .d8-card, .card, .panel, .pane,
+    .dxl-surface-1, .dxl-surface-2
+  ) {
+    transition: none !important;
+    animation: none !important;
   }
 }
