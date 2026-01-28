@@ -5,8 +5,8 @@ export function middleware(req: NextRequest) {
   
   const { pathname } = req.nextUrl;
   if (pathname.startsWith("/api/")) {
-    return NextResponse.next();
-  }
+    const res = NextResponse.next(); res.headers.set("x-dominat8-mw", "1"); return res;
+}
 // Do NOT rewrite/redirect routes here. Just set anti-cache headers.
   const res = NextResponse.next();
   res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
