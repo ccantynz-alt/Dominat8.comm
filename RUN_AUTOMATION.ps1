@@ -1,6 +1,7 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+# Set this to your real production URL once:
 $PROD_BASE_URL = "https://www.dominat8.io"
 
 Write-Host "=== D8 Local Automation: START ===" -ForegroundColor Yellow

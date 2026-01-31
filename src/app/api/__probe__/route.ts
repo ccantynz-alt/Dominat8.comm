@@ -7,9 +7,11 @@ export async function GET(request: Request) {
     ok: true,
     project: "dominat8.io",
     stamp: "D8_PROBE_" + now.toISOString(),
+    at: now.toISOString(),
     path: url.pathname,
-    ts: url.searchParams.get("ts") || "",
+    ts: url.searchParams.get("ts") || ""
   };
+
   return new Response(JSON.stringify(body), {
     status: 200,
     headers: {
