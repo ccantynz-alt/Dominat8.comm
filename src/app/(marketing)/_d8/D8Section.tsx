@@ -1,6 +1,9 @@
 import React from "react";
 
 export type D8SectionProps = {
+  tone?: string;
+  lead?: string;
+  eyebrow?: string;
   title?: string;
   subtitle?: string;
   children?: React.ReactNode;
@@ -8,6 +11,9 @@ export type D8SectionProps = {
 };
 
 export function D8Section(props: D8SectionProps) {
+  tone?: string;
+  lead?: string;
+  eyebrow?: string;
   const { title, subtitle, children, id } = props;
 
   // Keep server-safe: no "use client", no browser-only APIs.
