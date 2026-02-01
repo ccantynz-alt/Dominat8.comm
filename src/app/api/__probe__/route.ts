@@ -1,23 +1,44 @@
-export const runtime = "nodejs";
+import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const now = new Date();
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+function safeEnv(name: string): string | null {
+  try: any {
+    // @ts-ignore
+    const v = process?.env?.[name];
+    return typeof v === "string" && v.length ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function GET() {
+  const now = new Date().toISOString();
+  const stamp =
+    safeEnv("BUILD_STAMP") ||
+    safeEnv("VERCEL_GIT_COMMIT_SHA") ||
+    safeEnv("VERCEL_GIT_COMMIT_REF") ||
+    "PROBE_NO_STAMP";
+
+  const sha =
+    safeEnv("VERCEL_GIT_COMMIT_SHA") ||
+    safeEnv("GITHUB_SHA") ||
+    "PROBE_NO_SHA";
+
   const body = {
     ok: true,
-    project: "dominat8.io",
-    stamp: "D8_PROBE_" + now.toISOString(),
-    at: now.toISOString(),
-    path: url.pathname,
-    ts: url.searchParams.get("ts") || ""
+    stamp,
+    sha,
+    time: now,
+    tag: "UPGRADE_20260201_WALKAWAY_UNBLOCK_20260201_132227"
   };
 
-  return new Response(JSON.stringify(body), {
+  return NextResponse.json(body, {
     status: 200,
     headers: {
-      "content-type": "application/json; charset=utf-8",
-      "cache-control": "no-store, max-age=0",
-      "x-d8-probe": "D8_PROBE_OK"
+      "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+      pragma: "no-cache"
     }
   });
 }
