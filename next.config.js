@@ -13,3 +13,6 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
+// UPGRADE_20260201_CI_GREEN_20260201_172248 (already had ignoreDuringBuilds; leaving as-is)
+

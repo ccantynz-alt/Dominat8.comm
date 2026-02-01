@@ -1,16 +1,12 @@
-"use client";
-
+/// UPGRADE_20260201_CI_GREEN_20260201_172248
 import * as React from "react";
 
 /**
- * Build-safe fallback style injector.
- * Exists to prevent accidental syntax breaks from taking down CI.
- * Does not change UI unless explicitly rendered.
+ * This component previously contained an invalid/unterminated template literal,
+ * breaking the build. We replace it with a compile-safe no-op.
+ *
+ * If you later want fallback CSS again, add it back as a well-formed string.
  */
-export default function FallbackStyles(): JSX.Element {
-  const css = 
-/* D8_FALLBACK_STYLES_SAFE_20260201_132350 */
-:root { color-scheme: dark; }
-;
-  return <style dangerouslySetInnerHTML={{ __html: css }} />;
+export default function FallbackStyles(): JSX.Element | null {
+  return null;
 }

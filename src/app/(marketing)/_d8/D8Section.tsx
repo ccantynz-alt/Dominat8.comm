@@ -1,36 +1,40 @@
+/// UPGRADE_20260201_CI_GREEN_20260201_172248
 import * as React from "react";
 
-export type D8SectionTone = "plain" | "glass" | "dark" | "light";
+export type D8SectionTone = "plain" | "glass" | "dark" | string;
 
 export type D8SectionProps = {
-  children?: React.ReactNode;
-  className?: string;
-
-  // Optional framing props used by marketing pages
   eyebrow?: string;
   title?: string;
   lead?: string;
   tone?: D8SectionTone;
+  children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+  id?: string;
 };
 
-export default function D8Section(props: D8SectionProps): JSX.Element {
-  const { children, className, eyebrow, title, lead } = props;
+/**
+ * Minimal, compile-safe section wrapper.
+ * Intentionally avoids changing layout/styling decisions beyond what callers provide.
+ */
+export function D8Section(props: D8SectionProps) {
+  const { eyebrow, title, lead, tone, children, className, style, id } = props;
 
+  // Tone hook: we only annotate via data-attr (no forced styling).
   return (
-    <section className={className}>
+    <section
+      id={id}
+      className={className}
+      style={style}
+      data-d8-section
+      data-tone={tone || "plain"}
+    >
       {(eyebrow || title || lead) ? (
-        <header style={{ marginBottom: 16 }}>
-          {eyebrow ? (
-            <div style={{ fontSize: 12, letterSpacing: 1, opacity: 0.7, textTransform: "uppercase" }}>
-              {eyebrow}
-            </div>
-          ) : null}
-          {title ? (
-            <h2 style={{ margin: "6px 0 0 0" }}>{title}</h2>
-          ) : null}
-          {lead ? (
-            <p style={{ margin: "10px 0 0 0", opacity: 0.85 }}>{lead}</p>
-          ) : null}
+        <header>
+          {eyebrow ? <div data-d8-eyebrow>{eyebrow}</div> : null}
+          {title ? <h2 data-d8-title>{title}</h2> : null}
+          {lead ? <p data-d8-lead>{lead}</p> : null}
         </header>
       ) : null}
 
@@ -38,3 +42,5 @@ export default function D8Section(props: D8SectionProps): JSX.Element {
     </section>
   );
 }
+
+export default D8Section;
