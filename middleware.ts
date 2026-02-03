@@ -1,24 +1,43 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(req: NextRequest) {
-  
-  // DXL_MIDDLEWARE_ALLOW_AUTHCHECK_20260129
-  // Allow DXL admin auth-check endpoints to bypass middleware gating.
-  // This does NOT leak secrets; it only enables routing.
-  const __dxlPath = (req as any)?.nextUrl?.pathname ?? "";
-  if (__dxlPath === "/api/dxl/auth-check" || __dxlPath === "/api/__where__/dxl-auth-check") {
-    return NextResponse.next();
-  }const p = req.nextUrl.pathname;
-  const res = NextResponse.next();
+function getPresentedToken(req: NextRequest): string | null {
+  // Priority:
+  // 1) Header: x-admin-token
+  // 2) Cookie: admin_token
+  const h = req.headers.get("x-admin-token");
+  if (h && h.trim()) return h.trim();
 
-  if (p === "/__probe__" || p === "/api/__probe__") {
-    res.headers.set("Cache-Control", "no-store, max-age=0");
-    res.headers.set("Pragma", "no-cache");
-    res.headers.set("Expires", "0");
-  }
+  const c = req.cookies.get("admin_token")?.value;
+  if (c && c.trim()) return c.trim();
 
-  return res;
+  return null;
 }
 
-export const config = { matcher: ["/__probe__", "/api/__probe__"] };
+export function middleware(req: NextRequest) {
+  const url = req.nextUrl;
+
+  // Only protect admin surfaces.
+  const isAdminPath =
+    url.pathname.startsWith("/admin") ||
+    url.pathname.startsWith("/api/admin");
+
+  if (!isAdminPath) return NextResponse.next();
+
+  const expected = (process.env.ADMIN_TOKEN || "").trim();
+  if (!expected) {
+    // If ADMIN_TOKEN isn't set, refuse admin access (safe default).
+    return new NextResponse("Admin is disabled (ADMIN_TOKEN not set).", { status: 403 });
+  }
+
+  const presented = getPresentedToken(req);
+  if (presented !== expected) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/admin/:path*", "/api/admin/:path*"],
+};
