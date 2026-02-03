@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type Status = {
   ok: boolean;
@@ -45,13 +45,6 @@ function Btn(props: { onClick: () => void; children: React.ReactNode; tone?: "pr
 }
 
 export default function CockpitPage() {
-  const [token, setToken] = useState<string>("");
-  const headers = useMemo(() => {
-    const h: Record<string, string> = {};
-    if (token.trim()) h["x-admin-token"] = token.trim();
-    return h;
-  }, [token]);
-
   const [status, setStatus] = useState<Status | null>(null);
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [logs, setLogs] = useState<LogsResponse["logs"]>([]);
@@ -61,7 +54,7 @@ export default function CockpitPage() {
   const [busy, setBusy] = useState<boolean>(false);
 
   async function apiGet<T>(url: string): Promise<T> {
-    const res = await fetch(url, { headers, cache: "no-store" });
+    const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error(res.status + " " + (await res.text()));
     return (await res.json()) as T;
   }
@@ -69,7 +62,7 @@ export default function CockpitPage() {
   async function apiPost<T>(url: string, body: any): Promise<T> {
     const res = await fetch(url, {
       method: "POST",
-      headers: { ...headers, "content-type": "application/json" },
+      headers: { "content-type": "application/json" },
       body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error(res.status + " " + (await res.text()));
@@ -156,7 +149,9 @@ export default function CockpitPage() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
             <div style={{ fontSize: 18, fontWeight: 800 }}>Admin Cockpit</div>
-            <div style={{ fontSize: 13, opacity: 0.7 }}>Enqueue tasks, view queue, view logs. (Admin-only)</div>
+            <div style={{ fontSize: 13, opacity: 0.7 }}>
+              Auth is handled by cookie (<code>admin_token</code>) or header (<code>x-admin-token</code>).
+            </div>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <Btn onClick={refreshAll} tone="soft">{busy ? "Refreshing..." : "Refresh"}</Btn>
@@ -164,41 +159,29 @@ export default function CockpitPage() {
           </div>
         </div>
 
-        <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
-          <div>
-            <div style={{ fontSize: 12, opacity: 0.7 }}>Admin token (x-admin-token)</div>
-            <input
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              placeholder="Paste ADMIN_TOKEN"
-              style={{ width: "100%", padding: 10, borderRadius: 10, border: "1px solid rgba(0,0,0,0.2)" }}
-            />
+        {err && (
+          <div style={{ marginTop: 12, padding: 12, borderRadius: 12, background: "rgba(255,0,0,0.06)", border: "1px solid rgba(255,0,0,0.18)" }}>
+            <div style={{ fontWeight: 800 }}>Error</div>
+            <div style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace", fontSize: 12, whiteSpace: "pre-wrap" }}>{err}</div>
+          </div>
+        )}
+
+        <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={{ padding: 12, borderRadius: 12, border: "1px solid rgba(0,0,0,0.10)", background: "rgba(0,0,0,0.02)" }}>
+            <div style={{ fontWeight: 800, marginBottom: 8 }}>Quick actions</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              <Btn tone="primary" onClick={() => enqueue("Build Dominat8.com", cmdBuild, "Local build", false)}>Build</Btn>
+              <Btn onClick={() => enqueue("Lint Dominat8.com", cmdLint, "Local lint", true)}>Lint (no PR)</Btn>
+              <Btn onClick={() => enqueue("Typecheck Dominat8.com", cmdType, "Local typecheck", true)}>Typecheck (no PR)</Btn>
+            </div>
+            <div style={{ marginTop: 10, fontSize: 12, opacity: 0.7 }}>
+              Lint/Typecheck default to <code>noAutoPr</code>. Build allows PR if changes exist.
+            </div>
           </div>
 
-          {err && (
-            <div style={{ padding: 12, borderRadius: 12, background: "rgba(255,0,0,0.06)", border: "1px solid rgba(255,0,0,0.18)" }}>
-              <div style={{ fontWeight: 800 }}>Error</div>
-              <div style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace", fontSize: 12, whiteSpace: "pre-wrap" }}>{err}</div>
-            </div>
-          )}
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <div style={{ padding: 12, borderRadius: 12, border: "1px solid rgba(0,0,0,0.10)", background: "rgba(0,0,0,0.02)" }}>
-              <div style={{ fontWeight: 800, marginBottom: 8 }}>Quick actions</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                <Btn tone="primary" onClick={() => enqueue("Build Dominat8.com", cmdBuild, "Local build", false)}>Build</Btn>
-                <Btn onClick={() => enqueue("Lint Dominat8.com", cmdLint, "Local lint", true)}>Lint (no PR)</Btn>
-                <Btn onClick={() => enqueue("Typecheck Dominat8.com", cmdType, "Local typecheck", true)}>Typecheck (no PR)</Btn>
-              </div>
-              <div style={{ marginTop: 10, fontSize: 12, opacity: 0.7 }}>
-                Notes: Lint/Typecheck default to <code>noAutoPr</code>. Build allows PR if changes exist.
-              </div>
-            </div>
-
-            <div style={{ padding: 12, borderRadius: 12, border: "1px solid rgba(0,0,0,0.10)", background: "rgba(0,0,0,0.02)" }}>
-              <div style={{ fontWeight: 800, marginBottom: 8 }}>Status</div>
-              <pre style={{ margin: 0, fontSize: 12, overflow: "auto" }}>{JSON.stringify(status, null, 2)}</pre>
-            </div>
+          <div style={{ padding: 12, borderRadius: 12, border: "1px solid rgba(0,0,0,0.10)", background: "rgba(0,0,0,0.02)" }}>
+            <div style={{ fontWeight: 800, marginBottom: 8 }}>Status</div>
+            <pre style={{ margin: 0, fontSize: 12, overflow: "auto" }}>{JSON.stringify(status, null, 2)}</pre>
           </div>
         </div>
       </div>
