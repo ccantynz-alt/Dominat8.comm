@@ -1,0 +1,8 @@
+# Placeholder patch bundle for Mode=apply-patch
+# Replace this file with a real git-format patch when you want to use apply-patch mode.
+#
+# To generate a real patch from a known fix commit locally:
+#   git format-patch -1 <COMMIT_SHA> --stdout > .d8/patches/d8-health-fix.patch
+#
+# Or for multiple commits:
+#   git format-patch <BASE_SHA>..HEAD --stdout > .d8/patches/d8-health-fix.patch
