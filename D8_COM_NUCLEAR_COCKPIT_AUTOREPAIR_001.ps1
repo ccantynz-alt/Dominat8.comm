@@ -1,6 +1,6 @@
 # =================================================================================================
 # D8_COM_NUCLEAR_COCKPIT_AUTOREPAIR_001.ps1
-# Dominat8.com — Cockpit (/admin) + Health API + Auto-Repair (Redeploy Hook + Revalidate) + Guardrails
+# Dominat8.com â€” Cockpit (/admin) + Health API + Auto-Repair (Redeploy Hook + Revalidate) + Guardrails
 # PowerShell-only. Copy/paste safe. Creates backups. No visible public UI changes (admin-only routes).
 #
 # RUN (example):
@@ -310,7 +310,7 @@ export default function AdminPage() {
   const [busy, setBusy] = React.useState<boolean>(false);
 
   function pushLog(m: string) {
-    setLog((x) => [`[${now()}] ${m}`, ...x].slice(0, 200));
+    setLog((x) => [`[`${now()}] `${m}`, ...x].slice(0, 200));
   }
 
   async function fetchHealth() {
@@ -320,9 +320,9 @@ export default function AdminPage() {
       const res = await fetch("/api/health", { cache: "no-store" });
       const json = await res.json();
       setHealth(json);
-      pushLog(`Health ok=${json?.ok} stamp=${json?.stamp || "n/a"}`);
+      pushLog(`Health ok=`${json?.ok} stamp=`${json?.stamp || "n/a"}`);
     } catch (e: any) {
-      pushLog(`Health fetch failed: ${e?.message || e}`);
+      pushLog(`Health fetch failed: `${e?.message || e}`);
     } finally {
       setBusy(false);
     }
@@ -335,7 +335,7 @@ export default function AdminPage() {
     }
     setBusy(true);
     try {
-      pushLog(`Calling /api/repair action=${action} ...`);
+      pushLog(`Calling /api/repair action=`${action} ...`);
       const res = await fetch("/api/repair", {
         method: "POST",
         headers: {
@@ -345,10 +345,10 @@ export default function AdminPage() {
         body: JSON.stringify({ action, path })
       });
       const json = await res.json();
-      pushLog(`Repair response status=${res.status} ok=${json?.ok}`);
+      pushLog(`Repair response status=`${res.status} ok=`${json?.ok}`);
       pushLog(JSON.stringify(json).slice(0, 4000));
     } catch (e: any) {
-      pushLog(`Repair failed: ${e?.message || e}`);
+      pushLog(`Repair failed: `${e?.message || e}`);
     } finally {
       setBusy(false);
     }
