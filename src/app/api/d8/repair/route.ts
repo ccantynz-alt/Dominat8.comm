@@ -14,21 +14,11 @@ async function readJson(req: Request): Promise<any> {
 
 function requireAdmin(req: Request) {
   const expected = process.env.D8_ADMIN_KEY || "";
-  if (!expected || expected.length < 12) return { ok: false, reason: "D8_ADMIN_KEY not configured" };
   const got = req.headers.get("x-admin-key") || "";
+  if (!expected || expected.length < 12) return { ok: false, reason: "D8_ADMIN_KEY not configured" };
   if (!got) return { ok: false, reason: "Missing X-Admin-Key header" };
   if (got !== expected) return { ok: false, reason: "Invalid admin key" };
   return { ok: true };
-}
-
-async function triggerRedeploy() {
-  const hook = process.env.D8_VERCEL_DEPLOY_HOOK_URL || "";
-  if (!hook || !hook.startsWith("https://")) {
-    return { ok: false, message: "D8_VERCEL_DEPLOY_HOOK_URL not set" };
-  }
-  const res = await fetch(hook, { method: "POST" });
-  const text = await res.text().catch(() => "");
-  return { ok: res.ok, status: res.status, statusText: res.statusText, responseText: (text || "").slice(0, 2000) };
 }
 
 export async function POST(req: Request) {
@@ -37,20 +27,15 @@ export async function POST(req: Request) {
 
   const payload = await readJson(req);
   if (!payload) return badRequest("Expected JSON body");
-
   const action = (payload.action || "").toString().toLowerCase().trim();
-  if (action !== "redeploy") return badRequest("Unknown action. Supported: redeploy");
-
-  const result = await triggerRedeploy();
-  const ok = !!result?.ok;
+  if (action !== "ping") return badRequest("Unknown action. Supported: ping");
 
   return NextResponse.json({
-    ok,
-    stamp: "D8_COM_API_20260206_185436",
+    ok: true,
+    stamp: "D8_COM_HEALTH_20260206_203554",
     time: new Date().toISOString(),
-    action,
-    result
-  }, { status: ok ? 200 : 502 });
+    action: "ping"
+  }, { status: 200 });
 }
 
 export async function GET() {
