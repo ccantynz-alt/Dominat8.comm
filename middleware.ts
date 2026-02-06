@@ -37,7 +37,23 @@ function getPresentedToken(req: NextRequest): string | null {
 
 export function middleware(req: NextRequest) {
   
-  // D8_CONTROL_PLANE_BYPASS: allow ops + APIs
+  
+  // D8_MW_ARGS_BYPASS_20260206_203956 (parameter-name-safe bypass)
+  try {
+    const __req: any = (arguments as any)[0];
+    const __p: string = (__req?.nextUrl?.pathname || "");
+    if (
+      __p.startsWith("/api/") ||
+      __p.startsWith("/_next/") ||
+      __p === "/favicon.ico" ||
+      __p === "/robots.txt" ||
+      __p === "/sitemap.xml" ||
+      __p === "/admin/ops" || __p.startsWith("/admin/ops/")
+    ) {
+      return NextResponse.next();
+    }
+  } catch {}
+// D8_CONTROL_PLANE_BYPASS: allow ops + APIs
   try { if (__d8ShouldBypass(req?.nextUrl?.pathname)) return NextResponse.next(); } catch {}
 const url = req.nextUrl;
 

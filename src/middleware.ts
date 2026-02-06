@@ -4,7 +4,23 @@ import type { NextRequest } from "next/server";
 export function middleware(req: NextRequest) {
   
   
-  // === D8_ENGINE_0072B_TRUTH_AND_LEGACY ===
+  
+  // D8_MW_ARGS_BYPASS_20260206_203956 (parameter-name-safe bypass)
+  try {
+    const __req: any = (arguments as any)[0];
+    const __p: string = (__req?.nextUrl?.pathname || "");
+    if (
+      __p.startsWith("/api/") ||
+      __p.startsWith("/_next/") ||
+      __p === "/favicon.ico" ||
+      __p === "/robots.txt" ||
+      __p === "/sitemap.xml" ||
+      __p === "/admin/ops" || __p.startsWith("/admin/ops/")
+    ) {
+      return NextResponse.next();
+    }
+  } catch {}
+// === D8_ENGINE_0072B_TRUTH_AND_LEGACY ===
   const __d8_path = req.nextUrl.pathname
   const __d8_stamp = "D8_MW_TRUTH_0072B_20260128_234407"
 
