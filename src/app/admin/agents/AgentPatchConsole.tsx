@@ -166,8 +166,8 @@ export default function AgentPatchConsole() {
   const [bundlePatch, setBundlePatch] = useState<BundlePatchResponse | null>(null);
 
   const baseUrl = useMemo(() => {
-    if (typeof window === "undefined") return "https://www.dominat8.com";
-    return window.location.origin || "https://www.dominat8.com";
+    if (typeof window === "undefined") return "https://www.Dominat8.io";
+    return window.location.origin || "https://www.Dominat8.io";
   }, []);
 
   const effectiveRunId = useMemo(() => {
@@ -650,3 +650,4 @@ export default function AgentPatchConsole() {
     </div>
   );
 }
+

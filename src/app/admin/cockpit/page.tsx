@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 
@@ -138,7 +138,7 @@ export default function CockpitPage() {
     }
   }
 
-  const repo = "C:\\Temp\\FARMS\\Dominat8.com";
+  const repo = "C:\\Temp\\FARMS\\Dominat8.io";
   const cmdBuild = "Set-Location -LiteralPath '" + repo + "'; npm run build";
   const cmdLint = "Set-Location -LiteralPath '" + repo + "'; npm run lint";
   const cmdType = "Set-Location -LiteralPath '" + repo + "'; npm run typecheck";
@@ -170,9 +170,9 @@ export default function CockpitPage() {
           <div style={{ padding: 12, borderRadius: 12, border: "1px solid rgba(0,0,0,0.10)", background: "rgba(0,0,0,0.02)" }}>
             <div style={{ fontWeight: 800, marginBottom: 8 }}>Quick actions</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              <Btn tone="primary" onClick={() => enqueue("Build Dominat8.com", cmdBuild, "Local build", false)}>Build</Btn>
-              <Btn onClick={() => enqueue("Lint Dominat8.com", cmdLint, "Local lint", true)}>Lint (no PR)</Btn>
-              <Btn onClick={() => enqueue("Typecheck Dominat8.com", cmdType, "Local typecheck", true)}>Typecheck (no PR)</Btn>
+              <Btn tone="primary" onClick={() => enqueue("Build Dominat8.io", cmdBuild, "Local build", false)}>Build</Btn>
+              <Btn onClick={() => enqueue("Lint Dominat8.io", cmdLint, "Local lint", true)}>Lint (no PR)</Btn>
+              <Btn onClick={() => enqueue("Typecheck Dominat8.io", cmdType, "Local typecheck", true)}>Typecheck (no PR)</Btn>
             </div>
             <div style={{ marginTop: 10, fontSize: 12, opacity: 0.7 }}>
               Lint/Typecheck default to <code>noAutoPr</code>. Build allows PR if changes exist.

@@ -1,4 +1,4 @@
-import type { MetadataRoute } from "next";
+﻿import type { MetadataRoute } from "next";
 
 /**
  * sitemap.xml (Next metadata route)
@@ -9,7 +9,7 @@ import type { MetadataRoute } from "next";
  */
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = "https://www.dominat8.com";
+  const siteUrl = "https://www.Dominat8.io";
   const now = new Date();
 
   const urls: Array<{ url: string; lastModified: Date; changeFrequency?: any; priority?: number }> = [

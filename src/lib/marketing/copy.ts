@@ -1,8 +1,8 @@
 ﻿// src/lib/marketing/copy.ts
 export const BRAND = {
   name: "Dominat8",
-  domain: "dominat8.com",
-  url: "https://www.dominat8.com",
+  domain: "Dominat8.io",
+  url: "https://www.Dominat8.io",
   tagline: "AI website automation builder",
 };
 
@@ -76,3 +76,4 @@ export const STEPS = [
   { title: "Generate", desc: "Pages + content + components — polished, consistent, and brand-aligned." },
   { title: "Publish", desc: "SEO, sitemap, and publish artifacts — ready to ship on your domain." }
 ] as const;
+

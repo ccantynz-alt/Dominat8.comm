@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -276,7 +276,7 @@ export default function HomeClient() {
                     <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
                     <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
                   </div>
-                  <div className="text-xs text-white/55">dominat8.com</div>
+                  <div className="text-xs text-white/55">Dominat8.io</div>
                   <div className="text-xs text-white/35">secure</div>
                 </div>
 

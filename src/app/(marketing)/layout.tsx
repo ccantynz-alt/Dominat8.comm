@@ -1,4 +1,4 @@
-import PolishShell from "@/app/_client/PolishShell";
+﻿import PolishShell from "@/app/_client/PolishShell";
 import type { Metadata } from "next";
 
 /**
@@ -10,7 +10,7 @@ import type { Metadata } from "next";
  */
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.dominat8.com"),
+  metadataBase: new URL("https://www.Dominat8.io"),
   title: {
     default: "Dominat8 â€” The WOW website builder",
     template: "%s â€” Dominat8",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   applicationName: "Dominat8",
   openGraph: {
     type: "website",
-    url: "https://www.dominat8.com",
+    url: "https://www.Dominat8.io",
     siteName: "Dominat8",
     title: "Dominat8 â€” The WOW website builder",
     description: "Built by AI. Shipped fast. Generate premium sites and publish with confidence.",

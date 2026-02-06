@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import MarketingCTA from "@/src/components/marketing/MarketingCTA";
 import SeoJsonLd from "@/src/components/marketing/SeoJsonLd";
 
@@ -13,7 +13,7 @@ export default function AboutPage() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Dominat8",
-    url: "https://www.dominat8.com",
+    url: "https://www.Dominat8.io",
     description:
       "AI website automation builder for generating, optimizing, and publishing high-converting websites.",
   };

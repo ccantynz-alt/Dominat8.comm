@@ -20,7 +20,7 @@ export default function ContactPage() {
         <div className="grid gap-5 md:grid-cols-2">
           <div className="rounded-3xl bg-white/85 p-6 ring-1 ring-slate-200 shadow-sm">
             <div className="text-sm font-semibold text-slate-950">Email</div>
-            <div className="mt-2 text-sm text-slate-700">support@dominat8.com (placeholder)</div>
+            <div className="mt-2 text-sm text-slate-700">support@Dominat8.io (placeholder)</div>
 
             <div className="mt-6 text-sm font-semibold text-slate-950">Response time</div>
             <div className="mt-2 text-sm text-slate-700">We aim to reply within 24 hours.</div>
@@ -40,3 +40,4 @@ export default function ContactPage() {
     </main>
   );
 }
+

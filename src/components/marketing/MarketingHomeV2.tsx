@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 
 type AnyObj = Record<string, any>;
 
@@ -152,7 +152,7 @@ export default function MarketingHomeV2(props: {
           {(steps.length ? steps : [
             { title: "Describe your business", body: "Give the agent your niche + goal." },
             { title: "Agents build pages", body: "SEO plan, sitemap, program pages." },
-            { title: "Publish & attach domain", body: "Ship to Dominat8.com or your own domain." },
+            { title: "Publish & attach domain", body: "Ship to Dominat8.io or your own domain." },
           ]).slice(0, 12).map((st: any, idx: number) => (
             <div key={idx} className="rounded-3xl border p-6">
               <div className="text-sm opacity-60">Step {idx + 1}</div>
@@ -228,3 +228,4 @@ export default function MarketingHomeV2(props: {
     </main>
   );
 }
+

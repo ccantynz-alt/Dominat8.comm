@@ -1,0 +1,190 @@
+# RUN_AGENT_LOOP.ps1 (SCRIPT 27 - allowlist enforced)
+[CmdletBinding()]
+param(
+  [int]$LoopSleepSeconds = 2,
+  [int]$MaxAttemptsPerTask = 2,
+  [switch]$DisableAutoPr
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+
+function Ok($m){ Write-Host "✅ $m" -ForegroundColor Green }
+function Warn($m){ Write-Host "⚠️  $m" -ForegroundColor Yellow }
+
+$Repo = "C:\Temp\FARMS\Dominat8.com"
+Set-Location -LiteralPath $Repo
+if (-not (Test-Path -LiteralPath ".\package.json")) { throw "Not in repo: $Repo" }
+
+$git = (Get-Command git -ErrorAction Stop).Source
+
+$queuePath = Join-Path $Repo ".d8\agent-queue.json"
+$statePath = Join-Path $Repo ".d8\agent-state.json"
+$logDir    = Join-Path $Repo ".d8\logs"
+$autoPr    = Join-Path $Repo ".d8\scripts\AGENT_AUTO_PR_IF_CHANGED.ps1"
+$allowlist = Join-Path $Repo ".d8\agent-allowlist.json"
+
+if (-not (Test-Path -LiteralPath $queuePath)) { throw "Queue not found: $queuePath" }
+if (-not (Test-Path -LiteralPath $statePath)) { throw "State not found: $statePath" }
+if (-not (Test-Path -LiteralPath $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+if (-not (Test-Path -LiteralPath $allowlist)) { throw "Allowlist not found: $allowlist" }
+
+function Get-AllowPrefixes {
+  $j = Get-Content -LiteralPath $allowlist -Raw | ConvertFrom-Json
+  $arr = @()
+  foreach ($p in ($j.allowedPaths | ForEach-Object { [string]$_ })) {
+    $pp = $p.Replace("\","/").Trim()
+    if ($pp -and -not $pp.EndsWith("/")) { $pp += "/" }
+    if ($pp) { $arr += $pp }
+  }
+  return $arr
+}
+
+function Get-ChangedFiles {
+  try {
+    $files = & $git diff --name-only
+    if (-not $files) { return @() }
+    return ($files -split "
+" | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+  } catch { return @() }
+}
+
+function Is-AllowedFile([string]$f, [string[]]$prefixes) {
+  $n = $f.Replace("\","/").Trim()
+  foreach ($p in $prefixes) {
+    if ($n.StartsWith($p, [System.StringComparison]::OrdinalIgnoreCase)) { return $true }
+  }
+  return $false
+}
+
+Ok "AGENT LOOP LOCKED PWD: C:\Temp\FARMS\Dominat8.com"
+Ok "Allowlist: $allowlist"
+
+# Mark loop active
+$state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
+$state.loopActive = $true
+$state.lastRunUtc = (Get-Date).ToUniversalTime().ToString("o")
+($state | ConvertTo-Json -Depth 6) | Out-File -LiteralPath $statePath -Encoding UTF8
+
+while ($true) {
+  $json = Get-Content -LiteralPath $queuePath -Raw | ConvertFrom-Json
+
+  $next = $null
+  foreach ($t in $json.queue) {
+    if ($t.status -eq "queued") { $next = $t; break }
+  }
+
+  if (-not $next) { Start-Sleep -Seconds $LoopSleepSeconds; continue }
+
+  $taskId = [string]$next.id
+  $title  = [string]$next.title
+  $cmd    = [string]$next.command
+
+  $noAutoPr = $false
+  try { if ($null -ne $next.noAutoPr -and [bool]$next.noAutoPr) { $noAutoPr = $true } } catch { $noAutoPr = $false }
+
+  $logPath = Join-Path $logDir ("task_" + $taskId + "_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".log")
+  "===== TASK $taskId : $title =====" | Out-File -LiteralPath $logPath -Encoding UTF8
+  "UTC START: 2026-02-03T03:38:29.8123036Z" | Out-File -LiteralPath $logPath -Encoding UTF8 -Append
+  "COMMAND: $cmd" | Out-File -LiteralPath $logPath -Encoding UTF8 -Append
+
+  # status -> running
+  foreach ($t in $json.queue) {
+    if ($t.id -eq $taskId) {
+      $t.status = "running"
+      $t.attempts = [int]$t.attempts + 1
+      $t.startedUtc = (Get-Date).ToUniversalTime().ToString("o")
+    }
+  }
+  ($json | ConvertTo-Json -Depth 10) | Out-File -LiteralPath $queuePath -Encoding UTF8
+
+  # execute task
+  $exitCode = 0
+  try {
+    $p = Start-Process -FilePath "powershell.exe" -ArgumentList @(
+      "-NoProfile","-ExecutionPolicy","Bypass",
+      "-Command", $cmd
+    ) -Wait -PassThru -NoNewWindow -RedirectStandardOutput $logPath -RedirectStandardError $logPath
+    $exitCode = $p.ExitCode
+  } catch {
+    $exitCode = 1
+    ($_ | Out-String) | Out-File -LiteralPath $logPath -Encoding UTF8 -Append
+  }
+
+  "UTC END: 2026-02-03T03:38:29.8213081Z" | Out-File -LiteralPath $logPath -Encoding UTF8 -Append
+  "EXIT CODE: $exitCode" | Out-File -LiteralPath $logPath -Encoding UTF8 -Append
+
+  # Allowlist enforcement (only if task succeeded)
+  $blocked = @()
+  if ($exitCode -eq 0) {
+    $prefixes = Get-AllowPrefixes
+    $changed = Get-ChangedFiles
+    foreach ($f in $changed) {
+      if (-not (Is-AllowedFile -f $f -prefixes $prefixes)) { $blocked += $f }
+    }
+
+    if ($blocked.Count -gt 0) {
+      "ALLOWLIST BLOCKED FILES:" | Out-File -LiteralPath $logPath -Encoding UTF8 -Append
+      ($blocked -join "
+") | Out-File -LiteralPath $logPath -Encoding UTF8 -Append
+
+      Warn "Blocked task $taskId: changed files outside allowlist. Resetting working tree..."
+      & $git reset --hard | Out-Null
+
+      $exitCode = 42  # special: blocked paths
+      "FORCED FAIL: blocked_paths" | Out-File -LiteralPath $logPath -Encoding UTF8 -Append
+    }
+  }
+
+  # reload + finalize
+  $json2 = Get-Content -LiteralPath $queuePath -Raw | ConvertFrom-Json
+  foreach ($t in $json2.queue) {
+    if ($t.id -eq $taskId) {
+      if ($exitCode -eq 0) {
+        $t.status = "done"
+        $t.finishedUtc = (Get-Date).ToUniversalTime().ToString("o")
+        $t.result = "ok"
+      } else {
+        if ($exitCode -eq 42) {
+          $t.status = "failed"
+          $t.finishedUtc = (Get-Date).ToUniversalTime().ToString("o")
+          $t.result = "blocked_paths"
+        } elseif ([int]$t.attempts -ge $MaxAttemptsPerTask) {
+          $t.status = "failed"
+          $t.finishedUtc = (Get-Date).ToUniversalTime().ToString("o")
+          $t.result = "failed_exit_$exitCode"
+        } else {
+          $t.status = "queued"
+          $t.result = "retry_exit_$exitCode"
+        }
+      }
+      $t.logPath = $logPath
+    }
+  }
+  ($json2 | ConvertTo-Json -Depth 10) | Out-File -LiteralPath $queuePath -Encoding UTF8
+
+  # state update
+  $state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
+  $state.lastRunUtc = (Get-Date).ToUniversalTime().ToString("o")
+  $state.lastTaskId = $taskId
+  $state.lastResult = "exit_$exitCode"
+  ($state | ConvertTo-Json -Depth 6) | Out-File -LiteralPath $statePath -Encoding UTF8
+
+  if ($exitCode -eq 0) { Ok "Task OK: $taskId" } else { Warn "Task failed: $taskId (exit $exitCode). See $logPath" }
+
+  # Auto-PR (only if not disabled, not opted out, not blocked, and repo dirty)
+  if (-not $DisableAutoPr -and -not $noAutoPr -and $exitCode -eq 0 -and (Test-Path -LiteralPath $autoPr)) {
+    $porcelain = & $git status --porcelain
+    if ($porcelain) {
+      Ok "Repo has changes; attempting auto-PR..."
+      try {
+        & "powershell.exe" -NoProfile -ExecutionPolicy Bypass -File $autoPr 2>&1 | Tee-Object -FilePath $logPath -Append | Out-Host
+      } catch {
+        Warn "Auto-PR failed."
+        ($_ | Out-String) | Out-File -LiteralPath $logPath -Encoding UTF8 -Append
+      }
+    }
+  }
+
+  Start-Sleep -Seconds $LoopSleepSeconds
+}

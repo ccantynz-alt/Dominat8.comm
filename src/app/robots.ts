@@ -1,4 +1,4 @@
-import type { MetadataRoute } from "next";
+﻿import type { MetadataRoute } from "next";
 
 /**
  * robots.txt (Next metadata route)
@@ -11,7 +11,7 @@ import type { MetadataRoute } from "next";
  */
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = "https://www.dominat8.com";
+  const siteUrl = "https://www.Dominat8.io";
 
   return {
     rules: [

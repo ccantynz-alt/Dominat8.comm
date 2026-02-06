@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
+﻿/* eslint-disable react/no-unescaped-entities */
 export const dynamic = "force-static";
 
 type BuildInfo = {
@@ -415,7 +415,7 @@ export default function HomePage() {
                   <span style={styles.dot("rgba(34,197,94,0.85)")} />
                 </div>
                 <div style={{ fontSize: 12, opacity: 0.82, fontWeight: 800 }}>
-                  dominat8.com
+                  Dominat8.io
                 </div>
               </div>
 

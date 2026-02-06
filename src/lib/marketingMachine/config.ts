@@ -1,4 +1,4 @@
-export interface MarketingMachineConfig {
+﻿export interface MarketingMachineConfig {
   enabled: boolean;
   autoPublish: boolean;
   approvalRequired: boolean;
@@ -39,7 +39,7 @@ export function getMarketingMachineConfig(): MarketingMachineConfig {
     enabled: envBool("MARKETING_MACHINE_ENABLED", false),
     autoPublish: envBool("MARKETING_AUTO_PUBLISH", false),
     approvalRequired: envBool("MARKETING_APPROVAL_REQUIRED", true),
-    assetBaseUrl: envStr("MARKETING_ASSET_BASE_URL", "https://www.dominat8.com"),
+    assetBaseUrl: envStr("MARKETING_ASSET_BASE_URL", "https://www.Dominat8.io"),
     adminToken: process.env.ADMIN_TOKEN || undefined,
 
     kvRestApiUrl: kvRestApiUrl ? kvRestApiUrl : undefined,
