@@ -1,0 +1,14 @@
+{
+    "ops":  [
+                {
+                    "path":  "src/app/builder/page.tsx",
+                    "op":  "replaceInFile",
+                    "note":  "Autopilot keepalive touch",
+                    "replace":  "Mega #4 next: (autopilot progressing) ",
+                    "find":  "Mega #4 next:"
+                }
+            ],
+    "prompt":  "Finish pass: tighten homepage copy and CTA. Keep current design. Add pricing link if missing.",
+    "id":  "PP_20260210_000429",
+    "createdUtc":  "2026-02-09T11:04:29.5717280Z"
+}
