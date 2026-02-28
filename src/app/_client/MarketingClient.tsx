@@ -111,15 +111,18 @@ export function FAQItem({ q, a }: { q: string; a: string }) {
 
   return (
     <div
-      className="rounded-2xl border border-white/[0.10] bg-white/[0.02] transition-colors hover:border-white/[0.16]"
+      className="group relative overflow-hidden rounded-2xl border border-white/[0.12] bg-white/[0.04] backdrop-blur-xl transition-all hover:border-white/[0.20] hover:bg-white/[0.06]"
     >
+      {/* Glass top sheen */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.10] to-transparent" />
+
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
       >
         <span className="text-[15px] font-semibold text-white/90">{q}</span>
         <span
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.04] text-sm text-white/60 transition-transform"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/[0.14] bg-white/[0.06] text-sm text-white/60 shadow-inner shadow-white/5 transition-transform"
           style={{ transform: open ? "rotate(45deg)" : "rotate(0deg)" }}
         >
           +
@@ -133,7 +136,7 @@ export function FAQItem({ q, a }: { q: string; a: string }) {
           transition: "max-height 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease",
         }}
       >
-        <div ref={bodyRef} className="px-6 pb-5 text-sm leading-relaxed text-white/60">
+        <div ref={bodyRef} className="px-6 pb-5 text-sm leading-relaxed text-white/55">
           {a}
         </div>
       </div>
