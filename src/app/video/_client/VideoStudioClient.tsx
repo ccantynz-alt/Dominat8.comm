@@ -169,6 +169,7 @@ export default function VideoStudioClient() {
     let t0 = performance.now();
 
     function tick() {
+      if (!ctx) return;
       const elapsed = (performance.now() - t0) / 1000;
       let acc = 0;
       let idx = 0;
