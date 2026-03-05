@@ -128,7 +128,11 @@ export default function Page() {
 
   const [scheduleLocal, setScheduleLocal] = useState(""); // datetime-local
 
-  const headers = useMemo((): Record<string, string> => (token ? { "x-admin-token": token } : {}), [token]);
+  const headers = useMemo(() => {
+    const h: Record<string, string> = {};
+    if (token) h["x-admin-token"] = token;
+    return h;
+  }, [token]);
 
   async function refresh() {
     setErr(null);

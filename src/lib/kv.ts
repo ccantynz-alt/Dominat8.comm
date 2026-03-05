@@ -10,8 +10,6 @@
  * If kv cannot be loaded, we throw a clear error at runtime.
  */
 
-/* eslint-disable no-undef */
-
 function loadVercelKv(): any | null {
   try {
     const mod = require("@vercel/kv");
