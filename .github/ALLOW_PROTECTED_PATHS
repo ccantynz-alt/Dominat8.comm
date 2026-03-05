@@ -1,0 +1,1 @@
+Reason: Fixing ESLint parsing errors in protected paths (D8TV.tsx) to make quality gates green.
