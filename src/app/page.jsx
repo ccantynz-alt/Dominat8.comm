@@ -1,6 +1,6 @@
 ﻿import Link from "next/link";
-import { buildMarker } from "@/src/lib/buildMarker";
-import HeroGlow from "@/src/components/marketing/HeroGlow";
+import { BUILD_MARKER } from "@/lib/buildMarker";
+import HeroGlow from "@/components/marketing/HeroGlow";
 
 /**
  * Force dynamic rendering to avoid “stale/static/cached HTML” confusion on homepage.
@@ -14,7 +14,7 @@ export default function HomePage() {
     <main className="d8-page">
       {/* Deploy-proof marker (view-source / curl grep friendly) */}
       <span className="d8-marker" aria-hidden="true">
-        {buildMarker()}
+        {BUILD_MARKER}
       </span>
 
       {/* FULL-SCREEN HERO TAKEOVER */}
