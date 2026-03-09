@@ -1,395 +1,222 @@
-// === D8_AUTOREPAIR_DEMO_START ===
-// Intentionally missing import to demonstrate Auto Repair fixing a build.
-// This produces a deterministic "Module not found" error with zero UI impact.
-import AutoRepairDemoWidget from "./_client/AutoRepairDemoWidget";
-// === D8_AUTOREPAIR_DEMO_END ===
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+import Link from "next/link";
+import HeroGlow from "@/components/HeroGlow";
 
 export default function HomePage() {
-  // D8: Keep this intentionally simple and robust.
-  // The real "locked hero" visuals live in the rendered markup below
-  // (inline styles so it can't go plain if Tailwind fails).
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background:
-          "radial-gradient(1200px 800px at 65% 5%, rgba(168,85,247,0.22), rgba(0,0,0,0) 60%)," +
-          " radial-gradient(900px 700px at 15% 20%, rgba(59,130,246,0.14), rgba(0,0,0,0) 62%)," +
-          " linear-gradient(180deg, #07070B 0%, #07070B 40%, #05050A 100%)",
-        color: "#EDEAF7",
-        fontFamily:
-          "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji'",
-        padding: "28px 16px 56px",
-      }}
-    >
-      <div style={{ width: "100%", maxWidth: 1160, margin: "0 auto" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-            padding: "10px 0 22px",
-          }}
-        >
-          <a
-            href="/"
-            aria-label="Dominat8 Home"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              textDecoration: "none",
-              color: "#F3EEFF",
-            }}
-          >
-            <div
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 12,
-                background:
-                  "linear-gradient(135deg, rgba(168,85,247,0.95), rgba(59,130,246,0.75))",
-                boxShadow:
-                  "0 10px 30px rgba(168,85,247,0.25), 0 10px 30px rgba(59,130,246,0.12)",
-                border: "1px solid rgba(255,255,255,0.18)",
-              }}
-            />
-            <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
-              <div
-                style={{
-                  fontSize: 13,
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
-                  opacity: 0.9,
-                  fontWeight: 700,
-                }}
-              >
-                Dominat8
+    <main>
+      {/* ── Hero ──────────────────────────────── */}
+      <section className="hero">
+        <div className="hero-orb hero-orb-a" aria-hidden="true" />
+        <div className="hero-orb hero-orb-b" aria-hidden="true" />
+        <div className="hero-grid" aria-hidden="true" />
+
+        <HeroGlow className="relative z-10 flex flex-col items-center">
+          <div className="hero-split flex flex-col lg:flex-row items-center gap-12 max-w-6xl mx-auto">
+            {/* Copy */}
+            <div className="flex-1 text-center lg:text-left">
+              <div className="pill mb-6">
+                <span className="pill-dot" />
+                <span>Dominat8 — AI Website Builder</span>
               </div>
-              <div style={{ fontSize: 12, opacity: 0.7, marginTop: 3 }}>
-                AI website builder for conversion-first sites
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05]">
+                The{" "}
+                <span className="bg-gradient-to-r from-accent-purple to-accent-blue bg-clip-text text-transparent">
+                  wow
+                </span>{" "}
+                website builder.
+                <br />
+                Built by AI. Shipped fast.
+              </h1>
+
+              <p className="mt-5 text-lg leading-relaxed text-white/70 max-w-lg">
+                Describe your business. Dominat8 generates a premium homepage,
+                pages, and structure — ready to publish on your domain.
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-3 justify-center lg:justify-start">
+                <Link className="btn btn-primary" href="/templates">
+                  Start building
+                </Link>
+                <Link className="btn btn-ghost" href="/templates">
+                  Explore templates
+                </Link>
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start text-sm text-white/50 font-medium">
+                <span>Fast publish</span>
+                <span>SEO-ready</span>
+                <span>Custom domains</span>
+                <span>Agent pipeline</span>
               </div>
             </div>
-          </a>
 
-          <nav
-            aria-label="Top navigation"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              flexWrap: "wrap",
-              justifyContent: "flex-end",
-            }}
-          >
-            {[
-              { href: "#preview", label: "Preview" },
-              { href: "/templates", label: "Templates" },
-              { href: "/pricing", label: "Pricing" },
-            ].map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                style={{
-                  fontSize: 13,
-                  color: "rgba(237,234,247,0.82)",
-                  textDecoration: "none",
-                  padding: "8px 10px",
-                  borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  background: "rgba(255,255,255,0.03)",
-                }}
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
-        </div>
+            {/* Preview card */}
+            <aside className="preview-card" aria-label="Preview card">
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10">
+                <div className="flex gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
+                </div>
+                <span className="text-xs text-white/40 font-semibold ml-2">
+                  Live Preview
+                </span>
+              </div>
+              <div className="p-5 space-y-4">
+                <p className="text-[10px] font-black tracking-[0.16em] uppercase text-white/40">
+                  AI-generated site blueprint
+                </p>
+                {/* Mock wireframe */}
+                <div className="space-y-3">
+                  <div className="h-4 w-3/4 rounded bg-white/8" />
+                  <div className="h-3 w-full rounded bg-white/5" />
+                  <div className="h-3 w-5/6 rounded bg-white/5" />
+                  <div className="flex gap-2 mt-4">
+                    <div className="h-8 w-24 rounded-lg bg-gradient-to-r from-accent-purple/30 to-accent-blue/30" />
+                    <div className="h-8 w-20 rounded-lg bg-white/5" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 mt-4">
+                  <div className="h-16 rounded-xl bg-white/4" />
+                  <div className="h-16 rounded-xl bg-white/4" />
+                  <div className="h-16 rounded-xl bg-white/4" />
+                  <div className="h-16 rounded-xl bg-white/4" />
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <span className="text-[10px] px-2 py-1 rounded-full border border-white/10 text-white/40">
+                    Glow
+                  </span>
+                  <span className="text-[10px] px-2 py-1 rounded-full border border-white/10 text-white/40">
+                    Full-screen
+                  </span>
+                  <span className="text-[10px] px-2 py-1 rounded-full border border-white/10 text-white/40">
+                    Build-gated
+                  </span>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </HeroGlow>
+      </section>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.15fr 0.85fr",
-            gap: 18,
-            alignItems: "stretch",
-            marginTop: 6,
-          }}
-        >
-          <section style={{ padding: "18px 8px 8px" }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "8px 12px",
-                borderRadius: 999,
-                background:
-                  "linear-gradient(90deg, rgba(168,85,247,0.18), rgba(59,130,246,0.10))",
-                border: "1px solid rgba(255,255,255,0.12)",
-                boxShadow: "0 10px 40px rgba(168,85,247,0.08)",
-                color: "rgba(237,234,247,0.92)",
-                fontSize: 12,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                fontWeight: 700,
-              }}
-            >
-              <span style={{ opacity: 0.95 }}>Craftify-style hero</span>
-              <span style={{ opacity: 0.65 }}>inline-styled fallback</span>
-            </div>
-
-            <h1
-              style={{
-                marginTop: 16,
-                fontSize: 50,
-                lineHeight: 1.02,
-                letterSpacing: "-0.02em",
-                fontWeight: 900,
-                color: "#F6F2FF",
-                textShadow: "0 20px 80px rgba(168,85,247,0.18)",
-              }}
-            >
-              Your site should do more than{" "}
-              <span
-                style={{
-                  background:
-                    "linear-gradient(90deg, rgba(168,85,247,1), rgba(59,130,246,1))",
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  color: "transparent",
-                }}
-              >
-                look good
+      {/* ── Trust strip ───────────────────────── */}
+      <section className="section text-center">
+        <p className="text-sm font-semibold text-white/40 tracking-wide uppercase">
+          Trusted by builders who want a premium look
+        </p>
+        <div className="flex flex-wrap justify-center gap-3 mt-4">
+          {["Agencies", "Founders", "Local business", "Creators", "E-commerce"].map(
+            (label) => (
+              <span key={label} className="pill">
+                {label}
               </span>
-              .
-            </h1>
-
-            <p
-              style={{
-                marginTop: 14,
-                maxWidth: 640,
-                fontSize: 16,
-                lineHeight: 1.55,
-                color: "rgba(237,234,247,0.78)",
-              }}
-            >
-              Dominat8 builds polished, conversion-first pages fast — with a locked visual layer that
-              still renders properly even if Tailwind/classes fail to load.
-            </p>
-
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 18, alignItems: "center" }}>
-              <a
-                href="/builder"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  padding: "12px 16px",
-                  borderRadius: 14,
-                  textDecoration: "none",
-                  fontWeight: 800,
-                  fontSize: 14,
-                  color: "#07070B",
-                  background:
-                    "linear-gradient(90deg, rgba(168,85,247,1), rgba(59,130,246,1))",
-                  boxShadow:
-                    "0 18px 55px rgba(168,85,247,0.26), 0 10px 24px rgba(59,130,246,0.16)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                }}
-              >
-                Start Building Now <span aria-hidden="true">→</span>
-              </a>
-
-              <a
-                href="#preview"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  padding: "12px 16px",
-                  borderRadius: 14,
-                  textDecoration: "none",
-                  fontWeight: 800,
-                  fontSize: 14,
-                  color: "rgba(237,234,247,0.88)",
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-                }}
-              >
-                Watch video <span aria-hidden="true">▶</span>
-              </a>
-            </div>
-          </section>
-
-          <aside
-            id="preview"
-            aria-label="Preview card"
-            style={{
-              borderRadius: 20,
-              padding: 14,
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))",
-              border: "1px solid rgba(255,255,255,0.12)",
-              boxShadow:
-                "0 30px 90px rgba(0,0,0,0.45), 0 20px 55px rgba(168,85,247,0.10)",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: -60,
-                background:
-                  "radial-gradient(closest-side at 70% 30%, rgba(168,85,247,0.32), rgba(0,0,0,0) 70%)," +
-                  " radial-gradient(closest-side at 30% 70%, rgba(59,130,246,0.20), rgba(0,0,0,0) 70%)",
-                filter: "blur(14px)",
-                pointerEvents: "none",
-              }}
-            />
-            <div style={{ position: "relative", zIndex: 2 }}>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {["LIVE_OK", "BUILD PROOF", "NO-TAILWIND SAFE"].map((t) => (
-                  <div
-                    key={t}
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 900,
-                      letterSpacing: "0.16em",
-                      textTransform: "uppercase",
-                      padding: "8px 10px",
-                      borderRadius: 999,
-                      background: "rgba(0,0,0,0.35)",
-                      border: "1px solid rgba(255,255,255,0.12)",
-                      color: "rgba(237,234,247,0.85)",
-                    }}
-                  >
-                    {t}
-                  </div>
-                ))}
-              </div>
-
-              <div
-                style={{
-                  marginTop: 14,
-                  fontSize: 14,
-                  fontWeight: 900,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "rgba(237,234,247,0.84)",
-                }}
-              >
-                Live Preview (Proof)
-              </div>
-
-              <div
-                style={{
-                  marginTop: 12,
-                  borderRadius: 16,
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  background: "rgba(0,0,0,0.35)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 10,
-                    padding: "10px 12px",
-                    borderBottom: "1px solid rgba(255,255,255,0.10)",
-                    background: "rgba(255,255,255,0.03)",
-                  }}
-                >
-                  <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                    {["#f43f5e", "#facc15", "#22c55e"].map((c) => (
-                      <span
-                        key={c}
-                        style={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: 999,
-                          background: c,
-                          boxShadow: "0 6px 20px rgba(0,0,0,0.35)",
-                          display: "inline-block",
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div style={{ fontSize: 12, opacity: 0.82, fontWeight: 800 }}>dominat8.com</div>
-                </div>
-
-                <div
-                  style={{
-                    padding: 12,
-                    fontFamily:
-                      "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-                    fontSize: 12,
-                    lineHeight: 1.55,
-                    color: "rgba(237,234,247,0.80)",
-                  }}
-                >
-                  <div style={{ marginBottom: 10, fontWeight: 900, opacity: 0.95 }}>
-                    HOME_OK • Locked Hero Render
-                  </div>
-                  <div style={{ opacity: 0.7 }}>
-                    If you see this card styled, your homepage can’t “go plain” anymore.
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ marginTop: 14, fontSize: 13, lineHeight: 1.5, color: "rgba(237,234,247,0.72)" }}>
-                Tip: add <span style={{ fontWeight: 900, color: "rgba(237,234,247,0.90)" }}>?ts=</span> to bust cache.
-              </div>
-            </div>
-          </aside>
+            )
+          )}
         </div>
+      </section>
 
-        <div
-          style={{
-            marginTop: 34,
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 12,
-            flexWrap: "wrap",
-            alignItems: "center",
-            opacity: 0.85,
-            fontSize: 12,
-            color: "rgba(237,234,247,0.65)",
-          }}
-        >
-          <div>© {new Date().getFullYear()} Dominat8</div>
-          <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-            {[
-              { href: "/privacy", label: "Privacy" },
-              { href: "/terms", label: "Terms" },
-              { href: "/contact", label: "Contact" },
-            ].map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                style={{
-                  color: "rgba(237,234,247,0.70)",
-                  textDecoration: "none",
-                  borderBottom: "1px solid rgba(237,234,247,0.20)",
-                  paddingBottom: 2,
-                }}
-              >
-                {l.label}
-              </a>
-            ))}
+      {/* ── How it works ──────────────────────── */}
+      <section className="section">
+        <h2 className="text-3xl font-black tracking-tight text-center">
+          How it works
+        </h2>
+        <p className="mt-3 text-center text-white/60">
+          Three steps. Clean output. Fast publishing.
+        </p>
+
+        <div className="grid sm:grid-cols-3 gap-6 mt-12">
+          {[
+            {
+              num: "1",
+              title: "Describe",
+              desc: "Tell us what you do and the vibe you want.",
+            },
+            {
+              num: "2",
+              title: "Generate",
+              desc: "Agents build pages, layout, and SEO structure.",
+            },
+            {
+              num: "3",
+              title: "Publish",
+              desc: "Push live on your domain. Iterate instantly.",
+            },
+          ].map((step) => (
+            <div key={step.num} className="card flex flex-col items-start">
+              <div className="step-num">{step.num}</div>
+              <h3 className="text-lg font-bold mt-2">{step.title}</h3>
+              <p className="text-sm text-white/60 mt-1 leading-relaxed">
+                {step.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Proof ─────────────────────────────── */}
+      <section className="section">
+        <div className="grid sm:grid-cols-3 gap-6">
+          {[
+            {
+              kicker: "Premium by default",
+              title: "Design that looks expensive",
+              desc: "Modern lighting, depth, and typography — without a designer.",
+            },
+            {
+              kicker: "Built to rank",
+              title: "SEO-ready structure",
+              desc: "Clean metadata, headings, and page structure from day one.",
+            },
+            {
+              kicker: "Fast execution",
+              title: "Agents do the heavy lifting",
+              desc: "From spec to publish — streamlined and repeatable.",
+            },
+          ].map((item) => (
+            <div key={item.title} className="card">
+              <p className="text-[10px] font-black tracking-[0.14em] uppercase text-white/50">
+                {item.kicker}
+              </p>
+              <h3 className="text-lg font-bold mt-2">{item.title}</h3>
+              <p className="text-sm text-white/60 mt-1 leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Final CTA ─────────────────────────── */}
+      <section className="section">
+        <div className="card flex flex-col sm:flex-row items-center justify-between gap-6 p-8">
+          <div>
+            <h2 className="text-2xl font-black tracking-tight">
+              Ready to build your best site?
+            </h2>
+            <p className="text-white/60 mt-1">
+              Generate a premium homepage and publish it fast.
+            </p>
+          </div>
+          <div className="flex gap-3 shrink-0">
+            <Link className="btn btn-primary" href="/templates">
+              Start building
+            </Link>
+            <Link className="btn btn-ghost" href="/pricing">
+              See pricing
+            </Link>
           </div>
         </div>
-      </div>
+
+        <footer className="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/10 text-sm text-white/40">
+          <p>&copy; {new Date().getFullYear()} Dominat8</p>
+          <div className="flex gap-4 mt-3 sm:mt-0">
+            <Link className="footer-link" href="/templates">Templates</Link>
+            <Link className="footer-link" href="/use-cases">Use cases</Link>
+            <Link className="footer-link" href="/pricing">Pricing</Link>
+          </div>
+        </footer>
+      </section>
     </main>
   );
 }
-

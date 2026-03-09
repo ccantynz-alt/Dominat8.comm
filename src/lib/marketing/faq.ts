@@ -1,9 +1,6 @@
-export type MarketingFaqItem = {
-  q: string;
-  a: string;
-};
+export type FaqItem = { q: string; a: string };
 
-export const marketingFaq: MarketingFaqItem[] = [
+export const FAQ_ITEMS: FaqItem[] = [
   {
     q: "What is Dominat8?",
     a: "Dominat8 is an AI website automation builder that generates a complete multi-page site, then helps optimize SEO and conversion and publish to your domain.",

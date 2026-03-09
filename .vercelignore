@@ -1,4 +1,0 @@
-deploy.zip
-
-# Ensure client wrapper files are NOT excluded:
-!src/app/_client/**
