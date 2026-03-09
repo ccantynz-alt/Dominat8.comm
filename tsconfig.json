@@ -14,28 +14,10 @@
     "jsx": "preserve",
     "incremental": true,
     "plugins": [{ "name": "next" }],
-
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*", "./*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": [
-    "src/_app_backup/**",
-    "_archive/**",
-    "_app_disabled/**",
-    "._app_disabled/**",
-    ".d8_bak/**",
-    "pages__DISABLED/**",
-    "disabled_projects/**",
-    "disabled_runs/**",
-    "agents/**",
-    "agent_logs/**",
-    "bundle_logs/**",
-    "scripts/**",
-    "tools/**",
-    "BOOTSTRAP/**",
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
