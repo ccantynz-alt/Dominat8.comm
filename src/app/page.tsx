@@ -15,9 +15,9 @@ export default function HomePage() {
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(1200px 800px at 65% 5%, rgba(168,85,247,0.22), rgba(0,0,0,0) 60%)," +
-          " radial-gradient(900px 700px at 15% 20%, rgba(59,130,246,0.14), rgba(0,0,0,0) 62%)," +
-          " linear-gradient(180deg, #07070B 0%, #07070B 40%, #05050A 100%)",
+          "radial-gradient(1200px 800px at 65% 5%, rgba(178,100,255,0.30), rgba(0,0,0,0) 60%)," +
+          " radial-gradient(900px 700px at 15% 20%, rgba(80,150,255,0.20), rgba(0,0,0,0) 62%)," +
+          " linear-gradient(180deg, #141428 0%, #141428 40%, #101024 100%)",
         color: "#EDEAF7",
         fontFamily:
           "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji'",
@@ -193,7 +193,7 @@ export default function HomePage() {
                   textDecoration: "none",
                   fontWeight: 800,
                   fontSize: 14,
-                  color: "#07070B",
+                  color: "#141428",
                   background:
                     "linear-gradient(90deg, rgba(168,85,247,1), rgba(59,130,246,1))",
                   boxShadow:
@@ -219,7 +219,7 @@ export default function HomePage() {
                   color: "rgba(237,234,247,0.88)",
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.12)",
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
                 }}
               >
                 Watch video <span aria-hidden="true">▶</span>
@@ -265,7 +265,7 @@ export default function HomePage() {
                       textTransform: "uppercase",
                       padding: "8px 10px",
                       borderRadius: 999,
-                      background: "rgba(0,0,0,0.35)",
+                      background: "rgba(20,20,40,0.45)",
                       border: "1px solid rgba(255,255,255,0.12)",
                       color: "rgba(237,234,247,0.85)",
                     }}
@@ -293,7 +293,7 @@ export default function HomePage() {
                   marginTop: 12,
                   borderRadius: 16,
                   border: "1px solid rgba(255,255,255,0.12)",
-                  background: "rgba(0,0,0,0.35)",
+                  background: "rgba(20,20,40,0.45)",
                   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
                   overflow: "hidden",
                 }}
@@ -318,7 +318,7 @@ export default function HomePage() {
                           height: 10,
                           borderRadius: 999,
                           background: c,
-                          boxShadow: "0 6px 20px rgba(0,0,0,0.35)",
+                          boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
                           display: "inline-block",
                         }}
                       />

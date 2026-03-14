@@ -5,14 +5,14 @@
    ========================= */
 
 :root {
-  --bg: #0b1220;
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel-2: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.12);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.72);
-  --muted-2: rgba(255, 255, 255, 0.6);
-  --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  --bg: #161830;
+  --panel: rgba(255, 255, 255, 0.08);
+  --panel-2: rgba(255, 255, 255, 0.10);
+  --border: rgba(255, 255, 255, 0.16);
+  --text: rgba(255, 255, 255, 0.94);
+  --muted: rgba(255, 255, 255, 0.76);
+  --muted-2: rgba(255, 255, 255, 0.65);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 }
 
 /* =========================
@@ -32,12 +32,12 @@ body {
 body {
   background: radial-gradient(
       1200px 800px at 10% 10%,
-      rgba(56, 189, 248, 0.16),
+      rgba(56, 189, 248, 0.22),
       transparent 60%
     ),
     radial-gradient(
       1000px 700px at 90% 20%,
-      rgba(168, 85, 247, 0.14),
+      rgba(178, 100, 255, 0.20),
       transparent 55%
     ),
     var(--bg);
@@ -113,7 +113,7 @@ h3 {
   top: 0;
   z-index: 10;
   backdrop-filter: blur(10px);
-  background: rgba(11, 18, 32, 0.75);
+  background: rgba(22, 24, 48, 0.75);
   border-bottom: 1px solid var(--border);
 }
 

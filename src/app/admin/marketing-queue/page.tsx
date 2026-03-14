@@ -6,16 +6,16 @@ const ui = {
   page: {
     minHeight: "100vh",
     background:
-      "radial-gradient(1200px 600px at 20% 10%, rgba(125, 90, 255, 0.18), transparent 60%), radial-gradient(900px 500px at 80% 20%, rgba(255, 200, 90, 0.10), transparent 60%), #07060b",
+      "radial-gradient(1200px 600px at 20% 10%, rgba(140, 105, 255, 0.25), transparent 60%), radial-gradient(900px 500px at 80% 20%, rgba(255, 210, 100, 0.14), transparent 60%), #141428",
     color: "rgba(246,242,255,0.92)",
     fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial",
   } as const,
   shell: { width: "100%", maxWidth: 1160, margin: "0 auto", padding: "20px 16px 28px 16px" } as const,
   card: {
     borderRadius: 18,
-    background: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.10)",
-    boxShadow: "0 18px 55px rgba(0,0,0,0.35)",
+    background: "rgba(255,255,255,0.06)",
+    border: "1px solid rgba(255,255,255,0.14)",
+    boxShadow: "0 18px 55px rgba(0,0,0,0.28)",
     padding: 14,
   } as const,
   h1: { margin: 0, fontSize: 22, lineHeight: 1.1, fontWeight: 950, letterSpacing: "-0.01em" } as const,
