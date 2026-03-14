@@ -10,7 +10,7 @@ export default async function Page({ params }: Props) {
   const meta = await kvGetJson<any>(projectVideoKey(projectId));
 
   return (
-    <main style={{ minHeight: "100vh", background: "#07060b", color: "rgba(246,242,255,0.92)", padding: 18 }}>
+    <main style={{ minHeight: "100vh", background: "#141428", color: "rgba(246,242,255,0.92)", padding: 18 }}>
       <div style={{ maxWidth: 960, margin: "0 auto" }}>
         <h1 style={{ margin: 0, fontSize: 22, fontWeight: 950, letterSpacing: "-0.01em" }}>
           Project Video — {projectId}

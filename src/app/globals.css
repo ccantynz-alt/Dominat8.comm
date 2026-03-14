@@ -26,7 +26,7 @@ html[data-dxl="DXL01_20260128"] .dxl-toasts__hide {
   padding: 8px 10px;
   border-radius: 999px;
 
-  background: rgba(0,0,0,0.35);
+  background: rgba(20,20,40,0.45);
   border: 1px solid rgba(255,255,255,0.12);
   color: rgba(246,242,255,0.70);
 
@@ -48,7 +48,7 @@ html[data-dxl="DXL01_20260128"] .dxl-toast {
   border-radius: 16px;
   padding: 10px 12px;
 
-  background: rgba(0,0,0,0.38);
+  background: rgba(20,20,40,0.48);
   border: 1px solid rgba(255,255,255,0.14);
   box-shadow: 0 22px 70px rgba(0,0,0,0.55);
 
@@ -152,7 +152,7 @@ html[data-dxl="DXL01_20260128"] .dxl-toasts__hide {
   padding: 8px 10px;
   border-radius: 999px;
 
-  background: rgba(0,0,0,0.35);
+  background: rgba(20,20,40,0.45);
   border: 1px solid rgba(255,255,255,0.12);
   color: rgba(246,242,255,0.70);
 
@@ -174,7 +174,7 @@ html[data-dxl="DXL01_20260128"] .dxl-toast {
   border-radius: 16px;
   padding: 10px 12px;
 
-  background: rgba(0,0,0,0.38);
+  background: rgba(20,20,40,0.48);
   border: 1px solid rgba(255,255,255,0.14);
   box-shadow: 0 22px 70px rgba(0,0,0,0.55);
 

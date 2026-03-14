@@ -8,7 +8,7 @@ export default function Page() {
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(1200px 800px at 65% 5%, rgba(168,85,247,0.20), rgba(0,0,0,0) 60%), radial-gradient(900px 700px at 15% 20%, rgba(59,130,246,0.12), rgba(0,0,0,0) 62%), linear-gradient(180deg, #07070B 0%, #07070B 40%, #05050A 100%)",
+          "radial-gradient(1200px 800px at 65% 5%, rgba(178,100,255,0.28), rgba(0,0,0,0) 60%), radial-gradient(900px 700px at 15% 20%, rgba(80,150,255,0.18), rgba(0,0,0,0) 62%), linear-gradient(180deg, #141428 0%, #141428 40%, #101024 100%)",
         color: "#EDEAF7",
         fontFamily:
           "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji'",

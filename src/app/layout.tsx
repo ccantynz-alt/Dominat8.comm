@@ -34,19 +34,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 <style>{`
   :root{
     color-scheme: dark;
-    --bg0:#07070B;
-    --bg1:#0B0B12;
-    --card:rgba(255,255,255,.06);
-    --card2:rgba(255,255,255,.04);
-    --border:rgba(255,255,255,.12);
-    --border2:rgba(255,255,255,.10);
-    --text:#EDEAF7;
-    --muted:rgba(237,234,247,.72);
-    --muted2:rgba(237,234,247,.60);
-    --accent1:rgba(168,85,247,1);
-    --accent2:rgba(59,130,246,1);
-    --shadow:0 30px 90px rgba(0,0,0,.45);
-    --shadow2:0 18px 55px rgba(168,85,247,.18), 0 10px 24px rgba(59,130,246,.10);
+    --bg0:#141428;
+    --bg1:#181835;
+    --card:rgba(255,255,255,.08);
+    --card2:rgba(255,255,255,.06);
+    --border:rgba(255,255,255,.16);
+    --border2:rgba(255,255,255,.14);
+    --text:#F0EDFA;
+    --muted:rgba(240,237,250,.76);
+    --muted2:rgba(240,237,250,.65);
+    --accent1:rgba(178,100,255,1);
+    --accent2:rgba(80,150,255,1);
+    --shadow:0 30px 90px rgba(0,0,0,.35);
+    --shadow2:0 18px 55px rgba(178,100,255,.22), 0 10px 24px rgba(80,150,255,.14);
     --r16:16px;
     --r20:20px;
     --r24:24px;
@@ -56,17 +56,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   body{
     margin:0;
     background:
-      radial-gradient(1200px 800px at 65% 5%, rgba(168,85,247,.20), rgba(0,0,0,0) 60%),
-      radial-gradient(900px 700px at 15% 20%, rgba(59,130,246,.12), rgba(0,0,0,0) 62%),
-      linear-gradient(180deg, var(--bg0) 0%, var(--bg0) 40%, #05050A 100%);
+      radial-gradient(1200px 800px at 65% 5%, rgba(178,100,255,.28), rgba(0,0,0,0) 60%),
+      radial-gradient(900px 700px at 15% 20%, rgba(80,150,255,.18), rgba(0,0,0,0) 62%),
+      linear-gradient(180deg, var(--bg0) 0%, var(--bg0) 40%, #101024 100%);
     color:var(--text);
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  a{color:rgba(200,180,255,.95); text-decoration:none}
-  a:hover{color:rgba(210,210,255,.98); text-decoration:underline}
+  a{color:rgba(210,190,255,.95); text-decoration:none}
+  a:hover{color:rgba(220,220,255,.98); text-decoration:underline}
 
   /* Generic layout helpers if Tailwind fails */
   .container, .mx-auto{
@@ -90,16 +90,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     border-radius: 14px;
     padding: 10px 14px;
     border: 1px solid var(--border);
-    background: rgba(255,255,255,.04);
-    color: rgba(237,234,247,.90);
+    background: rgba(255,255,255,.06);
+    color: rgba(240,237,250,.92);
     cursor: pointer;
   }
   button:hover, .btn:hover, a.btn:hover{
-    background: rgba(255,255,255,.07);
+    background: rgba(255,255,255,.10);
   }
   .btn-primary{
     background: linear-gradient(90deg, var(--accent1), var(--accent2));
-    color: #07070B !important;
+    color: #141428 !important;
     box-shadow: var(--shadow2);
     border: 1px solid rgba(255,255,255,.10);
     text-decoration:none !important;
@@ -111,28 +111,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   /* Inputs baseline (admin/cockpit forms) */
   input, select, textarea{
     font: inherit;
-    color: rgba(237,234,247,.92);
-    background: rgba(0,0,0,.32);
+    color: rgba(240,237,250,.94);
+    background: rgba(0,0,0,.22);
     border: 1px solid var(--border2);
     border-radius: 14px;
     padding: 10px 12px;
     outline: none;
   }
   input:focus, select:focus, textarea:focus{
-    border-color: rgba(168,85,247,.55);
-    box-shadow: 0 0 0 4px rgba(168,85,247,.15);
+    border-color: rgba(178,100,255,.60);
+    box-shadow: 0 0 0 4px rgba(178,100,255,.18);
   }
-  ::placeholder{color: rgba(237,234,247,.45)}
+  ::placeholder{color: rgba(240,237,250,.50)}
 
   /* Tables baseline */
   table{border-collapse:collapse; width:100%}
   th,td{
-    border-bottom: 1px solid rgba(255,255,255,.08);
+    border-bottom: 1px solid rgba(255,255,255,.10);
     padding: 10px 10px;
     text-align:left;
-    color: rgba(237,234,247,.85);
+    color: rgba(240,237,250,.88);
   }
-  th{color: rgba(237,234,247,.70); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; font-size: 12px}
+  th{color: rgba(240,237,250,.75); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; font-size: 12px}
 
   /* Headings baseline */
   h1{font-size:40px; line-height:1.05; letter-spacing:-.02em; margin: 0}
@@ -141,7 +141,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   p{color: var(--muted); line-height:1.6}
 
   /* Soft separators */
-  hr{border:0; border-top:1px solid rgba(255,255,255,.08); margin:18px 0}
+  hr{border:0; border-top:1px solid rgba(255,255,255,.12); margin:18px 0}
 
   /* If something renders totally naked, this keeps content readable */
   main{display:block}

@@ -1,7 +1,7 @@
 export const d8 = {
   page: {
     minHeight: "100vh",
-    background: "radial-gradient(1200px 600px at 20% 10%, rgba(125, 90, 255, 0.18), transparent 60%), radial-gradient(900px 500px at 80% 20%, rgba(255, 200, 90, 0.10), transparent 60%), #07060b",
+    background: "radial-gradient(1200px 600px at 20% 10%, rgba(140, 105, 255, 0.25), transparent 60%), radial-gradient(900px 500px at 80% 20%, rgba(255, 210, 100, 0.14), transparent 60%), #141428",
     color: "rgba(246,242,255,0.92)",
     fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial",
   } as const,
@@ -13,9 +13,9 @@ export const d8 = {
   } as const,
   card: {
     borderRadius: 18,
-    background: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.10)",
-    boxShadow: "0 18px 55px rgba(0,0,0,0.35)",
+    background: "rgba(255,255,255,0.06)",
+    border: "1px solid rgba(255,255,255,0.14)",
+    boxShadow: "0 18px 55px rgba(0,0,0,0.28)",
     padding: 14,
   } as const,
   h1: {
@@ -37,15 +37,15 @@ export const d8 = {
     padding: "10px 12px",
     outline: "none",
     border: "1px solid rgba(255,255,255,0.14)",
-    background: "rgba(0,0,0,0.20)",
+    background: "rgba(0,0,0,0.14)",
     color: "rgba(246,242,255,0.92)",
     fontSize: 14,
   } as const,
   btn: {
     borderRadius: 12,
     padding: "10px 12px",
-    border: "1px solid rgba(255,255,255,0.16)",
-    background: "rgba(255,255,255,0.06)",
+    border: "1px solid rgba(255,255,255,0.18)",
+    background: "rgba(255,255,255,0.08)",
     color: "rgba(246,242,255,0.92)",
     cursor: "pointer",
     fontWeight: 800,
