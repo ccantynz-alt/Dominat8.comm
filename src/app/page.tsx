@@ -1,8 +1,3 @@
-// === D8_AUTOREPAIR_DEMO_START ===
-// Intentionally missing import to demonstrate Auto Repair fixing a build.
-// This produces a deterministic "Module not found" error with zero UI impact.
-import AutoRepairDemoWidget from "./_client/AutoRepairDemoWidget";
-// === D8_AUTOREPAIR_DEMO_END ===
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -182,7 +177,7 @@ export default function HomePage() {
 
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 18, alignItems: "center" }}>
               <a
-                href="/builder"
+                href="/templates"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
