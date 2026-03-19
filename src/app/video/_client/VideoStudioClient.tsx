@@ -178,7 +178,7 @@ export default function VideoStudioClient() {
       }
       if (idx >= durations.length) {
         setActiveIndex(durations.length - 1);
-        drawFrame(ctx, w, h, shots[durations.length - 1], 1);
+        drawFrame(ctx!, w, h, shots[durations.length - 1], 1);
         stopAnimation();
         if (previewOnly) setStatus("ready");
         return;
@@ -186,7 +186,7 @@ export default function VideoStudioClient() {
       setActiveIndex(idx);
       const local = elapsed - acc;
       const p = Math.max(0, Math.min(1, local / durations[idx]));
-      drawFrame(ctx, w, h, shots[idx], p);
+      drawFrame(ctx!, w, h, shots[idx], p);
       rafRef.current = requestAnimationFrame(tick);
     }
 
