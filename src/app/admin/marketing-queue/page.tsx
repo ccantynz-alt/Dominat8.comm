@@ -128,7 +128,7 @@ export default function Page() {
 
   const [scheduleLocal, setScheduleLocal] = useState(""); // datetime-local
 
-  const headers = useMemo(() => (token ? { "x-admin-token": token } : {}), [token]);
+  const headers = useMemo((): Record<string, string> => (token ? { "x-admin-token": token } : {}), [token]);
 
   async function refresh() {
     setErr(null);
@@ -144,7 +144,9 @@ export default function Page() {
     if (first && !sel) setSel(first.id);
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { refresh(); }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { refresh(); }, [projectId, channel]);
 
   async function generateDrafts() {

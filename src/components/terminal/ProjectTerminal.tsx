@@ -126,7 +126,7 @@ export default function ProjectTerminal({ projectId }: { projectId: string }) {
   const publishUrl = useMemo(() => `/api/projects/${projectId}/publish`, [projectId]);
   const debugSpecUrl = useMemo(() => `/api/projects/${projectId}/debug/spec`, [projectId]);
 
-  const steps = lastResponse?.steps || [];
+  const steps = useMemo(() => lastResponse?.steps || [], [lastResponse]);
 
   const pipelineOk = useMemo(() => {
     if (!lastResponse) return null;

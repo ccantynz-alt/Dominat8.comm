@@ -1,5 +1,6 @@
 ﻿export const dynamic = "force-dynamic";
 
+import Image from "next/image";
 import { MONSTER_MARKER } from "../../../lib/buildMarker";
 import { TopBar, HeaderNav, Footer } from "../../../components/marketing/MarketingShell";
 
@@ -70,10 +71,13 @@ export default async function GalleryPage() {
                 className="group overflow-hidden rounded-3xl bg-white/85 ring-1 ring-slate-200 shadow-sm hover:bg-white transition"
               >
                 <div className="h-36 bg-white">
-                  <img
+                  <Image
                     alt={c.title}
                     className="h-full w-full object-cover"
                     src={"/api/gallery/thumb?projectId=" + encodeURIComponent(c.projectId) + "&v=" + encodeURIComponent(MONSTER_MARKER)}
+                    width={400}
+                    height={144}
+                    unoptimized
                   />
                 </div>
 
