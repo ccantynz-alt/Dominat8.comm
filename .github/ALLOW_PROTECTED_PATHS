@@ -1,0 +1,4 @@
+Reason: Fix critical 500 production error.
+Protected path changes are necessary to resolve syntax errors, remove broken imports,
+delete conflicting duplicate .jsx files, and fix TypeScript compilation errors that
+prevent the site from loading.
