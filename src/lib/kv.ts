@@ -10,7 +10,7 @@
  * If kv cannot be loaded, we throw a clear error at runtime.
  */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
 
 function loadVercelKv(): any | null {
   try {
