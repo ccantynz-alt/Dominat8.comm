@@ -11,3 +11,16 @@ disabled_projects/**
 disabled_runs/**
 pages__DISABLED/**
 
+# Stale archive and disabled directories
+_archive
+.d8_bak
+._app_disabled
+_app_disabled
+disabled_projects
+disabled_runs
+generated
+BOOTSTRAP
+pages__DISABLED
+agents
+site
+rc
