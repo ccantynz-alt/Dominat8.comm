@@ -22,6 +22,25 @@
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": [
-    "src/_app_backup/**",
-"node_modules"]
+    "node_modules",
+    "_archive",
+    ".d8_bak",
+    "_app_disabled",
+    "._app_disabled",
+    "app_disabled",
+    "pages__DISABLED",
+    "disabled_projects",
+    "disabled_runs",
+    "generated",
+    "BOOTSTRAP",
+    "agents",
+    "agent_logs",
+    "bundle_logs",
+    "seo-v2",
+    "auto-publish",
+    "upgrades",
+    "site",
+    "rc",
+    "src/_app_backup/**"
+  ]
 }
