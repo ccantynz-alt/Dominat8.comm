@@ -1,0 +1,12 @@
+Reason: Resolving 404 errors and build failures across the Dominat8.com site.
+
+Changes to protected paths:
+- src/app/page.tsx: Fixed home page to resolve 404 error, consolidated from duplicate .jsx/.tsx files
+- src/app/(marketing)/pricing/page.tsx: Updated pricing page, removed duplicate .jsx file
+- src/app/(marketing)/templates/page.tsx: Updated templates page, removed duplicate .jsx file
+- src/app/(marketing)/faq/page.jsx: Removed duplicate .jsx (kept .tsx only)
+- src/app/(marketing)/use-cases/page.jsx: Removed duplicate .jsx (kept .tsx only)
+- src/app/(marketing)/_d8/D8Bits.tsx: Updated DXL component for marketing pages
+- src/app/_client/D8TV.tsx: Updated client component
+
+All changes are intentional and the build passes clean with zero type errors.
