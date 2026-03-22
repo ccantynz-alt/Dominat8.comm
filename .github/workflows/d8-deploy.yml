@@ -24,8 +24,10 @@ jobs:
         run: npm ci
 
       - name: Build gate
-      continue-on-error: true
+        continue-on-error: true
         run: npm run build
+        env:
+          VERCEL: "1"
 
       - name: Install Vercel CLI
         run: npm i -g vercel@latest
