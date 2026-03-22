@@ -1,6 +1,13 @@
 
-
 # UPGRADE_20260201_CI_GREEN_20260201_172248
 _quarantine_*
 **/*.bak_*
+_archive/**
+._app_disabled/**
+_app_disabled/**
+.d8_bak/**
+BOOTSTRAP/**
+disabled_projects/**
+disabled_runs/**
+pages__DISABLED/**
 
