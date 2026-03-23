@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
       ok: true,
       kit,
       generated,
-      message: `${businessName} is ready! Your ${kit.name} starter kit has been generated with a complete website, SEO setup, email templates, and social media assets. You&apos;re set up for success!`,
+      message: `${businessName} is ready! Your ${kit.name} starter kit has been generated with a complete website, SEO setup, email templates, and social media assets. You're set up for success!`,
     };
 
     return NextResponse.json(response);
