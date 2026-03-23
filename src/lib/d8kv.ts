@@ -52,5 +52,5 @@ export function d8Key_patchLatest(projectId: string) {
   return `agentPatch:project:${projectId}:latest`;
 }
 export function projectVideoKey(projectId: string) {
-  return `project:${projectId}:video`;
+  return `project:${projectId}:video:latest`;
 }

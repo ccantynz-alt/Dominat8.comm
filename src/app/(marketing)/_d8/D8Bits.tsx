@@ -1,12 +1,6 @@
 import React from "react";
 
-export function D8Card(props: {
-  title?: string;
-  body?: string;
-  kicker?: string;
-  right?: React.ReactNode;
-  children?: React.ReactNode;
-}) {
+export function D8Card(props: { title?: string; body?: string; kicker?: string; children?: React.ReactNode }) {
   return (
     <div
       style={{
@@ -17,44 +11,21 @@ export function D8Card(props: {
         boxShadow: "0 18px 55px rgba(0,0,0,0.35)",
       }}
     >
-      {props.kicker ? (
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 900,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "rgba(237,234,247,0.75)",
-          }}
-        >
+      {props.kicker && (
+        <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(237,234,247,0.55)", marginBottom: 8 }}>
           {props.kicker}
         </div>
-      ) : null}
-      {(props.title || props.body) ? (
-        <div
-          style={{
-            marginTop: props.kicker ? 8 : 0,
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: 12,
-          }}
-        >
-          <div style={{ minWidth: 0 }}>
-            {props.title && (
-              <div style={{ fontSize: 15, fontWeight: 900, color: "rgba(246,242,255,0.95)" }}>
-                {props.title}
-              </div>
-            )}
-            {props.body && (
-              <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, color: "rgba(237,234,247,0.72)" }}>
-                {props.body}
-              </div>
-            )}
-          </div>
-          {props.right ? <div style={{ flex: "0 0 auto" }}>{props.right}</div> : null}
+      )}
+      {props.title && (
+        <div style={{ fontSize: 15, fontWeight: 800, color: "rgba(246,242,255,0.95)", marginBottom: 6 }}>
+          {props.title}
         </div>
-      ) : null}
+      )}
+      {props.body && (
+        <div style={{ fontSize: 13, lineHeight: 1.5, color: "rgba(237,234,247,0.72)" }}>
+          {props.body}
+        </div>
+      )}
       {props.children}
     </div>
   );
