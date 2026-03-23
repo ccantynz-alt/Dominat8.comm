@@ -36,7 +36,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VERCEL: "1"
+          VERCEL: ${{ github.event_name == 'push' && '1' || '' }}
 
       - name: Tests (if present)
         run: |
