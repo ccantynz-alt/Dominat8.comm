@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -12,31 +12,30 @@
     "ci:probe": "node -e \"console.log('probe handled externally')\""
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.7.0",
-    "@vercel/blob": "^2.0.1",
-    "@vercel/kv": "^2.0.0",
-    "adm-zip": "^0.5.10",
-    "next": "14.2.5",
-    "openai": "^4.0.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "stripe": "^14.0.0",
-    "zod": "^3.23.8"
+    "@clerk/nextjs": "^7.0.7",
+    "@vercel/blob": "^2.3.2",
+    "@vercel/kv": "^3.0.0",
+    "adm-zip": "^0.5.16",
+    "next": "^16.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "stripe": "^21.0.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@types/adm-zip": "^0.5.7",
-    "@types/node": "^20.11.30",
-    "@types/react": "^18.2.61",
-    "@types/react-dom": "^18.2.19",
-    "autoprefixer": "^10.4.23",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.27",
     "eslint": "^8.56.0",
-    "eslint-config-next": "14.2.5",
-    "postcss": "^8.5.6",
+    "eslint-config-next": "^16.2.1",
+    "postcss": "^8.5.8",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.4.5"
+    "typescript": "^6.0.2"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">=20.x"
   }
 }
