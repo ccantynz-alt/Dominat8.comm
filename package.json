@@ -12,28 +12,28 @@
     "ci:probe": "node -e \"console.log('probe handled externally')\""
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.7.0",
-    "@vercel/blob": "^2.0.1",
-    "@vercel/kv": "^2.0.0",
-    "adm-zip": "^0.5.10",
-    "next": "^15.3.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "stripe": "^17.7.0",
-    "zod": "^3.23.8"
+    "@clerk/nextjs": "^7.0.7",
+    "@vercel/blob": "^2.3.2",
+    "@vercel/kv": "^3.0.0",
+    "adm-zip": "^0.5.16",
+    "next": "^16.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "stripe": "^21.0.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@types/adm-zip": "^0.5.7",
-    "@types/node": "^22.0.0",
-    "@types/react": "^19.2.10",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "autoprefixer": "^10.4.23",
+    "autoprefixer": "^10.4.27",
     "eslint": "^8.56.0",
-    "eslint-config-next": "^15.3.1",
-    "postcss": "^8.5.6",
+    "eslint-config-next": "^16.2.1",
+    "postcss": "^8.5.8",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "engines": {
     "node": ">=20.x"
