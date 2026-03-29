@@ -12,24 +12,24 @@ type QA = { q: string; a: string };
 export function PricingFAQ() {
   const items: QA[] = [
     {
-      q: "Is Dominat8 live right now?",
-      a: "Yes. The marketing site and gallery are live. Pro publishing & domains are planned as the next product phase.",
+      q: "What do I get for free?",
+      a: "3 AI generations per month, HTML download, and a 7-day share link. No credit card required.",
     },
     {
-      q: "Why show Pro if billing isn't enabled yet?",
-      a: "Because it sets expectations and communicates the roadmap clearly — without risking production by rushing billing wiring.",
+      q: "How fast is a generation?",
+      a: "Most sites generate in under 30 seconds. Complex multi-page builds may take up to 60 seconds.",
     },
     {
-      q: "Will Free always exist?",
-      a: "Free is designed to remain a solid starting point. Pro unlocks publishing, domains, and automation when ready.",
+      q: "Can I export the code?",
+      a: "Yes — you get clean React + TypeScript (or HTML) that you can host anywhere. No lock-in.",
     },
     {
-      q: "Can I publish to my own domain?",
-      a: "That’s part of Pro. The Domain Wizard is a core upcoming milestone (verification + mapping + status checks).",
+      q: "Can I use my own domain?",
+      a: "Pro and Agency plans include custom domain + auto-SSL on the Dominat8 CDN.",
     },
     {
-      q: "Is this safe to use in production?",
-      a: "The marketing experience is build-gated and stable. Product publishing features will ship behind clear gates and proof markers.",
+      q: "Is there a money-back guarantee?",
+      a: "Yes — 14-day money-back on all paid plans, no questions asked.",
     },
   ];
 
@@ -39,14 +39,14 @@ export function PricingFAQ() {
     <section aria-label="Pricing FAQ" className="mx-auto w-full max-w-6xl px-4">
       <div className="mt-14">
         <div className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-semibold tracking-wide text-white/80">
-          FAQ • <span className="ml-1 font-mono text-white/70">PRICING_V2</span>
+          FAQ
         </div>
 
         <h2 className="mt-4 text-2xl font-semibold tracking-tight text-white md:text-3xl">
-          Questions, answered
+          Frequently asked questions
         </h2>
         <p className="mt-2 max-w-2xl text-sm text-white/70 md:text-base">
-          No surprises. The pricing story is clear now — the wiring comes in the next phase.
+          Everything you need to know about Dominat8 pricing and plans.
         </p>
 
         <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur-md">
@@ -75,8 +75,8 @@ export function PricingFAQ() {
         </div>
 
         <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-5 text-sm text-white/70">
-          Next milestone after PRICING_V2:{" "}
-          <span className="font-semibold text-white/80">Publish Proof + Domain Wizard v1</span>.
+          Still have questions? Contact us at{" "}
+          <a href="mailto:hello@dominat8.io" className="font-semibold text-white/80 hover:text-white no-underline">hello@dominat8.io</a>.
         </div>
       </div>
     </section>
