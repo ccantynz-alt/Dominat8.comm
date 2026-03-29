@@ -17,28 +17,51 @@ export function PricingTeaser() {
     {
       name: "Free",
       price: "$0",
-      tagline: "Generate and preview beautiful sites.",
+      tagline: "Try it out — no credit card required.",
       bullets: [
-        "AI-generated homepage & core sections",
-        "Preview gallery-style layouts",
-        "Deploy proof markers",
-        "Upgrade anytime",
+        "3 AI generations / month",
+        "HTML download",
+        "Mobile-responsive output",
+        "Share link (7-day)",
       ],
       cta: "Start free",
     },
     {
-      name: "Pro",
-      price: "Coming soon",
-      tagline: "For publishing, domains, and advanced AI.",
+      name: "Starter",
+      price: "$9/mo",
+      tagline: "For individuals & side projects.",
       bullets: [
-        "Publish to production",
-        "Custom domains & verification",
-        "Advanced SEO & sitemaps",
-        "Automation + agents",
+        "20 AI generations / month",
+        "Fix agent + SEO scan",
+        "Embed / iframe export",
+        "Share links (90-day)",
       ],
-      cta: "Join waitlist",
+      cta: "Start Starter",
+    },
+    {
+      name: "Pro",
+      price: "$29/mo",
+      tagline: "For freelancers & growing businesses.",
+      bullets: [
+        "100 AI generations / month",
+        "Deploy to CDN + auto-SSL",
+        "Custom domain",
+        "A/B & seasonal variants",
+      ],
+      cta: "Start Pro",
       highlight: true,
-      disabled: true,
+    },
+    {
+      name: "Agency",
+      price: "$99/mo",
+      tagline: "For teams & high-volume builders.",
+      bullets: [
+        "500 AI generations / month",
+        "White-label output + API",
+        "5 team seats",
+        "SLA + dedicated support",
+      ],
+      cta: "Start Agency",
     },
   ];
 
@@ -51,10 +74,10 @@ export function PricingTeaser() {
               PRICING (TEASER)
             </div>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight text-white md:text-3xl">
-              Simple plans. Serious results.
+              Simple, honest pricing.
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-white/70 md:text-base">
-              This is UI-only for now — no billing changes in WOW v3. We’re keeping production stable while we sharpen the story.
+              Start free. Scale as you grow. $0.49/generation overage on all paid plans.
             </p>
           </div>
 
@@ -63,7 +86,7 @@ export function PricingTeaser() {
           </div>
         </div>
 
-        <div className="mt-7 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="mt-7 grid grid-cols-1 gap-4 md:grid-cols-4">
           {cards.map((c) => (
             <div
               key={c.name}
@@ -86,7 +109,7 @@ export function PricingTeaser() {
                   </div>
                   {c.highlight ? (
                     <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">
-                      Best for shipping
+                      Most Popular
                     </div>
                   ) : null}
                 </div>
@@ -119,22 +142,19 @@ export function PricingTeaser() {
                   </button>
 
                   <div className="text-xs text-white/55">
-                    {c.name === "Pro"
-                      ? "Billing later — story first."
-                      : "No card required (for now)."}
+                    {c.name === "Free"
+                      ? "No credit card required."
+                      : "14-day money-back guarantee."}
                   </div>
                 </div>
 
-                <div className="mt-5 text-xs text-white/55">
-                  {c.name === "Pro" ? "Pro is intentionally shown as 'coming soon' in WOW v3." : "Free remains accessible and frictionless."}
-                </div>
               </div>
             </div>
           ))}
         </div>
 
         <div className="mt-7 rounded-2xl border border-white/10 bg-black/30 p-4 text-xs text-white/60">
-          Note: WOW v3 does not touch Stripe, auth, or plans. This is conversion scaffolding only.
+          All paid plans include a 14-day money-back guarantee. Questions? hello@dominat8.io
         </div>
       </div>
     </section>

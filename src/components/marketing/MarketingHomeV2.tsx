@@ -136,7 +136,7 @@ export default function MarketingHomeV2(props: {
           {(valueProps.length ? valueProps : [
             { title: "Layout + copy separation", body: "Agents write specs. Renderer decides structure." },
             { title: "SEO baked in", body: "Plans, sitemaps, canonicals, intent pages." },
-            { title: "Publish pipeline", body: "From spec â†’ deployed site with one action." },
+            { title: "Publish pipeline", body: "From spec â†' deployed site with one action." },
           ]).slice(0, 6).map((it: any, idx: number) => (
             <div key={idx} className="rounded-3xl border p-6">
               <div className="text-lg font-semibold">{S(it.title || it.label, "Value")}</div>
@@ -180,9 +180,10 @@ export default function MarketingHomeV2(props: {
       <Section title="Pricing" subtitle="From homepage pricing spec (fallbacks included).">
         <div className="grid gap-4 md:grid-cols-3">
           {(plans.length ? plans : [
-            { name: "Free", price: "$0", features: ["1 site", "Basic publish", "Community support"] },
-            { name: "Pro", price: "$29", features: ["Custom domain", "SEO agents", "Program pages"] },
-            { name: "Business", price: "$99", features: ["Multiple sites", "Team access", "Priority support"] },
+            { name: "Free", price: "$0", features: ["3 generations/month", "HTML download", "Share link (7-day)"] },
+            { name: "Starter", price: "$9/mo", features: ["20 generations/month", "Fix agent + SEO scan", "Share links (90-day)"] },
+            { name: "Pro", price: "$29/mo", features: ["100 generations/month", "CDN + SSL + custom domain", "A/B variants"] },
+            { name: "Agency", price: "$99/mo", features: ["500 generations/month", "White-label + API", "5 team seats"] },
           ]).slice(0, 4).map((p: any, idx: number) => (
             <div key={idx} className={cx("rounded-3xl border p-6", idx === 1 ? "shadow-sm" : "")}>
               <div className="text-lg font-semibold">{S(p.name || p.title, "Plan")}</div>
