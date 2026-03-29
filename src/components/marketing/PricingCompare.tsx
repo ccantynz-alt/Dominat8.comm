@@ -28,45 +28,68 @@ export function PricingCompare() {
     {
       name: "Free",
       price: "$0",
-      tagline: "Start building immediately.",
+      tagline: "Try it out — no credit card required.",
       bullets: [
-        "Generate flagship layouts",
-        "Preview templates (Gallery v2)",
-        "Deploy proof markers",
-        "Iterate safely",
+        "3 AI generations / month",
+        "HTML download",
+        "Mobile-responsive output",
+        "Share link (7-day)",
       ],
       cta: "Start free",
     },
     {
-      name: "Pro",
-      price: "Coming soon",
-      tagline: "For publishing + domains + automation.",
+      name: "Starter",
+      price: "$9/mo",
+      tagline: "For individuals & side projects.",
       bullets: [
-        "Publish to production",
-        "Custom domains & verification",
-        "Advanced SEO & sitemaps",
-        "Automation + agents",
+        "20 AI generations / month",
+        "Fix agent + SEO scan",
+        "Embed / iframe export",
+        "Share links (90-day)",
       ],
-      cta: "Join waitlist",
+      cta: "Start Starter",
+    },
+    {
+      name: "Pro",
+      price: "$29/mo",
+      tagline: "For freelancers & growing businesses.",
+      bullets: [
+        "100 AI generations / month",
+        "Deploy to CDN + auto-SSL",
+        "Custom domain",
+        "A/B & seasonal variants",
+      ],
+      cta: "Start Pro",
       highlight: true,
-      disabled: true,
+    },
+    {
+      name: "Agency",
+      price: "$99/mo",
+      tagline: "For teams & high-volume builders.",
+      bullets: [
+        "500 AI generations / month",
+        "White-label output + API",
+        "5 team seats",
+        "SLA + dedicated support",
+      ],
+      cta: "Start Agency",
     },
   ];
 
   const rows: Row[] = [
-    { label: "Template Gallery", free: "✓", pro: "✓" },
-    { label: "WOW homepage polish", free: "✓", pro: "✓" },
-    { label: "Export / portability", free: "Planned", pro: "Planned" },
-    { label: "Publish to production", free: "—", pro: "✓" },
-    { label: "Custom domains", free: "—", pro: "✓" },
-    { label: "SEO automation", free: "—", pro: "✓" },
-    { label: "Workflow agents", free: "—", pro: "✓" },
+    { label: "AI generations / month", free: "3", pro: "100" },
+    { label: "HTML download", free: "✓", pro: "✓" },
+    { label: "Refine & iterate", free: "✓", pro: "✓" },
+    { label: "Fix agent + SEO scan", free: "—", pro: "✓" },
+    { label: "Deploy to CDN", free: "—", pro: "✓" },
+    { label: "Custom domain + SSL", free: "—", pro: "✓" },
+    { label: "A/B variants", free: "—", pro: "✓" },
     { label: "Priority support", free: "—", pro: "✓" },
   ];
 
   return (
     <section aria-label="Pricing comparison" className="mx-auto w-full max-w-6xl px-4">
-      <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-4">
         {plans.map((p) => (
           <div
             key={p.name}
@@ -87,7 +110,7 @@ export function PricingCompare() {
                 </div>
                 {p.highlight ? (
                   <div className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">
-                    Best for shipping
+                    Most Popular
                   </div>
                 ) : null}
               </div>
@@ -120,13 +143,10 @@ export function PricingCompare() {
                 </button>
 
                 <div className="text-xs text-white/55">
-                  {p.name === "Pro" ? "Billing later — story first." : "No card required (for now)."}
+                  {p.name === "Free" ? "No credit card required." : "14-day money-back guarantee."}
                 </div>
               </div>
 
-              <div className="mt-5 text-xs text-white/55">
-                Marker: <span className="font-mono text-white/80">PRICING_V2</span>
-              </div>
             </div>
           </div>
         ))}
@@ -156,7 +176,7 @@ export function PricingCompare() {
         </div>
 
         <div className="border-t border-white/10 px-5 py-4 text-xs text-white/55">
-          Note: Pro is intentionally marked as <span className="font-semibold text-white/70">coming soon</span> in PRICING_V2.
+          All paid plans include $0.49/generation overage and a 14-day money-back guarantee.
         </div>
       </div>
     </section>
