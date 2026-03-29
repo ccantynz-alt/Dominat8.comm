@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dominat8 — Dominate or Be Dominated",
+  title: "Dominat8 — AI-Powered Website Builder",
   description:
-    "AI-powered website builder for agencies and developers who refuse to lose. Build in 90 seconds. Deploy in 5.",
+    "Build production-ready websites in under 90 seconds. AI-powered, conversion-optimised, and ready to deploy.",
 };
 
 /* ============================================================
-   DOMINAT8.COM — THE KILLER MARKETING MACHINE
-   7 sections. Dark. Aggressive. Converts hard.
+   DOMINAT8.COM — AI WEBSITE BUILDER
+   7 sections. Clean. Professional. Converts.
    ============================================================ */
 
 function Nav() {
@@ -25,11 +25,11 @@ function Nav() {
           </span>
         </a>
         <div className="flex items-center gap-6">
-          <a href="#weapons" className="text-sm font-semibold text-d8-muted hover:text-d8-green transition-colors no-underline">
-            Weapons
+          <a href="#features" className="text-sm font-semibold text-d8-muted hover:text-d8-green transition-colors no-underline">
+            Features
           </a>
-          <a href="#proof" className="text-sm font-semibold text-d8-muted hover:text-d8-green transition-colors no-underline">
-            Proof
+          <a href="#results" className="text-sm font-semibold text-d8-muted hover:text-d8-green transition-colors no-underline">
+            Results
           </a>
           <a href="#pricing" className="text-sm font-semibold text-d8-muted hover:text-d8-green transition-colors no-underline">
             Pricing
@@ -50,10 +50,10 @@ function Nav() {
 /* ---- SECTION 1: HERO ---- */
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden scanlines">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="grid-bg" />
       <div className="relative z-10 mx-auto max-w-5xl px-6 pt-32 pb-24 text-center">
-        <div className="mb-8 inline-flex items-center gap-3 border border-d8-green/20 bg-d8-green/[0.05] px-4 py-2">
+        <div className="mb-8 inline-flex items-center gap-3 border border-d8-green/20 bg-d8-green/[0.05] px-4 py-2 rounded-full">
           <span className="inline-block h-2 w-2 rounded-full bg-d8-green animate-pulse" />
           <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-d8-green">
             AI BUILDER — LIVE
@@ -61,42 +61,41 @@ function Hero() {
         </div>
 
         <h1
-          className="glitch-text font-display text-[clamp(3rem,8vw,6rem)] font-black leading-[0.95] tracking-tight text-d8-text"
-          data-text="YOUR COMPETITORS ARE ALREADY WINNING."
+          className="font-display text-[clamp(3rem,8vw,6rem)] font-black leading-[0.95] tracking-tight text-d8-text"
         >
-          YOUR COMPETITORS ARE
+          Build production websites
           <br />
-          <span className="text-d8-green">ALREADY WINNING.</span>
+          <span className="text-d8-green">in 90 seconds.</span>
         </h1>
 
         <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-d8-muted md:text-xl">
-          While you&apos;re still deciding, they shipped. Dominat8 builds
-          conversion-first sites in <span className="font-bold text-d8-text">90 seconds</span>.
-          Deploys in <span className="font-bold text-d8-text">5</span>.
-          No excuses. No mercy.
+          Describe your business. Get a conversion-optimised, mobile-ready website
+          built by AI in under <span className="font-bold text-d8-text">90 seconds</span>.
+          Deploy in <span className="font-bold text-d8-text">5</span>.
+          No code. No templates. No compromise.
         </p>
 
         <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <a
             href="https://dominat8.io/builder"
-            className="neon-cta px-10 py-4 text-base font-black tracking-widest no-underline"
+            className="neon-cta px-10 py-4 text-base font-black tracking-widest no-underline rounded-lg"
             style={{ clipPath: "polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%)" }}
           >
-            DOMINATE NOW
+            START BUILDING FREE
           </a>
           <a
-            href="#weapons"
-            className="border border-white/10 bg-white/[0.03] px-8 py-4 text-sm font-bold uppercase tracking-widest text-d8-muted hover:border-d8-green/30 hover:text-d8-green transition-all no-underline"
+            href="#features"
+            className="border border-white/10 bg-white/[0.03] px-8 py-4 text-sm font-bold uppercase tracking-widest text-d8-muted hover:border-d8-green/30 hover:text-d8-green transition-all no-underline rounded-lg"
           >
-            SEE THE ARSENAL &darr;
+            SEE HOW IT WORKS &darr;
           </a>
         </div>
 
         <div className="mt-20 flex flex-wrap items-center justify-center gap-x-12 gap-y-4">
           {[
-            { stat: "10,000+", label: "Sites Deployed" },
-            { stat: "90s", label: "Build Time" },
-            { stat: "0", label: "Apologies" },
+            { stat: "10,000+", label: "Sites Built" },
+            { stat: "<90s", label: "Build Time" },
+            { stat: "99.9%", label: "Uptime" },
           ].map((s) => (
             <div key={s.label} className="text-center">
               <div className="stat-glow font-display text-4xl font-black md:text-5xl">
@@ -113,20 +112,19 @@ function Hero() {
   );
 }
 
-/* ---- SECTION 2: COMPETITIVE FRAMING ---- */
-function CompetitiveFraming() {
+/* ---- SECTION 2: VALUE PROPOSITION ---- */
+function ValueProposition() {
   return (
     <section className="relative border-t border-white/[0.04] bg-d8-darker py-28">
       <div className="mx-auto max-w-5xl px-6 text-center">
         <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] font-black leading-tight text-d8-text">
-          Every day you wait is a day
+          The way websites are built
           <br />
-          <span className="text-d8-green">your competitor gets ahead.</span>
+          <span className="text-d8-green">has fundamentally changed.</span>
         </h2>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-d8-muted">
-          The market moved. AI builds production-ready sites faster than your team quotes them.
-          Your competitors figured this out last month. The question isn&apos;t &ldquo;should you?&rdquo;
-          — it&apos;s &ldquo;why haven&apos;t you?&rdquo;
+          AI builds production-ready sites faster than traditional teams can scope them.
+          Agencies, freelancers, and founders are already shipping with Dominat8.
         </p>
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">
@@ -134,25 +132,24 @@ function CompetitiveFraming() {
             {
               before: "Manual builds",
               after: "AI in 90 seconds",
-              detail: "Your team takes weeks. Our engine takes seconds.",
+              detail: "What used to take weeks now takes seconds. Same quality, fraction of the time.",
             },
             {
               before: "Template sites",
               after: "Unique every time",
-              detail: "Cookie-cutter is dead. Every build is one-of-one.",
+              detail: "Every site is custom-generated from your brief. No two builds are the same.",
             },
             {
-              before: "Launch & pray",
+              before: "Launch & hope",
               after: "Conversion-engineered",
-              detail: "Built to convert from pixel one. Not retrofitted.",
+              detail: "Built to convert from the ground up. SEO, performance, and accessibility baked in.",
             },
           ].map((item) => (
             <div
               key={item.after}
-              className="neon-border bg-d8-surface p-8 text-left"
-              style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%)" }}
+              className="neon-border bg-d8-surface p-8 text-left rounded-xl"
             >
-              <div className="font-mono text-xs uppercase tracking-[0.15em] text-red-500 line-through">
+              <div className="font-mono text-xs uppercase tracking-[0.15em] text-d8-muted/50 line-through">
                 {item.before}
               </div>
               <div className="mt-2 font-display text-xl font-black text-d8-green">
@@ -167,32 +164,32 @@ function CompetitiveFraming() {
   );
 }
 
-/* ---- SECTION 3: SPEED PROOF ---- */
-function SpeedProof() {
+/* ---- SECTION 3: HOW IT WORKS ---- */
+function HowItWorks() {
   return (
     <section className="relative border-t border-white/[0.04] py-28">
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid items-center gap-16 md:grid-cols-2">
           <div>
             <div className="font-mono text-xs uppercase tracking-[0.2em] text-d8-green">
-              Speed kills — in your favour
+              How it works
             </div>
             <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3rem)] font-black leading-tight text-d8-text">
-              90 seconds to live.
+              Describe it. Build it.
               <br />
-              5 seconds to deploy.
+              Ship it. Done.
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-d8-muted">
-              From blank canvas to production-deployed site. No staging environments.
-              No deployment pipelines. No DevOps tickets. Type what you want. Get what you need.
-              Ship before your coffee gets cold.
+              From a plain-English description to a production-deployed website.
+              No staging environments. No deployment pipelines. No DevOps tickets.
+              Just describe what you need and let the AI handle the rest.
             </p>
             <a
               href="https://dominat8.io/builder"
-              className="neon-cta mt-8 inline-block px-8 py-3.5 text-sm font-black tracking-widest no-underline"
+              className="neon-cta mt-8 inline-block px-8 py-3.5 text-sm font-black tracking-widest no-underline rounded-lg"
               style={{ clipPath: "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)" }}
             >
-              BUILD YOUR FIRST SITE
+              TRY IT FREE
             </a>
           </div>
 
@@ -238,62 +235,61 @@ function SpeedProof() {
   );
 }
 
-/* ---- SECTION 4: FEATURE WEAPONS ---- */
-function FeatureWeapons() {
-  const weapons = [
+/* ---- SECTION 4: FEATURES ---- */
+function Features() {
+  const features = [
     {
       icon: "//",
-      title: "7-Agent AI Pipeline",
-      desc: "Seven specialized AI agents work in parallel. Strategy, copy, design, code, SEO, QA, deploy. All in one pass.",
+      title: "Multi-Agent AI Pipeline",
+      desc: "Six specialised AI agents work together — strategy, copy, design, code, SEO, and QA. All in one generation pass.",
     },
     {
       icon: ">>",
-      title: "Instant Deploy",
-      desc: "No FTP. No CI/CD. No waiting. One click from build to live. Global CDN. SSL included.",
+      title: "One-Click Deploy",
+      desc: "From build to live in seconds. Global CDN, auto-SSL, and custom domains included. No DevOps required.",
     },
     {
       icon: "{}",
-      title: "Conversion-First Architecture",
-      desc: "Every component is engineered to convert. Not decorated after the fact. Built into the DNA.",
+      title: "Conversion-First Design",
+      desc: "Every component is engineered for conversions. Not added as an afterthought — built into the architecture.",
     },
     {
       icon: "<>",
       title: "White-Label Ready",
-      desc: "Strip our name. Add yours. Your clients never know. Full agency white-label from day one.",
+      desc: "Remove Dominat8 branding entirely. Present to clients as your own work. Full agency white-label on Agency plans.",
     },
     {
       icon: "##",
-      title: "SEO Weaponised",
-      desc: "Schema markup, meta optimization, sitemap generation, Core Web Vitals — all automated. Every build.",
+      title: "Built-In SEO",
+      desc: "Schema markup, meta tags, sitemap generation, and Core Web Vitals optimisation — automated on every build.",
     },
     {
       icon: "&&",
-      title: "Auto-Reply AI",
-      desc: "AI-powered customer support that sounds like your best account manager. Direct. Confident. Never sleeps.",
+      title: "Self-Healing Builds",
+      desc: "The build loop automatically detects and fixes bugs, layout breaks, and accessibility issues before you see them.",
     },
   ];
 
   return (
-    <section id="weapons" className="relative border-t border-white/[0.04] bg-d8-darker py-28">
+    <section id="features" className="relative border-t border-white/[0.04] bg-d8-darker py-28">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <div className="font-mono text-xs uppercase tracking-[0.2em] text-d8-green">
-            The arsenal
+            Features
           </div>
           <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-black leading-tight text-d8-text">
-            Every feature is a
-            <span className="text-d8-green"> competitive weapon.</span>
+            Everything you need to
+            <span className="text-d8-green"> ship faster.</span>
           </h2>
         </div>
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {weapons.map((w) => (
+          {features.map((w) => (
             <div
               key={w.title}
-              className="neon-border group bg-d8-surface p-8 transition-all hover:bg-d8-surface-hover"
-              style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%)" }}
+              className="neon-border group bg-d8-surface p-8 transition-all hover:bg-d8-surface-hover rounded-xl"
             >
-              <div className="flex h-12 w-12 items-center justify-center border border-d8-green/20 bg-d8-green/[0.05] font-mono text-lg font-black text-d8-green transition-colors group-hover:bg-d8-green/10">
+              <div className="flex h-12 w-12 items-center justify-center border border-d8-green/20 bg-d8-green/[0.05] font-mono text-lg font-black text-d8-green transition-colors group-hover:bg-d8-green/10 rounded-lg">
                 {w.icon}
               </div>
               <h3 className="mt-5 font-display text-lg font-black text-d8-text">
@@ -312,34 +308,34 @@ function FeatureWeapons() {
 function SocialProof() {
   const testimonials = [
     {
-      quote: "We replaced our entire dev pipeline with Dominat8. 23% more conversions in 30 days. Not going back.",
-      name: "Marcus Chen",
-      role: "Founder, Velocity Digital",
+      quote: "I described my SaaS and had a production-ready site in 22 seconds. Replaced a $12k agency quote.",
+      name: "Sarah M.",
+      role: "Startup Founder, Austin",
       metric: "+23% conversions",
     },
     {
-      quote: "Shipped 14 client sites in one week. My competitors still quote 6-week timelines. They have no idea what hit them.",
-      name: "Sarah Blackwood",
-      role: "CEO, Blackwood Agency",
+      quote: "The self-healing loop caught a responsive break I would have missed. Client was thrilled.",
+      name: "James L.",
+      role: "Freelance Designer, London",
       metric: "14 sites / 1 week",
     },
     {
-      quote: "The white-label option alone pays for itself. Clients think we built it. We just pressed a button.",
-      name: "James Okafor",
-      role: "Director, Digital Forge",
-      metric: "10x output",
+      quote: "38 product pages generated from a single prompt. The SEO agent even wrote my meta tags.",
+      name: "Priya K.",
+      role: "E-commerce Owner, Mumbai",
+      metric: "38 pages / 1 prompt",
     },
   ];
 
   return (
-    <section id="proof" className="relative border-t border-white/[0.04] py-28">
+    <section id="results" className="relative border-t border-white/[0.04] py-28">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <div className="font-mono text-xs uppercase tracking-[0.2em] text-d8-green">
-            Battle-tested
+            Trusted by builders
           </div>
           <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-black leading-tight text-d8-text">
-            Results. Not testimonials.
+            Real results from real users.
           </h2>
         </div>
 
@@ -347,9 +343,9 @@ function SocialProof() {
           {testimonials.map((t) => (
             <div
               key={t.name}
-              className="neon-border flex flex-col bg-d8-surface p-8"
+              className="neon-border flex flex-col bg-d8-surface p-8 rounded-xl"
             >
-              <div className="mb-6 inline-block self-start border border-d8-green/20 bg-d8-green/[0.05] px-3 py-1 font-mono text-xs font-bold text-d8-green">
+              <div className="mb-6 inline-block self-start border border-d8-green/20 bg-d8-green/[0.05] px-3 py-1 font-mono text-xs font-bold text-d8-green rounded-full">
                 {t.metric}
               </div>
               <blockquote className="flex-1 text-base leading-relaxed text-d8-text/80">
@@ -373,45 +369,58 @@ function SocialProof() {
 function Pricing() {
   const plans = [
     {
-      name: "STARTER",
-      price: "$49",
-      tag: "Stop losing",
-      desc: "Stop losing to competitors who already have AI.",
+      name: "FREE",
+      price: "$0",
+      period: "forever",
+      desc: "Try it out — no credit card required.",
       features: [
-        "AI site builder",
-        "5 sites / month",
-        "Custom domain",
-        "SSL + CDN included",
-        "Basic SEO automation",
+        "3 AI generations / month",
+        "Vibe & style presets",
+        "HTML download",
+        "Mobile-responsive output",
+        "Share link (7-day)",
+      ],
+    },
+    {
+      name: "STARTER",
+      price: "$9",
+      period: "/mo",
+      desc: "For individuals & side projects.",
+      features: [
+        "20 AI generations / month",
+        "Refine & iterate (unlimited)",
+        "Fix agent + SEO scan",
+        "Embed / iframe export",
+        "Share links (90-day)",
       ],
     },
     {
       name: "PRO",
-      price: "$129",
-      tag: "Most lethal",
-      desc: "The weapon your agency's been missing.",
+      price: "$29",
+      period: "/mo",
+      desc: "For freelancers & growing businesses.",
       features: [
+        "100 AI generations / month",
         "Everything in Starter",
-        "Unlimited sites",
-        "Priority AI pipeline",
-        "Advanced SEO suite",
-        "AI auto-reply support",
-        "Custom branding",
+        "A/B & seasonal variants",
+        "Deploy to CDN + auto-SSL",
+        "Custom domain",
+        "Priority queue + email support",
       ],
       featured: true,
     },
     {
       name: "AGENCY",
-      price: "$299",
-      tag: "Total domination",
-      desc: "Dominate your entire client roster.",
+      price: "$99",
+      period: "/mo",
+      desc: "For teams & high-volume builders.",
       features: [
+        "500 AI generations / month",
         "Everything in Pro",
-        "White-label builder",
-        "Team seats (up to 10)",
-        "Client billing portal",
-        "Dedicated pipeline",
-        "Priority support",
+        "White-label output",
+        "API access + bulk generation",
+        "5 team seats",
+        "SLA + dedicated support",
       ],
     },
   ];
@@ -424,14 +433,17 @@ function Pricing() {
             Pricing
           </div>
           <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-black leading-tight text-d8-text">
-            Pick your weapon.
+            Simple, honest pricing.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-d8-muted">
-            Every plan includes the full AI engine. No feature gates. No bait-and-switch.
+            Start free. Scale as you grow. No surprises, no gotchas.
+          </p>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-d8-muted/60">
+            Need more? $0.49 / generation overage on all paid plans.
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3">
+        <div className="mt-16 grid gap-6 md:grid-cols-4">
           {plans.map((p) => (
             <div
               key={p.name}
@@ -443,11 +455,13 @@ function Pricing() {
               style={{ clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%)" }}
             >
               {p.featured && (
-                <div className="absolute -top-px left-0 right-0 h-[2px] bg-d8-green" />
+                <>
+                  <div className="absolute -top-px left-0 right-0 h-[2px] bg-d8-green" />
+                  <div className="absolute top-3 right-3 bg-d8-green/20 border border-d8-green/40 px-2 py-0.5 font-mono text-[10px] font-bold text-d8-green uppercase tracking-wider">
+                    Most Popular
+                  </div>
+                </>
               )}
-              <div className="font-mono text-xs uppercase tracking-[0.2em] text-d8-green">
-                {p.tag}
-              </div>
               <div className="mt-3 font-display text-sm font-black tracking-[0.2em] text-d8-text">
                 {p.name}
               </div>
@@ -455,7 +469,7 @@ function Pricing() {
                 <span className="font-display text-5xl font-black text-d8-text">
                   {p.price}
                 </span>
-                <span className="text-sm text-d8-muted">/mo</span>
+                <span className="text-sm text-d8-muted">{p.period}</span>
               </div>
               <p className="mt-3 text-sm text-d8-muted">{p.desc}</p>
 
@@ -477,10 +491,14 @@ function Pricing() {
                 }`}
                 style={p.featured ? { clipPath: "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)" } : undefined}
               >
-                {p.featured ? "START DOMINATING" : "GET STARTED"}
+                {p.featured ? "START PRO — $29/MO" : p.name === "FREE" ? "GET STARTED FREE" : `START ${p.name}`}
               </a>
             </div>
           ))}
+        </div>
+
+        <div className="mx-auto mt-8 max-w-xl text-center text-sm text-d8-muted/50">
+          All paid plans include a 14-day money-back guarantee.
         </div>
       </div>
     </section>
@@ -490,24 +508,24 @@ function Pricing() {
 /* ---- SECTION 7: FINAL CTA ---- */
 function FinalCTA() {
   return (
-    <section className="relative border-t border-white/[0.04] py-32 overflow-hidden scanlines">
+    <section className="relative border-t border-white/[0.04] py-32 overflow-hidden">
       <div className="grid-bg" />
       <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
         <h2 className="font-display text-[clamp(2rem,6vw,4rem)] font-black leading-tight text-d8-text">
-          The market doesn&apos;t wait.
+          Ready to build
           <br />
-          <span className="text-d8-green">Neither should you.</span>
+          <span className="text-d8-green">something great?</span>
         </h2>
         <p className="mx-auto mt-6 max-w-xl text-lg text-d8-muted">
-          Every day without Dominat8 is a day your competitors outpace you.
-          Every site they ship is a client you lost. Stop watching. Start winning.
+          Join thousands of founders, freelancers, and agencies who are already
+          shipping production websites with Dominat8. Start free — no credit card required.
         </p>
         <a
           href="https://dominat8.io/builder"
-          className="neon-cta mt-10 inline-block px-12 py-5 text-base font-black tracking-widest no-underline"
+          className="neon-cta mt-10 inline-block px-12 py-5 text-base font-black tracking-widest no-underline rounded-lg"
           style={{ clipPath: "polygon(14px 0%, 100% 0%, calc(100% - 14px) 100%, 0% 100%)" }}
         >
-          DOMINATE NOW
+          START BUILDING FREE
         </a>
         <div className="mt-6 font-mono text-xs text-d8-muted">
           No credit card required. Build your first site in 90 seconds.
@@ -549,7 +567,7 @@ function Footer() {
           ))}
         </div>
         <div className="font-mono text-xs text-d8-muted">
-          &copy; {new Date().getFullYear()} Dominat8. Ship or die.
+          &copy; {new Date().getFullYear()} Dominat8. All rights reserved.
         </div>
       </div>
     </footer>
@@ -562,9 +580,9 @@ export default function HomePage() {
     <>
       <Nav />
       <Hero />
-      <CompetitiveFraming />
-      <SpeedProof />
-      <FeatureWeapons />
+      <ValueProposition />
+      <HowItWorks />
+      <Features />
       <SocialProof />
       <Pricing />
       <FinalCTA />
